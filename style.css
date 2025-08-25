@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(to bottom right, #e3fdfd,#cbf1f5,#a6e3e9, #71c9ce);
+}
+
+/* Header */
+header {
+  display: flex;
+  /* các phần tử sẽ nằm ngang */
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px 60px;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 22px;
+  color: #001b30;
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+nav ul {
+  font-weight: bold;
+  font-size: 20px;
+  color: #001b30;
+  align-items: center;
+  display: flex;
+  list-style: none;
+  gap: 100px;
+  margin-left: 100px;
+}
+
+nav a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #001b30;
+}
+
+.login-btn {
+  background: #e3fdfd;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #001b30;
+  font-size: 20px;
+  margin-left: auto; 
+}
+
+/* Main layout */
+.container {
+min-height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  padding: 100px 60px;
+}
+
+.main-content {
+  flex: 2;
+}
+
+.main-content h1 {
+  font-size: 45px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  margin-left: 50px;
+  color: #001b30;
+}
+
+.main-content p {
+  margin-bottom: 35px;
+  margin-left: 150px;
+  font-weight: bold;
+  color: #001b30;
+}
+
+.search-box {
+  display: flex;
+  background: #e6f9ff;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 600px;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  font-size: 16px;
+}
+
+.apply-btn {
+  background: #6ecedc;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 3px;
+}
+
