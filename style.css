@@ -29,7 +29,7 @@ header {
 
 nav ul {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 19px;
   color: #001b30;
   align-items: center;
   display: flex;
@@ -55,6 +55,9 @@ nav a {
   font-size: 20px;
   margin-left: auto; 
 }
+.login-btn:hover {
+  background: #71c9ce;
+}
 
 /* Main layout */
 .container {
@@ -78,7 +81,7 @@ min-height: 100vh;
 
 .main-content p {
   margin-bottom: 35px;
-  margin-left: 150px;
+  margin-left: 190px;
   font-weight: bold;
   color: #001b30;
 }
@@ -111,4 +114,60 @@ min-height: 100vh;
   cursor: pointer;
   margin-right: 3px;
 }
+
+/* Vùng rail và cuộn (như trước) */
+.side-rail{ padding-top: 8px; }
+.rail-scroll{
+  height: 72vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 16px;
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.rail-scroll::-webkit-scrollbar{ display:none; }
+
+/* Card link */
+.rail-card {
+  display: block;
+  text-decoration: none;
+  color: #114261;
+  background: #fff;
+  border: 2px solid #def4f7;
+  border-radius: 16px;
+
+  /* 👇 tăng kích thước ô */
+  min-height: 200px;       /* cao hơn (từ 140px → 200px) */
+  padding: 24px;           /* rộng trong hơn (từ 16px → 24px) */
+  font-size: 20px;         /* chữ to hơn */
+  font-weight: 700;
+
+  box-shadow: 0 10px 26px rgba(0,0,0,.06);
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s;
+}
+
+.rail-card {
+  width: 95%;   /* thay vì 86% như trước */
+}
+.rail-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.09);
+  border-color: #cfeaf1;
+}
+/* focus để truy cập bàn phím tốt */
+.rail-card:focus-visible{
+  outline: 3px solid #71c9ce;
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+/* (tuỳ chọn) so le trái/phải cho đẹp */
+.rail-card{ width: 86%; }
+.rail-card:nth-child(odd){ justify-self: start; }
+.rail-card:nth-child(even){ justify-self: end; }
 
