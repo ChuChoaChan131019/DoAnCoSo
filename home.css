@@ -144,9 +144,12 @@ nav a {
   gap: 16px;
   width: 500px;
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
+  scroll-snap-type: none;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; -ms-overflow-style: none;
+   padding-top: 64px;
+  padding-bottom: 64px;
+  
 }
 .rail-scroll::-webkit-scrollbar{ display:none; }
 
@@ -159,7 +162,6 @@ nav a {
   border: none;
   border-radius: 16px;
 
-  /* 👇 tăng kích thước ô */
   min-height: 200px;       /* cao hơn (từ 140px → 200px) */
   padding: 24px;           /* rộng trong hơn (từ 16px → 24px) */
   font-size: 20px;         /* chữ to hơn */
@@ -191,6 +193,7 @@ nav a {
   outline-offset: 2px;
   border-color: transparent;
 }
+
 
 /* (tuỳ chọn) so le trái/phải cho đẹp */
 .rail-card{ width: 86%; }
