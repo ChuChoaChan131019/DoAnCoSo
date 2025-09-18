@@ -1,0 +1,14 @@
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: linear-gradient(to bottom right, #e3fdfd,#cbf1f5,#a6e3e9,#71c9ce);
+}
+html, body {
+  height: auto;
+  min-height: 100%;
+  overflow-x: auto; 
+  overflow-y: auto;   
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,89 @@
+
+.home-root, .home-root * {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.home-root {
+  background: linear-gradient(to bottom right, #e3fdfd,#cbf1f5,#a6e3e9, #71c9ce);
+  min-height: 100vh;
+  width: 100%;
+}
+
+
+/* Main layout */
+.home-root .container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 60px;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.home-root .main-content { flex: 2; margin-top: 100px; }
+
+.home-root .main-content h1 {
+  font-size: 55px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  margin-left: 50px;
+  color: #001b30;
+  font-family: 'Poppins', sans-serif;
+}
+.home-root .main-content p {
+  margin-bottom: 35px;
+  margin-left: 190px;
+  font-weight: bold;
+  color: #001b30;
+  font-size: 22px;
+}
+
+.home-root .search-box {
+  display: flex;
+  background: #e6f9ff;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 600px;
+  align-items: center;
+  margin-left: 50px;
+}
+.home-root .search-box input {
+  border: none; outline: none; flex: 1; padding: 12px; background: transparent; font-size: 16px;
+}
+.home-root .apply-btn {
+  background: #6ecedc; border: none; padding: 10px 20px; font-weight: bold;
+  border-radius: 8px; cursor: pointer; margin-right: 3px;
+}
+
+/* Side rail */
+.home-root .side-rail { padding-top: 8px; }
+.home-root .rail-scroll {
+  height: 72vh; overflow-y: auto; display: grid; gap: 16px; width: 500px;
+  scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; -ms-overflow-style: none;
+  padding-top: 64px; padding-bottom: 64px;
+}
+.home-root .rail-scroll::-webkit-scrollbar { display: none; }
+
+.home-root .rail-card {
+  display: block; text-decoration: none; color: #114261;
+  background: rgba(255,255,255,0.4); border: none; border-radius: 16px;
+  min-height: 200px; padding: 24px; font-size: 20px; font-weight: 700; width: 86%;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(0,0,0,.06); scroll-snap-align: start;
+  display: flex; align-items: center;
+  transition: transform .25s ease, box-shadow .25s ease, opacity .25s;
+}
+.home-root .rail-card:nth-child(odd){ justify-self: start; }
+.home-root .rail-card:nth-child(even){ justify-self: end; }
+
+.home-root .rail-card:hover{
+  transform: translateY(-2px) scale(.95);
+  box-shadow: 0 14px 30px rgba(0,0,0,.09);
+  border-color: #cfeaf1;
+}
+.home-root .rail-card:focus-visible{
+  outline: 3px solid #71c9ce; outline-offset: 2px; border-color: transparent;
+}
