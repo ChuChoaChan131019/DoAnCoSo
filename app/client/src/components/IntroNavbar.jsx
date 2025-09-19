@@ -1,29 +1,37 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./introNavbar.css";
 
 export default function IntroNavbar() {
   return (
     <header className="navbar1">
       {/* Logo */}
-      <Link to="/">
+      <NavLink to="/">
         <img src="/logo.png" alt="Logo" width="250" />
-      </Link>
+      </NavLink>
 
-    
-      <nav >
+      <nav>
         <ul>
-          <li><Link to="/introduce">Introduce</Link></li>
-          <li><Link to="/jobs">Jobs</Link></li>
-          <li><Link to="/companies">Companies</Link></li>
-          <li><Link to="/cv">CV</Link></li>
-          <li><Link to="/faq">FAQ</Link></li>
+          <li>
+            <NavLink to="/introduce" className={({ isActive }) => (isActive ? "active-link" : "")}> Introduce </NavLink>
+          </li>
+          <li>
+            <NavLink to="/jobs" className={({ isActive }) => (isActive ? "active-link" : "")} > Jobs </NavLink>
+          </li>
+         <li>
+            <NavLink to="/company" className={({ isActive }) => (isActive ? "active-link" : "")} > Companies </NavLink>
+          </li>
+          <li>
+            <NavLink to="/cv" className={({ isActive }) => (isActive ? "active-link" : "")} > CV </NavLink>
+          </li>
+          <li>
+            <NavLink to="/faq" className={({ isActive }) => (isActive ? "active-link" : "")} > FAQ </NavLink>
+          </li>
         </ul>
       </nav>
 
-      {/* Login button */}
-      <Link to="/login">
+      <NavLink to="/login">
         <button className="login-btn">Log in</button>
-      </Link>
+      </NavLink>
     </header>
   );
 }

@@ -4,6 +4,7 @@ import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
 import Introduce from "../pages/Introduce.jsx";
 import Navbar from "../components/Navbar.jsx";
+import Footer from "../components/footer.jsx";
 
 export default function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ export default function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/introduce" element={<Introduce />} />
       </Routes>
+      <Footer/>
     </BrowserRouter>
   );
 }

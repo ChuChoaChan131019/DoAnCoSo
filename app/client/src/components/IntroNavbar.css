@@ -13,7 +13,7 @@
   width: 100%;           
   z-index: 1000;         
   
-  background: #e3fdfd;   
+  background: #CBF1F5;   
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,6 +39,11 @@
   text-decoration: none;
   font-weight: bold;
   color: #001b30;
+  transition: color 0.3s ease;
+}
+
+.navbar1 nav a.active-link {
+  color: #008c9e;             
 }
 
 .login-btn {

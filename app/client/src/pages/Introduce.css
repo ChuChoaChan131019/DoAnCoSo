@@ -3,6 +3,8 @@
   background: #f7fafa;
   font-family: Arial, sans-serif;
   padding-top: 150px; 
+  height: auto;
+  overflow: auto;
 }
 
 

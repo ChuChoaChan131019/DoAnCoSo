@@ -20,6 +20,7 @@
   width: 100%;
   max-width: 1500px;
   margin: 0 auto;
+  flex-wrap: wrap;
 }
 
 .home-root .main-content { flex: 2; margin-top: 100px; }
@@ -43,38 +44,70 @@
 .home-root .search-box {
   display: flex;
   background: #e6f9ff;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   width: 600px;
+  height: 50px;
   align-items: center;
-  margin-left: 50px;
+  margin-left: 70px;
 }
 .home-root .search-box input {
-  border: none; outline: none; flex: 1; padding: 12px; background: transparent; font-size: 16px;
+  border: none; 
+  outline: none; 
+  flex: 1; 
+  padding: 12px; 
+  background: 
+  transparent; 
+  font-size: 19px;
 }
 .home-root .apply-btn {
-  background: #6ecedc; border: none; padding: 10px 20px; font-weight: bold;
-  border-radius: 8px; cursor: pointer; margin-right: 3px;
+  background: #6ecedc; 
+  border: none; 
+  padding: 10px 20px; 
+  font-weight: bold;
+  width: 120px;
+  height: 38px;
+  border-radius: 8px; 
+  cursor: pointer; 
+  margin-right: 6px;
 }
 
 /* Side rail */
 .home-root .side-rail { padding-top: 8px; }
 .home-root .rail-scroll {
-  height: 72vh; overflow-y: auto; display: grid; gap: 16px; width: 500px;
-  scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; -ms-overflow-style: none;
-  padding-top: 64px; padding-bottom: 64px;
+  height: 72vh; 
+  overflow-y: auto; 
+  display: grid; 
+  gap: 16px; 
+  width: 500px;
+  scroll-behavior: smooth; 
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  padding-top: 64px; 
+  padding-bottom: 64px;
 }
 .home-root .rail-scroll::-webkit-scrollbar { display: none; }
 
 .home-root .rail-card {
-  display: block; text-decoration: none; color: #114261;
-  background: rgba(255,255,255,0.4); border: none; border-radius: 16px;
-  min-height: 200px; padding: 24px; font-size: 20px; font-weight: 700; width: 86%;
+  display: block; 
+  text-decoration: none; 
+  color: #114261;
+  background: rgba(255,255,255,0.4); 
+  border: none; 
+  border-radius: 16px;
+  min-height: 200px; 
+  padding: 24px; 
+  font-size: 20px; 
+  font-weight: 700; 
+  width: 86%;
   backdrop-filter: blur(10px);
-  box-shadow: 0 10px 26px rgba(0,0,0,.06); scroll-snap-align: start;
-  display: flex; align-items: center;
-  transition: transform .25s ease, box-shadow .25s ease, opacity .25s;
+  box-shadow: 0 10px 26px rgba(0,0,0,.06); 
+  scroll-snap-align: start;
+  display: flex; 
+  align-items: center;
+  transition: transform .25s ease, 
+  box-shadow .25s ease, opacity .25s;
 }
 .home-root .rail-card:nth-child(odd){ justify-self: start; }
 .home-root .rail-card:nth-child(even){ justify-self: end; }
@@ -85,5 +118,7 @@
   border-color: #cfeaf1;
 }
 .home-root .rail-card:focus-visible{
-  outline: 3px solid #71c9ce; outline-offset: 2px; border-color: transparent;
+  outline: 3px solid #71c9ce; 
+  outline-offset: 2px; 
+  border-color: transparent;
 }
