@@ -47,3 +47,20 @@
 .login-btn:hover {
   background: #71c9ce;
 }
+@media (max-width: 992px) {
+  .navbar { justify-content: center; }
+  .navbar nav ul { gap: clamp(12px, 4vw, 28px); }
+}
+
+/* ===== Mobile ≤ 640px: đổi sang lưới 2 cột cho gọn ===== */
+@media (max-width: 640px) {
+  .navbar { align-items: stretch; }
+
+ 
+}
+
+/* ===== Rất nhỏ ≤ 380px: 1 cột ===== */
+@media (max-width: 380px) {
+  .navbar nav ul { grid-template-columns: 1fr; }
+
+}

@@ -1,4 +1,6 @@
-* { box-sizing: border-box; }
+* { box-sizing: 
+  border-box;
+font-family: Arial, sans-serif; }
 html, body, #root { height: 100%; }
 body {
   margin: 0;
@@ -13,7 +15,7 @@ body {
 }
 html {
   overflow-x: scroll; 
-  overflow: auto;     
+  overflow-y: auto;     
 } 
  
   

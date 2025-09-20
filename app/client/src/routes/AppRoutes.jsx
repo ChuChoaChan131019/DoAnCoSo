@@ -3,8 +3,9 @@ import Home from "../pages/Home.jsx";
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
 import Introduce from "../pages/Introduce.jsx";
-import Navbar from "../components/Navbar.jsx";
-import Footer from "../components/footer.jsx";
+import Footer from "../components/Footer.jsx";
+import Jobs from "../pages/Jobs.jsx";
+import CV from "../pages/CV.jsx";
 
 export default function AppRoutes() {
   return (
@@ -15,6 +16,8 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/introduce" element={<Introduce />} />
+        <Route path="/jobs" element={<Jobs />} />
+        <Route path="/cv" element={<CV />} />
       </Routes>
       <Footer/>
     </BrowserRouter>

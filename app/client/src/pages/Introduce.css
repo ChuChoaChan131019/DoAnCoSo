@@ -1,72 +1,101 @@
-.intro-root {
+/* page base */
+.intro-root { 
+  padding-top: 96px;
+  background: #ffffff;
   min-height: 100vh;
-  background: #f7fafa;
-  font-family: Arial, sans-serif;
-  padding-top: 150px; 
-  height: auto;
-  overflow: auto;
+  color: #001b30;
+  width: 100%;
+  overflow-y: scroll;
+
+}
+.intro-container {
+  max-width: 1100px;
+  margin: 20px auto 60px;
+  padding: 0 20px;
 }
 
+/* heading */
+.intro-heading { 
+  text-align:center; 
+  margin: 18px 0 10px; 
 
-.title {
-  text-align: center;
+}
+.intro-subtitle {
+  margin-top: 100px;
+  letter-spacing: 0px;
+  font-weight: 700;
+  color: #1e4d63;
+  font-size: 30px;
+}
+.intro-title {
+  margin-top: 4px;
+  font-size: 35px;
+  font-weight: 700;
+  color: #0a2a3a;
+  letter-spacing: 0px;
+
+}
+
+/* skeleton grid */
+.intro-grid {
+  display: grid;
+  grid-template-areas: 
+    "a b c r"
+    "g b e r";
+  grid-template-columns: 1fr 2fr 1.2fr 1fr; /* điều chỉnh độ rộng từng cột */
+  grid-template-rows: 120px 120px;
+  gap: 18px;
   margin: 20px 0;
 }
 
-.title h3 {
-  font-size: 30px;
-  font-weight: bold;
-  color: #001b30;
+/* style chung */
+.intro-card {
+  background: #ddd;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.intro-card::after {
+  content:"";
+  position:absolute; inset:0;
+  transform: translateX(-100%);
+  animation: shimmer 1.6s infinite;
 }
 
-.title h1 {
-  font-size: 35px;
-  font-weight: bold;
-  color: #001b30;
-}
-
-.boxes{
-  display:grid;
-  grid-template-columns: 1fr 1.25fr 1.25fr 1fr;
-  grid-auto-rows: 130px;
-  gap: 10px;
-  max-width: 1000px;
-  margin: 0 auto 24px;
-}
-
-.box{
-  background:#d9d9d9;
+/* từng card map với area */
+.intro-card.a { grid-area: a; }  
+.intro-card.b { grid-area: g; }  
+.intro-card.c { grid-area: b; } 
+.intro-card.d { grid-area: c; } 
+.intro-card.e { grid-area: e; }  
+.intro-card.f { grid-area: r; }  
+.intro-card{
   border-radius:10px;
+  overflow:hidden;
+  background:#ddd;
+  position:relative;
+}
+.intro-card::after{ display:none; } /* đã dùng ảnh thì tắt shimmer */
+.intro-card img{
+  width:100%; height:100%;
+  object-fit:cover; display:block;
 }
 
-/* Đặt vị trí từng ô */
-.b1{ grid-column:1; grid-row:1; }                 
-.b2{ grid-column:1; grid-row:2; }                 
-.b3{ grid-column:2; grid-row:1 / span 2; }        
-.b4{ grid-column:3; grid-row:1; }                 
-.b5{ grid-column:3; grid-row:2; }                 
-.b6{ grid-column:4; grid-row:1 / span 2; }        
+@keyframes shimmer { 100% { transform: translateX(100%); } }
 
-/* Responsive cho màn nhỏ: đổi về 2 cột */
-@media (max-width: 768px){
-  .boxes{
-    grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 120px;
-  }
-  .b1{grid-column:1; grid-row:auto;}
-  .b2{grid-column:1;}
-  .b3{grid-column:2; grid-row:auto / span 2;}
-  .b4{grid-column:1;}
-  .b5{grid-column:1;}
-  .b6{grid-column:2; grid-row:auto / span 2;}
-}
-
-
-/* Đoạn giới thiệu */
-.description {
-   max-width: 900px;
-  margin: 30px auto;
+/* description */
+.intro-text { margin-top: 18px; }
+.intro-text p {
+  line-height: 1.7;
+  color: #3c5563;
   text-align: justify;
-  font-size: 20px;
-  line-height: 1.6;
+}
+
+
+/* responsive */
+@media (max-width: 900px){
+  .intro-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px){
+  .intro-grid { grid-template-columns: 1fr; }
 }
