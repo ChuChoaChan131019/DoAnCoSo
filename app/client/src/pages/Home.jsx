@@ -9,7 +9,7 @@ export default function Home() {
     const rail = railRef.current;
     if (!rail) return;
 
-    let speed = 0.7;
+    let speed = 3;
     let direction = 1;
     let rafId = null;
 
