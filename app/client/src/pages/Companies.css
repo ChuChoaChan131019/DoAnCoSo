@@ -1,0 +1,93 @@
+/* Nền tổng */
+.jobs-root {
+  padding-top: 144px;   /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
+  background: #ffffff;
+  min-height: 100vh;
+  color: #001b30;
+  width: 100%;
+}
+
+body {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* CONTENT WRAPPER */
+.jobs-container {
+  max-width: 1200px;    /* giới hạn chiều rộng tối đa */
+  margin: 0 auto;       /* căn giữa toàn bộ nội dung */
+  padding: 0 24px;      /* lề hai bên */
+}
+
+/* Thanh tìm kiếm */
+.search-container {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;     /* độ rộng tối đa của ô tìm kiếm */
+  margin: 20px auto;    /* căn giữa + khoảng cách trên dưới */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px 12px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.search-icon {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #6b1c1c;   /* màu đỏ nâu giống ảnh */
+}
+
+.search-icon:hover {
+  color: #fff;
+}
+
+/* Lưới các job card */
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 32px; /* tạo khoảng cách dưới thanh search */
+}
+
+/* Mỗi job card */
+.job-card {
+  background: #E3FDFD; /* xanh nhạt */
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Hình placeholder */
+.job-image {
+  height: 100px;
+  background: #71C9CE;
+  border-radius: 10px;
+}
+
+/* Thông tin job (location + job count) */
+.job-info {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  
+}
+
+.badge {
+  border-radius: 10px;
+  border:2px solid #71C9CE;
+  padding: 4px 10px;
+}

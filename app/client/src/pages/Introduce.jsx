@@ -1,6 +1,6 @@
 import React from "react";
 import IntroNavbar from "../components/IntroNavbar";
-import "./introduce.css";
+import "./Introduce.css";
 
 export default function Introduce() {
   return (

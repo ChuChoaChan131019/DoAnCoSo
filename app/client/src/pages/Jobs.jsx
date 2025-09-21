@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import IntroNavbar from "../components/IntroNavbar"; 
-import "./jobs.css";
+import "./Jobs.css";
 
 export default function Jobs() {
   // state bộ lọc

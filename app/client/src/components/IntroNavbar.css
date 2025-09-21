@@ -17,11 +17,8 @@
   align-items: center;
   padding: 20px 50px;
   flex-wrap: wrap;
-
+  height: 130px;
 }
-
-
-
 
 .navbar1 nav ul {
   flex-wrap: wrap;

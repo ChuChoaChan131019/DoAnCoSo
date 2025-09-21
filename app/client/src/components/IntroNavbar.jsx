@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import "./introNavbar.css";
+import "./IntroNavbar.css";
 
 export default function IntroNavbar() {
   return (
@@ -18,7 +18,7 @@ export default function IntroNavbar() {
             <NavLink to="/jobs" className={({ isActive }) => (isActive ? "active-link" : "")} > Jobs </NavLink>
           </li>
          <li>
-            <NavLink to="/company" className={({ isActive }) => (isActive ? "active-link" : "")} > Companies </NavLink>
+            <NavLink to="/companies" className={({ isActive }) => (isActive ? "active-link" : "")} > Companies </NavLink>
           </li>
           <li>
             <NavLink to="/cv" className={({ isActive }) => (isActive ? "active-link" : "")} > CV </NavLink>

@@ -1,19 +1,13 @@
-// connection database
-
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-
-const pool = mysql.createPool({
+const db = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
-  password: process.env.DB_PASS || "",
-  database: process.env.DB_NAME || "mydb",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  password: process.env.DB_PASSWORD || "lak82",
+  database: process.env.DB_DATABASE || "CaiBang",
 });
 
-export default pool;
+export default db;
