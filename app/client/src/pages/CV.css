@@ -16,7 +16,7 @@
 
 .cv-form {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -24,7 +24,7 @@
 
 .form-group {
   display: flex;
-  align-items: center;
+  align-items: flex-start; 
   gap: 12px;
   width: 100%;
 }
@@ -46,6 +46,11 @@
   font-size: 15px;
   background-color: #ffffff;
 }
+.form-group input:not([type="file"]):not(:placeholder-shown) {
+  border-color: #2c5282; /* xanh lá */
+  background-color: #e6f0ff; /* nền xanh nhạt */
+}
+
 
 .upload-group {
   display: flex;
@@ -66,7 +71,6 @@
 .upload-box {
   width: 100%;
   border: 2px dashed #2c5282;
-  border-radius: 8px;
   padding: 30px;
   text-align: center;
   color: #718096;
@@ -77,14 +81,52 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  user-select: none;
+  border-radius: 10px;
+  min-height: 96px;
+}
+.upload-box.has-file {
+  border-style: solid;
 }
 
+.upload-box:focus {
+  outline: 2px solid #4aa3df;
+  outline-offset: 2px;
+}
 .upload-box:hover {
   background-color: #e6f0ff;
 }
 
 .upload-box input[type="file"] {
   display: none;
+}
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #c9d7e1;
+  background: #eef5fa;
+  max-width: 100%;
+}
+.file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 420px;
+}
+.file-remove {
+  border: 0;
+  background: #ffeaee;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 18px;
+  line-height: 24px;
+  cursor: pointer;
+}
+.file-remove:hover {
+  background: #ffd5dc;
 }
 
 .btn-group {

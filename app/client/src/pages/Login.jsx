@@ -35,8 +35,18 @@ export default function Login({ setUser }) {
       console.log("📥 Response:", data);
 
       if (res.ok) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setUser(data.user);
+        // 🔑 Giả sử backend trả về { token, user }
+        const authData = {
+          ...data.user,
+          token: data.token,
+        };
+
+        // Lưu vào localStorage
+        localStorage.setItem("auth", JSON.stringify(authData));
+
+        // Cập nhật state user
+        setUser(authData);
+
         navigate("/"); // chuyển sang trang chính
       } else {
         alert(data.error || "Login failed");
