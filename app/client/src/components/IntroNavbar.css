@@ -75,5 +75,19 @@
 /* ===== Rất nhỏ ≤ 380px: 1 cột ===== */
 @media (max-width: 380px) {
   .navbar1 nav ul { grid-template-columns: 1fr; }
+}
 
+.username-btn {
+  background: #e3fdfd;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #001b30;
+  font-size: 20px;
+  margin-right: 50px;
+}
+.username-btn:hover {
+  background: #71c9ce;
 }

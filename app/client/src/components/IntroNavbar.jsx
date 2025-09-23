@@ -1,13 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "./IntroNavbar.css";
 
-export default function IntroNavbar({user, setUser}) {
+export default function IntroNavbar({ user, setUser }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/"); 
+    navigate("/");
   };
 
   return (
@@ -29,8 +29,9 @@ export default function IntroNavbar({user, setUser}) {
 
       {user ? (
         <div className="user-box">
-          <span>👋 {user.username}</span>
-          <button onClick={handleLogout} className="login-btn">Log out</button>
+          <button onClick={handleLogout} className="username-btn">
+            👤 {user.username}
+          </button>
         </div>
       ) : (
         <NavLink to="/login">

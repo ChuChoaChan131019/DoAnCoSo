@@ -1,10 +1,10 @@
 import "./CV.css";
 import IntroNavbar from "../components/IntroNavbar";
 
-export default function CV() {
+export default function CV({ user, setUser}) {
   return (
     <div className="cv-root">
-      <IntroNavbar />
+      <IntroNavbar user={user} setUser={setUser} />
 
       <div className="cv-container">
         <form className="cv-form">

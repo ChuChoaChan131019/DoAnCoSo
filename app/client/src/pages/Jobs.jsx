@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import IntroNavbar from "../components/IntroNavbar"; 
 import "./Jobs.css";
 
-export default function Jobs() {
+export default function Jobs({ user, setUser }) {
   // state bộ lọc
   const [filters, setFilters] = useState({
     q: "",
@@ -20,7 +20,7 @@ export default function Jobs() {
 
   return (
     <div className="jobs-root">
-      <IntroNavbar />
+      <IntroNavbar user={user} setUser={setUser} />
 
       <main className="jobs-container">
         {/* ô tìm kiếm */}

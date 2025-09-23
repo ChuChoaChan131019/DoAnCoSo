@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Companies.css"; // import file css đã viết
 import IntroNavbar from "../components/IntroNavbar";
 
-export default function Companies() {
+export default function Companies({ user, setUser}) {
   const [search, setSearch] = useState("");
 
   // dữ liệu demo (bạn có thể thay bằng API)
@@ -22,7 +22,7 @@ export default function Companies() {
 
   return (
     <div className="jobs-root">
-      <IntroNavbar />
+      <IntroNavbar user={user} setUser={setUser}/>
       <div className="jobs-container">
         {/* Thanh tìm kiếm */}
         <div className="search-container">

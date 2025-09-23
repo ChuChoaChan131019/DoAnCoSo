@@ -2,10 +2,10 @@ import React from "react";
 import IntroNavbar from "../components/IntroNavbar";
 import "./Introduce.css";
 
-export default function Introduce() {
+export default function Introduce({ user, setUser}) {
   return (
     <div className="intro-root">
-      <IntroNavbar />
+      <IntroNavbar user={user} setUser={setUser} />
 
       <main className="intro-container">
         {/* Title */}
