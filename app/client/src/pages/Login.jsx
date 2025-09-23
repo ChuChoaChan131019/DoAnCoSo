@@ -1,35 +1,49 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
-export default function Login() {
+export default function Login({ setUser }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // ✅ API URL
+  const API = process.env.REACT_APP_API || "http://localhost:5000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      console.log("🔗 API URL:", `${API}/api/auth/login`);
+
+      const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      console.log("📡 Status:", res.status);
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Server did not return JSON");
+      }
+
+      console.log("📥 Response:", data);
 
       if (res.ok) {
-        console.log("✅ Login success:", data);
-        // Nếu cần lưu thông tin người dùng:
-        // localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setUser(data.user);
         navigate("/"); // chuyển sang trang chính
       } else {
         alert(data.error || "Login failed");
       }
     } catch (err) {
       console.error("❌ Error:", err);
-      alert("Something went wrong");
+      alert("Something went wrong: " + err.message);
     }
   };
 

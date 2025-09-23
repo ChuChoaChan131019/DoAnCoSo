@@ -1,7 +1,15 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./IntroNavbar.css";
 
-export default function IntroNavbar() {
+export default function IntroNavbar({user, setUser}) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/"); 
+  };
+
   return (
     <header className="navbar1">
       {/* Logo */}
@@ -11,27 +19,24 @@ export default function IntroNavbar() {
 
       <nav>
         <ul>
-          <li>
-            <NavLink to="/introduce" className={({ isActive }) => (isActive ? "active-link" : "")}> Introduce </NavLink>
-          </li>
-          <li>
-            <NavLink to="/jobs" className={({ isActive }) => (isActive ? "active-link" : "")} > Jobs </NavLink>
-          </li>
-         <li>
-            <NavLink to="/companies" className={({ isActive }) => (isActive ? "active-link" : "")} > Companies </NavLink>
-          </li>
-          <li>
-            <NavLink to="/cv" className={({ isActive }) => (isActive ? "active-link" : "")} > CV </NavLink>
-          </li>
-          <li>
-            <NavLink to="/faq" className={({ isActive }) => (isActive ? "active-link" : "")} > FAQ </NavLink>
-          </li>
+          <li><NavLink to="/introduce">Introduce</NavLink></li>
+          <li><NavLink to="/jobs">Jobs</NavLink></li>
+          <li><NavLink to="/companies">Companies</NavLink></li>
+          <li><NavLink to="/cv">CV</NavLink></li>
+          <li><NavLink to="/faq">FAQ</NavLink></li>
         </ul>
       </nav>
 
-      <NavLink to="/login">
-        <button className="login-btn">Log in</button>
-      </NavLink>
+      {user ? (
+        <div className="user-box">
+          <span>👋 {user.username}</span>
+          <button onClick={handleLogout} className="login-btn">Log out</button>
+        </div>
+      ) : (
+        <NavLink to="/login">
+          <button className="login-btn">Log in</button>
+        </NavLink>
+      )}
     </header>
   );
 }

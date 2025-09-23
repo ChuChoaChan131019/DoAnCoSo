@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import Navbar from "../components/Navbar"; 
 import "./Home.css";
 
-export default function Home() {
+export default function Home({ user, setUser}) {
   const railRef = useRef(null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function Home() {
 
   return (
     <div className="page home-root">
-      <Navbar />
+      <Navbar user={user} setUser={setUser}/>
 
       <div className="container">
         <div className="main-content">

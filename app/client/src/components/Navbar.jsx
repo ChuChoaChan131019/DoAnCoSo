@@ -1,15 +1,21 @@
-import { Link } from "react-router-dom";
-import "./Navbar.css"; // nếu muốn tách CSS riêng
+import { Link, useNavigate } from "react-router-dom";
+import "./Navbar.css";
 
-export default function Navbar() {
+export default function Navbar({ user, setUser }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/"); // trở về trang chủ
+  };
+
   return (
     <header className="navbar">
-      {/* Logo */}
       <Link to="/">
         <img src="/logo.png" alt="Logo" width="250" />
       </Link>
 
-      {/* Menu */}
       <nav>
         <ul>
           <li><Link to="/introduce">Introduce</Link></li>
@@ -20,10 +26,17 @@ export default function Navbar() {
         </ul>
       </nav>
 
-      {/* Login button */}
-      <Link to="/login">
-        <button className="login-btn">Log in</button>
-      </Link>
+      {user ? (
+        <div className="user-box">
+          <button onClick={handleLogout} className="username-btn">
+            👤 {user.username}
+          </button>
+        </div>
+      ) : (
+        <Link to="/login">
+          <button className="login-btn">Log in</button>
+        </Link>
+      )}
     </header>
   );
 }
