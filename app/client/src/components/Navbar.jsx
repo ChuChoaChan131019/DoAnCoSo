@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
+import {use, useState} from "react";
 import "./Navbar.css";
 
 export default function Navbar({ user, setUser }) {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -28,9 +30,15 @@ export default function Navbar({ user, setUser }) {
 
       {user ? (
         <div className="user-box">
-          <button onClick={handleLogout} className="username-btn">
+          <button onClick={()=>setOpen(!open)} className="username-btn">
             👤 {user.username}
           </button>
+          {open && (
+            <div className="dropdown-menu">
+              <Link to="/myapply">My Apply</Link>
+              <button onClick={handleLogout}>Log out</button>
+            </div>
+          )}
         </div>
       ) : (
         <Link to="/login">

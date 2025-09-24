@@ -1,0 +1,56 @@
+/* Nền tổng */
+.jobs-root {
+  padding-top: 164px;   /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
+  background: #ffffff;
+  min-height: 100vh;
+  color: #001b30;
+  width: 100%;
+}
+
+body {
+  background: #fff;
+  margin: 0;
+  padding: 0;
+}
+.suggestions-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.question-box {
+  background-color: #E3FDFD;
+  border: 2px solid #003763;
+  border-radius: 10px;
+  padding: 20px 40px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.5s ease;
+}
+
+.question-box:hover {
+  background-color: #CBF1F5;
+}
+
+.answer-box {
+  background-color: #E3FDFD;
+  border-left: 4px solid #E3FDFD;
+  border-radius: 10px;
+  padding: 20px 40px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.5s ease;
+}
+.suggestions-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #003763;
+  text-align: left;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,8 +1,10 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "./IntroNavbar.css";
 
 export default function IntroNavbar({ user, setUser }) {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -29,9 +31,18 @@ export default function IntroNavbar({ user, setUser }) {
 
       {user ? (
         <div className="user-box">
-          <button onClick={handleLogout} className="username-btn">
+          <button 
+            onClick={() => setOpen(!open)} 
+            className="username-btn"
+          >
             👤 {user.username}
           </button>
+          {open && (
+            <div className="dropdown-menu">
+              <NavLink to="/myapply">My Apply</NavLink>
+              <button onClick={handleLogout}>Logout</button>
+            </div>
+          )}
         </div>
       ) : (
         <NavLink to="/login">

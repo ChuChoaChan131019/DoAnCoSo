@@ -7,6 +7,7 @@ import Footer from "../components/Footer.jsx";
 import Jobs from "../pages/Jobs.jsx";
 import CV from "../pages/CV.jsx";
 import Companies from "../pages/Companies.jsx";
+import FAQ from "../pages/FAQ.jsx";
 
 export default function AppRoutes({ user, setUser }) {
   return (
@@ -26,6 +27,7 @@ export default function AppRoutes({ user, setUser }) {
         <Route path="/jobs" element={<Jobs user={user} setUser={setUser} />} />
         <Route path="/cv" element={<CV user={user} setUser={setUser} />} />
         <Route path="/companies" element={<Companies user={user} setUser={setUser} />} />
+        <Route path="/faq" element={<FAQ user={user} setUser={setUser} />} />
       </Routes>
       <Footer />
     </BrowserRouter>

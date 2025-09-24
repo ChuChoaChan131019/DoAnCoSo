@@ -15,7 +15,7 @@ export default function Home({ user, setUser}) {
 
     const tick = () => {
       rail.scrollTop += speed * direction;
-      if (rail.scrollTop + rail.clientHeight >= rail.scrollHeight) direction = -1;
+      if (rail.scrollTop + rail.clientHeight >= rail.scrollHeight-0.7) direction = -1;
       if (rail.scrollTop <= 0) direction = 1;
       rafId = requestAnimationFrame(tick);
     };
