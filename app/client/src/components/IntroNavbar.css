@@ -98,6 +98,7 @@
 }
 
 .dropdown-menu {
+  width: 200px;
   position: absolute;
   top: 110%; /* hiển thị ngay dưới nút username */
   right: 0;

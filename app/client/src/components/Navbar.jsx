@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link,NavLink, useNavigate } from "react-router-dom";
 import {use, useState} from "react";
 import "./Navbar.css";
 
@@ -29,22 +29,42 @@ export default function Navbar({ user, setUser }) {
       </nav>
 
       {user ? (
-        <div className="user-box">
-          <button onClick={()=>setOpen(!open)} className="username-btn">
-            👤 {user.username}
-          </button>
-          {open && (
-            <div className="dropdown-menu">
-              <Link to="/myapply">My Apply</Link>
-              <button onClick={handleLogout}>Log out</button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <Link to="/login">
-          <button className="login-btn">Log in</button>
-        </Link>
-      )}
+       <div className="user-box">
+         <button 
+           onClick={() => setOpen(!open)} 
+           className="username-btn"
+         >
+           👤 {user.username}
+         </button>
+         {open && (
+           <div className="dropdown-menu">
+             {user.role === "candidate" ? (
+               <>
+                 <NavLink to="/myapply">📝 My Apply</NavLink>
+                 <button onClick={handleLogout}>🔙 Logout</button>
+               </>
+             ) : user.role === "employer" ? (
+               <>
+                 <NavLink to="/myjobs">💼 My Jobs</NavLink>
+                 <NavLink to="/profile">👤 Profile</NavLink>
+                 <NavLink to="/listcandidate">📝 List Candidate</NavLink> 
+                 <NavLink to="/changepassword">🔐 Change Password</NavLink>
+                 <button onClick={handleLogout}>🔙 Logout</button>
+               </>
+             ) : (
+               <>
+                 <p>Unknown role</p>
+                 <button onClick={handleLogout}>Logout</button>
+               </>
+             )}
+           </div>
+         )}
+       </div>
+     ) : (
+       <NavLink to="/login">
+         <button className="login-btn">Log in</button>
+       </NavLink>
+     )}
     </header>
   );
 }

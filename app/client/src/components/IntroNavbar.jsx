@@ -29,26 +29,44 @@ export default function IntroNavbar({ user, setUser }) {
         </ul>
       </nav>
 
-      {user ? (
-        <div className="user-box">
-          <button 
-            onClick={() => setOpen(!open)} 
-            className="username-btn"
-          >
-            👤 {user.username}
-          </button>
-          {open && (
-            <div className="dropdown-menu">
-              <NavLink to="/myapply">My Apply</NavLink>
-              <button onClick={handleLogout}>Logout</button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <NavLink to="/login">
-          <button className="login-btn">Log in</button>
-        </NavLink>
-      )}
+     {user ? (
+  <div className="user-box">
+    <button 
+      onClick={() => setOpen(!open)} 
+      className="username-btn"
+    >
+      👤 {user.username}
+    </button>
+    {open && (
+      <div className="dropdown-menu">
+        {user.role === "candidate" ? (
+          <>
+            <NavLink to="/myapply">📝 My Apply</NavLink>
+                 <button onClick={handleLogout}>🔙 Logout</button>
+               </>
+             ) : user.role === "employer" ? (
+               <>
+                 <NavLink to="/myjobs">💼 My Jobs</NavLink>
+                 <NavLink to="/profile">👤 Profile</NavLink>
+                 <NavLink to="/listcandidate">📝 List Candidate</NavLink> 
+                 <NavLink to="/changepassword">🔐 Change Password</NavLink>
+                 <button onClick={handleLogout}>🔙 Logout</button>
+               </>
+        ) : (
+          <>
+            <p>Unknown role</p>
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        )}
+      </div>
+    )}
+  </div>
+) : (
+  <NavLink to="/login">
+    <button className="login-btn">Log in</button>
+  </NavLink>
+)}
+
     </header>
   );
 }

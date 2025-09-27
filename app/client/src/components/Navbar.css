@@ -85,6 +85,7 @@
 }
 
 .dropdown-menu {
+  width: 200px;
   position: absolute;
   top: 110%; /* ngay dưới nút */
   right: 0;
