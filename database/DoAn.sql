@@ -1,6 +1,9 @@
 create database CaiBang CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+drop database CaiBang;
 use CaiBang;
 
+
+select * from Users;
 create table Users
 (
 	ID_User int AUTO_INCREMENT primary key,
@@ -11,6 +14,8 @@ create table Users
     RoleName enum('employer', 'candidate') not null
 );
 
+select * from Employer;
+
 create table Employer
 (
 	ID_User int not null,
@@ -18,10 +23,14 @@ create table Employer
     Company_Name varchar(500),
     Company_Address varchar(500),
     Company_Email varchar(200) unique,
-    Company_Description varchar(500),
+    Company_Desciption varchar(500),
     Company_Website varchar(500) unique, 
     Foreign key (ID_User) References Users(ID_User)
 );
+ALTER TABLE Employer 
+ADD COLUMN Company_Logo VARCHAR(255) NULL;
+ALTER TABLE Employer ADD Company_Phone VARCHAR(20);
+ALTER TABLE Employer ADD Founded_Date DATE;
 
 create table Candidate
 (
@@ -33,7 +42,7 @@ create table Candidate
     Resume_URL varchar(100),
     Foreign key (ID_User) References Users(ID_User)
 );
-
+ALTER TABLE Candidate MODIFY Resume_URL VARCHAR(255);
 create table Category
 (
 	ID_Category varchar(6) primary key,
@@ -67,5 +76,3 @@ create table Application
     foreign key (ID_Job) references Job(ID_Job),
     foreign key (ID_Candidate) references Candidate(ID_Candidate)
 );
-
-select * from Users;

@@ -1,37 +1,46 @@
+// server/index.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
 import authRoutes from "./routes/authRoutes.js";
 import candidateRoutes from "./routes/candidateRoutes.js";
+import employerRoutes from "./routes/employerRoutes.js"; // NEW
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:3000", // cho phép frontend
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
+// cấu hình CORS cho frontend React
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
-// phục vụ file tĩnh đã upload
-import path from "path";
-import { fileURLToPath } from "url";               // NEW
-const __filename = fileURLToPath(import.meta.url); // NEW
-const __dirname = path.dirname(__filename);        // NEW
+// phục vụ file tĩnh (logo, ảnh upload)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // NEW
 // test backend
 app.get("/health", (req, res) => {
   res.json({ status: "ok", message: "Backend is running" });
 });
 
-// auth routes
+// routes
 app.use("/api/auth", authRoutes);
 app.use("/api/candidate", candidateRoutes);
+app.use("/api/employer", employerRoutes); // NEW
 
+// start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

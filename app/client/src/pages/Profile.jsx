@@ -9,7 +9,29 @@ const init = {
   foundedDate: "",
   email: "",
   describe: "",
+  website: "",
 };
+
+function getToken() {
+  try {
+    // Ưu tiên đọc "auth" (do Login.jsx đang lưu)
+    const rawAuth = localStorage.getItem("auth");
+    if (rawAuth) {
+      const a = JSON.parse(rawAuth);
+      return a?.token || a?.accessToken || null;
+    }
+    // fallback cho các nơi cũ nếu có
+    const rawUser = localStorage.getItem("user");
+    if (rawUser) {
+      const u = JSON.parse(rawUser);
+      return u?.token || u?.accessToken || null;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 
 export default function Profile({ user, setUser }) {
   const [form, setForm] = useState(init);
@@ -18,25 +40,42 @@ export default function Profile({ user, setUser }) {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fileInputRef = useRef(null);
 
-  // Prefill từ user (nếu có)
+  // Prefill từ API /api/employer/me (đúng schema backend)
   useEffect(() => {
-    if (user?.companyProfile) {
-      const { name, phone, location, foundedDate, email, describe, logoUrl } =
-        user.companyProfile;
-      setForm({
-        name: name || "",
-        phone: phone || "",
-        location: location || "",
-        foundedDate: foundedDate ? foundedDate.slice(0, 10) : "",
-        email: email || "",
-        describe: describe || "",
-      });
-      setPreviewUrl(logoUrl || "");
-    }
-  }, [user]);
+    (async () => {
+      try {
+        const token = getToken();
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+        const res = await fetch("http://localhost:5000/api/employer/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        // map từ schema Employer -> form UI
+        setForm({
+          name: data.Company_Name || "",
+          phone: data.Company_Phone || "",
+          location: data.Company_Address || "",
+          foundedDate: data.Founded_Date || "",
+          email: data.Company_Email || "",
+          describe: data.Company_Desciption || "",
+          website: data.Company_Website || "",
+        });
+        if (data.Company_Logo) setPreviewUrl(data.Company_Logo);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -82,32 +121,70 @@ export default function Profile({ user, setUser }) {
     setErrors(er);
     return Object.keys(er).length === 0;
   };
+function normalizeDate(d) {
+  if (!d) return "";
+  // TH1: đã là "YYYY-MM-DD" rồi -> giữ nguyên
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+  // TH2: là chuỗi kiểu "Tue Sep 02 ..." hoặc Date object -> convert
+  const dt = new Date(d);
+  if (isNaN(dt)) return ""; // không hợp lệ -> gửi rỗng
+  return dt.toISOString().slice(0, 10); // "YYYY-MM-DD"
+}
+
+const dateStr = normalizeDate(form.foundedDate);
+
+const fd = new FormData();
+fd.append("Company_Name", form.name.trim());
+fd.append("Company_Phone", form.phone.trim());
+fd.append("Company_Address", form.location.trim());
+fd.append("Founded_Date", dateStr); // <<< dùng format chuẩn
+fd.append("Company_Email", form.email.trim());
+// Em bảo "để nguyên luôn" (đang dùng cột viết sai chính tả):
+fd.append("Company_Desciption", form.describe.trim());
+fd.append("Company_Website", (form.website || "").trim());
+if (logoFile) fd.append("logo", logoFile);
+else if (previewUrl) fd.append("Company_Logo", previewUrl);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
+    const token = getToken();
+    if (!token) {
+      alert("Bạn chưa đăng nhập.");
+      return;
+    }
+
     setSubmitting(true);
     try {
       const fd = new FormData();
-      fd.append("name", form.name.trim());
-      fd.append("phone", form.phone.trim());
-      fd.append("location", form.location.trim());
-      fd.append("foundedDate", form.foundedDate || "");
-      fd.append("email", form.email.trim());
-      fd.append("describe", form.describe.trim());
-      if (logoFile) fd.append("logo", logoFile);
+      // map đúng key backend đang nhận (employerController.upsertMyEmployer)
+      fd.append("Company_Name", form.name.trim());
+      fd.append("Company_Phone", form.phone.trim());
+      fd.append("Company_Address", form.location.trim());
+      fd.append("Founded_Date", form.foundedDate || "");
+      fd.append("Company_Email", form.email.trim());
+      fd.append("Company_Desciption", form.describe.trim());
+      fd.append("Company_Website", form.website.trim());
+      // nếu chưa chọn file mới mà đang có logo cũ -> truyền lại để backend giữ nguyên
+      if (!logoFile && previewUrl) fd.append("Company_Logo", previewUrl);
+      if (logoFile) fd.append("logo", logoFile); // field name = 'logo' đúng route
 
-      // const res = await fetch("/api/company/profile", { method: "POST", body: fd });
-      // const data = await res.json();
-      // if (!res.ok) throw new Error(data?.message || "Lưu thất bại");
+      const res = await fetch("http://localhost:5000/api/employer/me", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
 
-      await new Promise((r) => setTimeout(r, 500)); // giả lập
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Lưu thất bại");
+
       alert("Lưu hồ sơ công ty thành công!");
-      // setUser({ ...user, companyProfile: data });
+      // cập nhật lại preview nếu backend trả về đường dẫn mới
+      if (data.Company_Logo) setPreviewUrl(data.Company_Logo);
     } catch (err) {
       console.error(err);
-      alert("Có lỗi khi lưu. Vui lòng thử lại.");
+      alert(err.message || "Có lỗi khi lưu. Vui lòng thử lại.");
     } finally {
       setSubmitting(false);
     }
@@ -118,6 +195,8 @@ export default function Profile({ user, setUser }) {
     setPreviewUrl("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  if (loading) return <div className="profile-container">Đang tải...</div>;
 
   return (
     <div className="profile-container">
@@ -139,9 +218,9 @@ export default function Profile({ user, setUser }) {
           />
 
           <div
-            className={`dropzone 
-              ${dragging ? "dragging" : ""} 
-              ${logoFile ? "has-file" : ""}`}
+            className={`dropzone ${dragging ? "dragging" : ""} ${
+              logoFile ? "has-file" : ""
+            }`}
             onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => {
               e.preventDefault();
@@ -250,8 +329,20 @@ export default function Profile({ user, setUser }) {
             onChange={handleChange}
             aria-invalid={!!errors.email}
           />
+          {errors.email && <span className="error-text">{errors.email}</span>}
         </div>
-        {errors.email && <span className="error-text">{errors.email}</span>}
+
+        <div className="form-group">
+          <label htmlFor="website">Website:</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            placeholder="https://..."
+            value={form.website}
+            onChange={handleChange}
+          />
+        </div>
 
         <div className="form-group">
           <label htmlFor="describe">Describe:</label>

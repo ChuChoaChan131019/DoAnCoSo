@@ -1,3 +1,4 @@
+// server/middlewares/auth.js
 import jwt from "jsonwebtoken";
 
 export function requireAuth(req, res, next) {
@@ -6,7 +7,6 @@ export function requireAuth(req, res, next) {
   if (!token) return res.status(401).json({ message: "No token" });
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    // payload: { sub: userId, email, role }
     req.user = { id: payload.sub, email: payload.email, role: payload.role };
     next();
   } catch {
