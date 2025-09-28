@@ -1,2 +1,2 @@
 - có trang home, introduce, jobs, cv, login, register, thanh nav, footer
-  
+- có sửa lại db nên nhớ chạy lại (28/9)
