@@ -1,4 +1,5 @@
-// server/controllers/employerController.js
+import fs from "fs/promises";// fs là module có sắn trong Node.js đề làm viêcj với hệ thông tệp(dọc, ghi, xóa, sửa)
+import path from "path";
 import db from "../configs/db.config.js";
 
 /** Lấy userId từ middleware requireAuth (gán vào req.user) */
@@ -40,7 +41,7 @@ export const getMyEmployer = async (req, res) => {
         Company_Name: "",
         Company_Address: "",
         Company_Email: defaultEmail,
-        Company_Desciption: "", // NOTE: theo tên cột hiện có của em (sai chính tả)
+        Company_Description: "", // NOTE: theo tên cột hiện có của em (sai chính tả)
         Company_Website: "",
         Company_Phone: "",
         Founded_Date: "",
@@ -54,7 +55,7 @@ export const getMyEmployer = async (req, res) => {
       Company_Name: r.Company_Name || "",
       Company_Address: r.Company_Address || "",
       Company_Email: r.Company_Email || defaultEmail,
-      Company_Desciption: r.Company_Desciption || "", // NOTE
+      Company_Description: r.Company_Description || "", // NOTE
       Company_Website: r.Company_Website || "",
       Company_Phone: r.Company_Phone || "",
       Founded_Date: r.Founded_Date ? String(r.Founded_Date).slice(0, 10) : "",
@@ -72,7 +73,7 @@ export const getMyEmployer = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Định dạng dữ liệu không hợp lệ (có thể là ngày)." });
-    return res.status(500).json({ message: err.message || "Server error" });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -88,56 +89,59 @@ export const upsertMyEmployer = async (req, res) => {
 
     const b = req.body || {};
 
-    // Map linh hoạt: nhận cả tên “chuẩn” theo DB và tên FE cũ nếu có
+    // Map linh hoạt (bắt tất cả biến thể, kể cả sai chính tả)
     const Company_Name = b.Company_Name ?? b.name ?? null;
     const Company_Phone = b.Company_Phone ?? b.phone ?? null;
     const Company_Address = b.Company_Address ?? b.location ?? null;
     const Company_Email = b.Company_Email ?? b.email ?? null;
     const Company_Website = b.Company_Website ?? b.website ?? null;
-    // NOTE: DB của em hiện đang dùng cột viết sai chính tả "Company_Desciption"
-    const Company_Desciption =
-      b.Company_Desciption ?? b.Company_Description ?? b.describe ?? null;
+    const Company_Description =
+      b.Company_Description ?? // đúng
+      b.Company_Desciption ?? // SAI chính tả – FE của em đang gửi cái này
+      b.describe ??
+      b.description ??
+      b.desc ??
+      null;
 
-    // Chuẩn hoá ngày để tránh "Tue Sep 02" gây ER_TRUNCATED...
-    const Founded_Date = normalizeDate(b.Founded_Date ?? b.foundedDate ?? null);
+    const Founded_Date = normalizeDate(
+      b.Founded_Date ?? b.foundedDate ?? b.founded_date ?? null
+    );
 
-    // Logo: ưu tiên file upload; nếu không upload thì giữ Company_Logo hiện có (nếu FE gửi lại)
     const logoPath = req.file
       ? `/uploads/${req.file.filename}`
       : b.Company_Logo ?? null;
 
-    // Đảm bảo có bản ghi để UPDATE (ID_User phải là UNIQUE/PRIMARY trong bảng Employer)
-    await db.query(
-      "INSERT INTO Employer (ID_User) VALUES (?) ON DUPLICATE KEY UPDATE ID_User=VALUES(ID_User)",
-      [userId]
-    );
+    // Upsert dùng alias, prefix rõ ràng tránh "ambiguous"
+    const sql = `
+  INSERT INTO Employer (
+    ID_User, Company_Name, Company_Address, Company_Email,
+    Company_Description, Company_Website, Company_Phone,
+    Founded_Date, Company_Logo
+  ) VALUES (?,?,?,?,?,?,?,?,?)
+  AS ins
+  ON DUPLICATE KEY UPDATE
+    Company_Name        = ins.Company_Name,
+    Company_Address     = ins.Company_Address,
+    Company_Email       = ins.Company_Email,
+    Company_Description = ins.Company_Description,
+    Company_Website     = ins.Company_Website,
+    Company_Phone       = ins.Company_Phone,
+    Founded_Date        = ins.Founded_Date,
+    Company_Logo        = COALESCE(ins.Company_Logo, Employer.Company_Logo)
+`;
 
-    // Cập nhật
-    await db.query(
-      `UPDATE Employer SET
-        Company_Name=?,
-        Company_Address=?,
-        Company_Email=?,
-        Company_Desciption=?,  -- giữ nguyên chính tả đang có trong DB của em
-        Company_Website=?,
-        Company_Phone=?,
-        Founded_Date=?,
-        Company_Logo=IFNULL(?, Company_Logo)
-       WHERE ID_User=?`,
-      [
-        Company_Name,
-        Company_Address,
-        Company_Email,
-        Company_Desciption,
-        Company_Website,
-        Company_Phone,
-        Founded_Date,
-        logoPath,
-        userId,
-      ]
-    );
+    await db.query(sql, [
+      userId,
+      Company_Name,
+      Company_Address,
+      Company_Email,
+      Company_Description,
+      Company_Website,
+      Company_Phone,
+      Founded_Date,
+      logoPath,
+    ]);
 
-    // Trả lại bản ghi sau cập nhật
     const [after] = await db.query("SELECT * FROM Employer WHERE ID_User=?", [
       userId,
     ]);
@@ -154,6 +158,6 @@ export const upsertMyEmployer = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Định dạng dữ liệu không hợp lệ (có thể là ngày)." });
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: err.message });
   }
 };
