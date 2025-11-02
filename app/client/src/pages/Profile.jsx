@@ -42,6 +42,7 @@ export default function Profile({ user, setUser }) {
   const [form, setForm] = useState(init);
   const [logoFile, setLogoFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [removeLogo, setRemoveLogo] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -158,7 +159,14 @@ export default function Profile({ user, setUser }) {
       fd.append("Company_Description", (form.describe || "").trim());
       fd.append("Company_Website", (form.website || "").trim());
       // chỉ gửi file nếu có ảnh mới
-      if (logoFile) fd.append("logo", logoFile);
+      if (logoFile) {
+        fd.append("logo", logoFile);
+        fd.append("Remove_Logo", "0");
+      } else if (removeLogo) {
+        fd.append("Remove_Logo", "1");
+      } else {
+        fd.append("Remove_Logo", "0");
+      }
 
       const res = await fetch("http://localhost:5000/api/employer/me", {
         method: "POST",
@@ -185,6 +193,7 @@ export default function Profile({ user, setUser }) {
   const clearLogo = () => {
     setLogoFile(null);
     setPreviewUrl("");
+    setRemoveLogo(true); 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 

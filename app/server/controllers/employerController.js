@@ -1,5 +1,5 @@
 import fs from "fs/promises";// fs là module có sắn trong Node.js đề làm viêcj với hệ thông tệp(dọc, ghi, xóa, sửa)
-import path from "path";
+import path from "path";//module để xử lí đường dẫn an toàn
 import db from "../configs/db.config.js";
 
 /** Lấy userId từ middleware requireAuth (gán vào req.user) */
@@ -15,6 +15,14 @@ function normalizeDate(d) {
   const dt = new Date(d);
   if (isNaN(dt)) return null;
   return dt.toISOString().slice(0, 10);
+}
+function safeJoinUploads(relPath) {
+  if (!relPath) return null;
+  const uploadsDir = path.join(process.cwd(), "uploads");
+  const clean = relPath.replace(/^\/?uploads\//, "");
+  const abs = path.join(uploadsDir, clean);
+  if (!abs.startsWith(uploadsDir)) throw new Error("Invalid path");
+  return abs;
 }
 
 /* ===========================================
@@ -89,15 +97,22 @@ export const upsertMyEmployer = async (req, res) => {
 
     const b = req.body || {};
 
-    // Map linh hoạt (bắt tất cả biến thể, kể cả sai chính tả)
+    // 0) Lấy logo cũ
+    const [oldRows] = await db.query(
+      "SELECT Company_Logo FROM Employer WHERE ID_User=?",
+      [userId]
+    );
+    const oldLogo = oldRows?.[0]?.Company_Logo || null;
+
+    // 1) Map field
     const Company_Name = b.Company_Name ?? b.name ?? null;
     const Company_Phone = b.Company_Phone ?? b.phone ?? null;
     const Company_Address = b.Company_Address ?? b.location ?? null;
     const Company_Email = b.Company_Email ?? b.email ?? null;
     const Company_Website = b.Company_Website ?? b.website ?? null;
     const Company_Description =
-      b.Company_Description ?? // đúng
-      b.Company_Desciption ?? // SAI chính tả – FE của em đang gửi cái này
+      b.Company_Description ??
+      b.Company_Desciption ??
       b.describe ??
       b.description ??
       b.desc ??
@@ -107,28 +122,32 @@ export const upsertMyEmployer = async (req, res) => {
       b.Founded_Date ?? b.foundedDate ?? b.founded_date ?? null
     );
 
-    const logoPath = req.file
-      ? `/uploads/${req.file.filename}`
-      : b.Company_Logo ?? null;
+    // 2) Logo mới + cờ xoá
+    const newLogo = req.file ? `/uploads/${req.file.filename}` : null;
+    const removeLogo = b.Remove_Logo === "1" || b.Remove_Logo === "true";
 
-    // Upsert dùng alias, prefix rõ ràng tránh "ambiguous"
+    // 3) Upsert (yêu cầu UNIQUE(ID_User))
     const sql = `
-  INSERT INTO Employer (
-    ID_User, Company_Name, Company_Address, Company_Email,
-    Company_Description, Company_Website, Company_Phone,
-    Founded_Date, Company_Logo
-  ) VALUES (?,?,?,?,?,?,?,?,?)
-  AS ins
-  ON DUPLICATE KEY UPDATE
-    Company_Name        = ins.Company_Name,
-    Company_Address     = ins.Company_Address,
-    Company_Email       = ins.Company_Email,
-    Company_Description = ins.Company_Description,
-    Company_Website     = ins.Company_Website,
-    Company_Phone       = ins.Company_Phone,
-    Founded_Date        = ins.Founded_Date,
-    Company_Logo        = COALESCE(ins.Company_Logo, Employer.Company_Logo)
-`;
+      INSERT INTO Employer (
+        ID_User, Company_Name, Company_Address, Company_Email,
+        Company_Description, Company_Website, Company_Phone,
+        Founded_Date, Company_Logo
+      ) VALUES (?,?,?,?,?,?,?,?,?)
+      AS ins
+      ON DUPLICATE KEY UPDATE
+        Company_Name        = ins.Company_Name,
+        Company_Address     = ins.Company_Address,
+        Company_Email       = ins.Company_Email,
+        Company_Description = ins.Company_Description,
+        Company_Website     = ins.Company_Website,
+        Company_Phone       = ins.Company_Phone,
+        Founded_Date        = ins.Founded_Date,
+        Company_Logo        = CASE
+                                WHEN ? = 1 THEN NULL
+                                WHEN ins.Company_Logo IS NOT NULL THEN ins.Company_Logo
+                                ELSE Employer.Company_Logo
+                              END
+    `;
 
     await db.query(sql, [
       userId,
@@ -139,8 +158,22 @@ export const upsertMyEmployer = async (req, res) => {
       Company_Website,
       Company_Phone,
       Founded_Date,
-      logoPath,
+      newLogo, // value chèn ban đầu
+      removeLogo ? 1 : 0, // param cho CASE
     ]);
+
+    // 4) Dọn file cũ an toàn
+    try {
+      if (
+        (newLogo && oldLogo && newLogo !== oldLogo) ||
+        (removeLogo && oldLogo)
+      ) {
+        const abs = safeJoinUploads(oldLogo);
+        if (abs) await fs.unlink(abs);
+      }
+    } catch (e) {
+      console.warn("[UNLINK LOGO WARN]", e.message);
+    }
 
     const [after] = await db.query("SELECT * FROM Employer WHERE ID_User=?", [
       userId,
