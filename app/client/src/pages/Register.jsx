@@ -1,4 +1,3 @@
-// src/pages/Register.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
@@ -76,6 +75,8 @@ export default function Register() {
 
       if (res.ok) {
         alert("Register success!");
+        // THAY ĐỔI Ở ĐÂY: Reset form để xóa dữ liệu trước khi chuyển hướng
+        e.target.reset();
         navigate("/login");
       } else {
         alert(data.error || "Register failed");
@@ -118,23 +119,85 @@ export default function Register() {
 
           {/* Candidate Form */}
           {isCandidate ? (
-            <form className="register-form" onSubmit={handleSubmit}>
-              <input type="text" name="firstName" placeholder="First Name" required />
-              <input type="text" name="lastName" placeholder="Last Name" required />
-              <input type="email" name="email" placeholder="Email" required />
-              <input type="password" name="password" placeholder="Password" required />
-              <input type="password" name="confirmPassword" placeholder="Confirm password" required />
+            <form
+              key="candidate-form"
+              className="register-form"
+              onSubmit={handleSubmit}
+            >
+              <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                required
+                autocomplete="off"
+              />
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                required
+                autocomplete="off"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+                autocomplete="off"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+                autocomplete="new-password"
+              />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                required
+                autocomplete="new-password"
+              />
               <button type="submit">Register now</button>
               <p>
                 Already have an account? <a href="/login">Login</a>
               </p>
             </form>
           ) : (
-            <form className="register-form" onSubmit={handleSubmit}>
-              <input type="text" name="companyName" placeholder="Company name" required />
-              <input type="email" name="email" placeholder="Email" required />
-              <input type="password" name="password" placeholder="Password" required />
-              <input type="password" name="confirmPassword" placeholder="Confirm password" required />
+            <form
+              key="employer-form"
+              className="register-form"
+              onSubmit={handleSubmit}
+            >
+              <input
+                type="text"
+                name="companyName"
+                placeholder="Company name"
+                required
+                autocomplete="off"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+                autocomplete="off"
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+                autocomplete="new-password"
+              />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                required
+                autocomplete="new-password"
+              />
               <button type="submit">Register now</button>
               <p>
                 Already have an account? <a href="/login">Login</a>

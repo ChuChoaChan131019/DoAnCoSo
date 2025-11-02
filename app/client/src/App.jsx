@@ -8,7 +8,12 @@ export default function App() {
     // đọc user từ localStorage khi app load
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        console.error("⚠️ Error parsing saved user data");
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 

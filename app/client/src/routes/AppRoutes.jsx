@@ -10,6 +10,8 @@ import Companies from "../pages/Companies.jsx";
 import FAQ from "../pages/FAQ.jsx";
 import MyApply from "../pages/MyApply.jsx";
 import Profile from "../pages/Profile.jsx";
+import ForgotPassword from "../pages/ForgotPassword.jsx";
+
 
 export default function AppRoutes({ user, setUser }) {
   return (
@@ -30,8 +32,10 @@ export default function AppRoutes({ user, setUser }) {
         <Route path="/cv" element={<CV user={user} setUser={setUser} />} />
         <Route path="/companies" element={<Companies user={user} setUser={setUser} />} />
         <Route path="/faq" element={<FAQ user={user} setUser={setUser} />} />
-        <Route path="/myapply" element={<MyApply user={user} setUser={setUser} />} />
+        <Route path="/MyApply" element={<MyApply user={user} setUser={setUser} />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        
       </Routes>
       <Footer />
     </BrowserRouter>
