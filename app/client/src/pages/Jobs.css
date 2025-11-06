@@ -1,12 +1,14 @@
 /* nền tổng */
 .jobs-root {
-    padding-top: 96px;
+  padding-top: 96px;
   background: #ffffff;
   min-height: 100vh;
   color: #001b30;
   width: 100%;
 }
-body{background: #fff;}
+body {
+  background: #fff;
+}
 /* CONTENT WRAPPER */
 .jobs-container {
   max-width: 1200px;
@@ -16,7 +18,7 @@ body{background: #fff;}
 
 /* SEARCH */
 .search-wrap {
-    margin-top: 50px;
+  margin-top: 50px;
   position: relative;
   display: flex;
   align-items: center;
@@ -46,9 +48,9 @@ body{background: #fff;}
 
 /* FILTER ROW (combobox) */
 .filter-row {
-    margin-top: 20px;
+  margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 18px;
 }
@@ -59,7 +61,7 @@ body{background: #fff;}
   padding: 8px 10px;
 }
 .filter label {
-    margin-left: 10px;
+  margin-left: 10px;
   display: block;
   font-size: 15px;
   font-weight: 700;
@@ -67,17 +69,17 @@ body{background: #fff;}
   margin-bottom: 4px;
 }
 .filter select {
-    margin-left: 10px;
+  margin-left: 10px;
   width: 100%;
-    border: none;
+  border: none;
   outline: none;
   background: transparent;
   font-size: 14px;
   color: #0c2b3d;
   border-radius: 10;
-   appearance: none;       
-  -moz-appearance: none;  
-  -ms-appearance: none;   
+  appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
 
   background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
@@ -119,18 +121,80 @@ body{background: #fff;}
   );
   animation: shimmer 1.6s infinite;
 }
+/* Bố cục bên trong card */
+.job-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px; /* logo | nội dung | cột phải */
+  gap: 16px;
+  align-items: center;
+  position: relative; /* để .job-side có thể canh dưới-phải nếu cần */
+  min-height: 96px; /* tầm như card cũ, có thể tăng/giảm chút */
+}
+
+/* Logo trái */
+.job-logo img {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+/* Cột nội dung giữa */
+.job-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.job-company {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0b2b3d;
+}
+.job-title {
+  font-size: 16px;
+  color: #243b53;
+}
+.job-salary {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0a7c86; /* xanh nhẹ */
+}
+
+/* Cột phải: địa điểm ở góc phải dưới */
+.job-side {
+  align-self: end; /* đẩy xuống dưới */
+  justify-self: end; /* đẩy sang phải */
+}
+.job-location {
+  font-style: italic;
+  color: #475569;
+  font-size: 14px;
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
   }
 }
 
-
-
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .filter-row {
     grid-template-columns: 1fr 1fr;
+  }
+}
+/* Responsive: khi hẹp, logo trên — nội dung dưới — location xuống hàng phải */
+@media (max-width: 700px) {
+  .job-row {
+    grid-template-columns: 84px 1fr;
+  }
+  .job-side {
+    grid-column: 2 / 3;
+    justify-self: end;
+    margin-top: 6px;
   }
 }
 @media (max-width: 560px) {

@@ -1,6 +1,7 @@
-/* Nền tổng */
-.jobs-root {
-  padding-top: 144px;   /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
+/* ===== NỀN TỔNG ===== */
+.companies-root {
+  padding-top: 144px; /* đẩy nội dung xuống dưới header */
+  padding-bottom: 80px;
   background: #ffffff;
   min-height: 100vh;
   color: #001b30;
@@ -13,19 +14,19 @@ body {
   padding: 0;
 }
 
-/* CONTENT WRAPPER */
-.jobs-container {
-  max-width: 1200px;    /* giới hạn chiều rộng tối đa */
-  margin: 0 auto;       /* căn giữa toàn bộ nội dung */
-  padding: 0 24px;      /* lề hai bên */
+/* ===== KHUNG CHÍNH ===== */
+.companies-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* Thanh tìm kiếm */
+/* ===== THANH TÌM KIẾM ===== */
 .search-container {
   display: flex;
   align-items: center;
-  max-width: 1200px;     /* độ rộng tối đa của ô tìm kiếm */
-  margin: 20px auto;    /* căn giữa + khoảng cách trên dưới */
+  max-width: 1200px;
+  margin: 20px auto;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
@@ -46,48 +47,113 @@ body {
   background: none;
   cursor: pointer;
   font-size: 18px;
-  color: #6b1c1c;   /* màu đỏ nâu giống ảnh */
+  color: #6b1c1c;
 }
 
 .search-icon:hover {
-  color: #fff;
+  color: #c75d5d;
 }
 
-/* Lưới các job card */
-.job-grid {
+/* ===== LƯỚI CÔNG TY ===== */
+.company-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
-  margin-top: 32px; /* tạo khoảng cách dưới thanh search */
+  align-items: stretch;
 }
 
-/* Mỗi job card */
-.job-card {
-  background: #E3FDFD; /* xanh nhạt */
-  border-radius: 10px;
+/* ===== MỖI Ô CÔNG TY ===== */
+.company-card {
+  background: #e3fdfd;
+  border-radius: 12px;
   padding: 16px;
+  height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
 }
 
-/* Hình placeholder */
-.job-image {
-  height: 100px;
-  background: #71C9CE;
-  border-radius: 10px;
+.company-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Thông tin job (location + job count) */
-.job-info {
+/* ===== PHẦN TRÊN: LOGO + TÊN ===== */
+.company-header {
   display: flex;
+  align-items: center;
   gap: 12px;
-  margin-top: 12px;
-  
+  border-bottom: 1px solid #71c9ce;
+  padding-bottom: 6px;
+  height: 120px;
 }
 
-.badge {
-  border-radius: 10px;
-  border:2px solid #71C9CE;
-  padding: 4px 10px;
+.company-card:not(:has(.company-logo)) .company-header {
+  justify-content: center; /* nếu không có ảnh, căn giữa tên */
+}
+
+.company-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: contain;
+  /* background: #71c9ce;
+  flex-shrink: 0; ngăn ảnh bị ép nhỏ khi tên dài */
+}
+
+.company-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #003b5c;
+  flex: 1;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* chỉ hiển thị 2 dòng */
+  -webkit-box-orient: vertical;
+}
+
+/* ===== PHẦN DƯỚI: ĐỊA CHỈ + JOB COUNT ===== */
+.company-footer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.company-address {
+  font-size: 14px;
+  color: #333;
+  flex-grow: 1;
+  margin-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.company-jobs {
+  margin-top: 0px;
+  font-size: 14px;
+  color: #007a7a;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ===== TRẠNG THÁI KHÔNG CÓ KẾT QUẢ ===== */
+.no-result {
+  text-align: center;
+  color: #999;
+  margin-top: 40px;
+}
+
+.company-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+
+.company-list {
+  align-items: start;
 }

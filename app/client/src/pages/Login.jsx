@@ -42,7 +42,7 @@ export default function Login({ setUser }) {
         };
 
         // Lưu vào localStorage
-        localStorage.setItem("auth", JSON.stringify(authData));
+        localStorage.setItem("user", JSON.stringify(authData));
 
         // Cập nhật state user
         setUser(authData);

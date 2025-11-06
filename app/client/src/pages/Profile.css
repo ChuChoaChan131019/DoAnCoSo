@@ -1,3 +1,4 @@
+/* ============ KHUNG TRANG ============ */
 .profile-container {
   margin-top: 200px;
   padding: 20px;
@@ -9,14 +10,13 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Tiêu đề */
 .section-title {
   font-size: 24px;
   margin-bottom: 20px;
   color: #003763;
 }
 
-/* Upload row: label trái – khung phải */
+/* ============ HÀNG UPLOAD ============ */
 .upload-row {
   display: grid;
   grid-template-columns: 180px 1fr;
@@ -32,13 +32,12 @@
   color: #003763;
 }
 
-/* Dropzone */
 .dropzone {
   border: 1px dashed #1b4b72;
   border-radius: 10px;
   background: #f9fcff;
-  height: 30px;
-  padding: 14px 18px;
+  height: 48px;
+  padding: 0 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,33 +56,30 @@
   font-style: italic;
   text-align: center;
 }
-
 .dropzone-note {
   color: #8593a3;
   margin-left: 6px;
 }
 .dropzone.has-file {
-  border-style: solid;    
+  border-style: solid;
   background: #e7f3ff;
 }
 
-/* Preview logo + nút clear */
+/* ============ PREVIEW LOGO ============ */
 .logo-preview {
   position: relative;
   display: inline-block;
   margin: 12px 0 18px;
   text-align: center;
 }
-
 .logo-preview img {
   width: 200px;
   height: 200px;
-  object-fit: contain; /* không méo logo */
+  object-fit: contain;
   border-radius: 10px;
   border: 1px solid #ccc;
   background: #fff;
 }
-
 .clear-btn {
   position: absolute;
   top: -8px;
@@ -96,63 +92,103 @@
   height: 24px;
   font-size: 14px;
   cursor: pointer;
-
-  display: flex;              
+  display: flex;
   align-items: center;
   justify-content: center;
-
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   transition: transform 0.15s ease, background 0.2s ease;
 }
-
 .clear-btn:hover {
   background: #e60000;
   transform: scale(1.1);
 }
 
-
-/* Form group */
+/* ============ FORM ============ */
 .company-form .form-group {
+  display: grid;
+  grid-template-columns: 180px 1fr; /* label trái – input phải */
+  align-items: center;
+  column-gap: 16px;
   margin-bottom: 20px;
 }
 
 .company-form label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 0; /* vì đang dùng grid */
   font-weight: 500;
   color: #003763;
 }
 
-/* Input + textarea (sửa selector bị sai) */
+/* 💥 TẤT CẢ input/textarea/select BẰNG NHAU 100% */
 .company-form input,
-.company-form textarea {
-  width: 85%;
+.company-form textarea,
+.company-form select {
+  width: 100%;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #c9d3e0;
   border-radius: 10px;
-  margin-bottom: 20px;
+  box-sizing: border-box;
+  font-size: 15px;
+  background: #eaf3ff; /* nền xanh nhạt như ảnh */
+  outline: none;
 }
 
+/* Date cũng full chiều ngang */
+.company-form input[type="date"] {
+  width: 100%;
+}
+
+/* Focus đẹp */
+.company-form input:focus,
+.company-form textarea:focus,
+.company-form select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+/* Textarea canh trên cho gọn */
 .company-form textarea {
-  height: 100px;
+  min-height: 100px;
   resize: vertical;
+  align-self: start;
 }
 
-/* Nút lưu */
+/* Lỗi */
+.error-text {
+  color: #d93025;
+  font-size: 13px;
+  grid-column: 2 / 3;
+}
+
+/* ============ NÚT LƯU ============ */
 .save-button {
   width: 150px;
   background-color: #003763;
-  color: #E3FDFD;
+  color: #e3fdfd;
   padding: 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
   display: block;
   margin: 20px auto 0;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.save-button:hover {
+  background-color: #e3fdfd;
+  color: #003763;
 }
 
-.save-button:hover {
-  background-color: #E3FDFD;
-  color: #003763;
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .upload-row,
+  .company-form .form-group {
+    grid-template-columns: 1fr; /* label trên – input dưới */
+  }
+  .error-text {
+    grid-column: auto;
+  }
+  .save-button {
+    width: 100%;
+  }
 }

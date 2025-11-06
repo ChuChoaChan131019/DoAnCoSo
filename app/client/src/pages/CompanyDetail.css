@@ -1,0 +1,196 @@
+/* ===== NỀN TỔNG ===== */
+.company-detail-root {
+  padding-top: 80px; /* Dưới Navbar */
+  min-height: 100vh;
+  background: #f7f9fc;
+}
+
+/* ===== PHẦN HEADER: LOGO, TÊN, SỐ JOB ===== */
+.company-detail-header {
+  position: relative;
+  background-color: #f0f8ff; /* Màu nền nhẹ cho header */
+  padding-bottom: 20px;
+}
+
+.header-background-placeholder {
+    height: 180px; /* Độ cao của phần nền xanh nhạt */
+    background-color: #e3fdfd;
+}
+
+.company-info-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: flex-end; /* Căn logo, tên và số job ở phía dưới */
+  transform: translateY(-50px); /* Dịch chuyển nội dung lên trên phần nền */
+}
+
+.company-logo-container {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.detail-company-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.company-header-text {
+  flex-grow: 1;
+  color: #001b30;
+  margin-top: 70px; /* Đảm bảo tên không bị logo che */
+}
+
+.detail-company-name {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+}
+
+.detail-company-location {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+}
+
+.company-job-count {
+  font-size: 16px;
+  font-weight: 600;
+  color: #007a7a;
+  padding-bottom: 5px;
+  flex-shrink: 0;
+}
+
+
+/* ===== PHẦN NỘI DUNG CHÍNH (GIỚI THIỆU, TUYỂN DỤNG) ===== */
+.company-detail-content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 80px 24px;
+}
+
+.detail-section {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.detail-section h2 {
+  font-size: 24px;
+  color: #003b5c;
+  border-bottom: 2px solid #e3fdfd;
+  padding-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+/* THÔNG TIN CHI TIẾT DẠNG GRID */
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    line-height: 1.6;
+}
+
+.info-item {
+    font-size: 16px;
+    color: #333;
+}
+
+.info-item strong {
+    font-weight: 600;
+    color: #001b30;
+    margin-right: 5px;
+}
+
+/* ===== PHẦN TUYỂN DỤNG ===== */
+.recruitment-section h2 {
+    color: #007a7a;
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.job-card-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #e3fdfd;
+  border-radius: 8px;
+  border-left: 5px solid #007a7a;
+}
+
+.job-main-info {
+    flex-grow: 1;
+}
+
+.job-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #003b5c;
+  margin: 0 0 5px 0;
+}
+
+.job-details-text {
+  font-size: 14px;
+  color: #555;
+  margin: 3px 0;
+}
+
+.job-separator {
+    margin: 0 8px;
+    color: #aaa;
+}
+
+.job-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.apply-button {
+  padding: 10px 15px;
+  background-color: #007a7a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.apply-button:hover {
+  background-color: #005a5a;
+}
+
+.job-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.job-status.opened {
+    background-color: #c0f0f0;
+    color: #007a7a;
+}
+
+.job-status.closed {
+    background-color: #ffcccc;
+    color: #cc0000;
+}

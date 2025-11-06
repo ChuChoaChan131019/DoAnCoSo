@@ -1,6 +1,6 @@
 /* Nền tổng */
 .jobs-root {
-  padding-top: 164px;   /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
+  padding-top: 164px; /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
   background: #ffffff;
   min-height: 100vh;
   color: #001b30;
@@ -13,7 +13,7 @@ body {
   padding: 0;
 }
 .suggestions-container {
-  max-width: 600px;
+  max-width: 1000px;
   margin: 40px auto;
   padding: 20px;
   border-radius: 10px;
@@ -21,7 +21,7 @@ body {
 }
 
 .question-box {
-  background-color: #E3FDFD;
+  background-color: #e3fdfd;
   border: 2px solid #003763;
   border-radius: 10px;
   padding: 20px 40px;
@@ -32,16 +32,20 @@ body {
 }
 
 .question-box:hover {
-  background-color: #CBF1F5;
+  background-color: #cbf1f5;
 }
 
 .answer-box {
-  background-color: #E3FDFD;
-  border-left: 4px solid #E3FDFD;
+  background-color: #e3fdfd;
+  border-left: 4px solid #e3fdfd;
   border-radius: 10px;
   padding: 20px 40px;
   margin-bottom: 16px;
   animation: fadeIn 0.5s ease;
+}
+
+.answer-box p {
+  text-align: justify;
 }
 .suggestions-title {
   font-size: 24px;
@@ -51,6 +55,12 @@ body {
   text-align: left;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

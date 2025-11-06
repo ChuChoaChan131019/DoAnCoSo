@@ -1,29 +1,40 @@
-import React, { useState } from "react";
-import "./Companies.css"; // import file css đã viết
+import React, { use, useEffect, useState } from "react";
+import "./Companies.css";
 import IntroNavbar from "../components/IntroNavbar";
+import { useNavigate } from "react-router-dom";
 
-export default function Companies({ user, setUser}) {
+export default function Companies({ user, setUser }) {
   const [search, setSearch] = useState("");
+  const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // dữ liệu demo (bạn có thể thay bằng API)
-  const jobList = [
-    { id: 1, location: "Hà Nội", count: 12 },
-    { id: 2, location: "TP.HCM", count: 20 },
-    { id: 3, location: "Đà Nẵng", count: 8 },
-    { id: 4, location: "Hải Phòng", count: 5 },
-    { id: 5, location: "Cần Thơ", count: 9 },
-    { id: 6, location: "Nha Trang", count: 7 },
-  ];
-
-  // lọc job theo search
-  const filteredJobs = jobList.filter((job) =>
-    job.location.toLowerCase().includes(search.toLowerCase())
-  );
+  // Gọi API khi search thay đổi
+  useEffect(() => {
+    const timeout = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/companies?search=${encodeURIComponent(
+            search
+          )}`
+        );
+        const data = await res.json();
+        setCompanies(data);
+      } catch (err) {
+        console.error("Lỗi khi load companies:", err);
+      } finally {
+        setLoading(false);
+      }
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [search]);
 
   return (
-    <div className="jobs-root">
-      <IntroNavbar user={user} setUser={setUser}/>
-      <div className="jobs-container">
+    <div className="companies-root">
+      <IntroNavbar user={user} setUser={setUser} />
+
+      <div className="companies-container">
         {/* Thanh tìm kiếm */}
         <div className="search-container">
           <input
@@ -46,17 +57,37 @@ export default function Companies({ user, setUser}) {
           </button>
         </div>
 
-        {/* Lưới job card */}
-        <div className="job-grid">
-          {filteredJobs.map((job) => (
-            <div key={job.id} className="job-card">
-              <div className="job-image"></div>
-              <div className="job-info">
-                <span className="badge">{job.location}</span>
-                <span className="badge">{job.count} việc</span>
+        {/* Lưới công ty */}
+        <div className="company-grid">
+          {companies.length > 0 ? (
+            companies.map((c) => (
+              <div key={c.ID_Employer} className="company-card" onClick={() => navigate(`/companies/${c.ID_Employer}`)}>
+                <div className="company-header">
+                  {c.Company_Logo ? (
+                    <img
+                      src={
+                        c.Company_Logo
+                          ? `http://localhost:5000/uploads/${c.Company_Logo.replace(
+                              /^\/?uploads\//,
+                              ""
+                            )}`
+                          : "/default-logo.png"
+                      }
+                      alt={c.Company_Name}
+                      className="company-logo"
+                    />
+                  ) : null}
+                  <h3 className="company-name">{c.Company_Name}</h3>
+                </div>
+                <div className="company-footer">
+                  <p className="company-address">{c.Company_Address}</p>
+                  <p className="company-jobs">{c.JobCount} việc đang tuyển</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="no-result">Không tìm thấy công ty nào</p>
+          )}
         </div>
       </div>
     </div>

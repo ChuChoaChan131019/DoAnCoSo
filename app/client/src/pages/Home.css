@@ -1,15 +1,20 @@
-
-.home-root, .home-root * {
+.home-root,
+.home-root * {
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
 
 .home-root {
-  background: linear-gradient(to bottom right, #e3fdfd,#cbf1f5,#a6e3e9, #71c9ce);
+  background: linear-gradient(
+    to bottom right,
+    #e3fdfd,
+    #cbf1f5,
+    #a6e3e9,
+    #71c9ce
+  );
   min-height: 100vh;
   width: 100%;
 }
-
 
 /* Main layout */
 .home-root .container {
@@ -23,7 +28,10 @@
   flex-wrap: wrap;
 }
 
-.home-root .main-content { flex: 2; margin-top: 100px; }
+.home-root .main-content {
+  flex: 2;
+  margin-top: 100px;
+}
 
 .home-root .main-content h1 {
   font-size: 55px;
@@ -31,7 +39,7 @@
   margin-bottom: 10px;
   margin-left: 50px;
   color: #001b30;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 .home-root .main-content p {
   margin-bottom: 35px;
@@ -54,80 +62,135 @@
   max-width: 600px;
   width: 100%;
   height: 50px;
-
 }
 .home-root .search-box input {
-  border: none; 
-  outline: none; 
-  flex: 1; 
-  padding: 12px; 
-  background: 
-  transparent; 
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 12px;
+  background: transparent;
   font-size: 19px;
   min-width: 0;
 }
 .home-root .apply-btn {
-  background: #6ecedc; 
-  border: none; 
-  padding: 10px 20px; 
+  background: #6ecedc;
+  border: none;
+  padding: 10px 20px;
   font-weight: bold;
   width: 120px;
   height: 38px;
-  border-radius: 8px; 
-  cursor: pointer; 
+  border-radius: 8px;
+  cursor: pointer;
   margin-right: 6px;
   white-space: nowrap;
 }
 
 /* Side rail */
-.home-root .side-rail { padding-top: 8px; }
+.home-root .side-rail {
+  padding-top: 8px;
+}
 .home-root .rail-scroll {
-  height: 72vh; 
-  overflow-y: auto; 
-  display: grid; 
-  gap: 16px; 
+  height: 72vh;
+  overflow-y: auto;
+  display: grid;
+  gap: 16px;
   width: 500px;
-  scroll-behavior: smooth; 
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-top: 64px; 
+  padding-top: 64px;
   padding-bottom: 64px;
 }
-.home-root .rail-scroll::-webkit-scrollbar { display: none; }
+.home-root .rail-scroll::-webkit-scrollbar {
+  display: none;
+}
 
 .home-root .rail-card {
-  display: block; 
-  text-decoration: none; 
+  display: block;
+  text-decoration: none;
   color: #114261;
-  background: rgba(255,255,255,0.4); 
-  border: none; 
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
   border-radius: 16px;
-  min-height: 200px; 
-  padding: 24px; 
-  font-size: 20px; 
-  font-weight: 700; 
+  min-height: 200px;
+  padding: 24px;
+  font-size: 20px;
+  font-weight: 700;
   width: 86%;
   backdrop-filter: blur(10px);
-  box-shadow: 0 10px 26px rgba(0,0,0,.06); 
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
   scroll-snap-align: start;
-  display: flex; 
+  display: flex;
   align-items: center;
-  transition: transform .25s ease, 
-  box-shadow .25s ease, opacity .25s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s;
 }
-.home-root .rail-card:nth-child(odd){ justify-self: start; }
-.home-root .rail-card:nth-child(even){ justify-self: end; }
+.home-root .rail-card:nth-child(odd) {
+  justify-self: start;
+}
+.home-root .rail-card:nth-child(even) {
+  justify-self: end;
+}
 
-.home-root .rail-card:hover{
-  transform: translateY(-2px) scale(.95);
-  box-shadow: 0 14px 30px rgba(0,0,0,.09);
+.home-root .rail-card:hover {
+  transform: translateY(-2px) scale(0.95);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.09);
   border-color: #cfeaf1;
 }
-.home-root .rail-card:focus-visible{
-  outline: 3px solid #71c9ce; 
-  outline-offset: 2px; 
+.home-root .rail-card:focus-visible {
+  outline: 3px solid #71c9ce;
+  outline-offset: 2px;
   border-color: transparent;
+}
+/* === BỐ CỤC NỘI DUNG BÊN TRONG rail-card (không đổi kích thước card) === */
+.rail-card .home-job-row {
+  display: grid;
+  grid-template-columns: 130px 160px auto; /* logo | nội dung | góc phải */
+  gap: 16px;
+  align-items: center;
+  min-height: 120px;
+}
+
+.rail-card .home-job-logo img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.rail-card .home-job-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0; /* QUAN TRỌNG: cho phép text bị cắt trong grid/flex */
+}
+
+/* Mỗi dòng chỉ 1 hàng, quá dài thì "..." */
+.rail-card .home-job-company,
+.rail-card .home-job-title {
+  width: 100%; /* <--- thêm */
+  min-width: 0;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  position: relative;
+  text-overflow: ellipsis;
+}
+
+.rail-card .home-job-side {
+  align-self: end;
+  justify-self: end;
+}
+
+.rail-card .home-job-location {
+  font-style: italic;
+  color: #475569;
+  font-size: 12px;
+  white-space: nowrap; /* k xuống dòng */
+  margin-left: 10px;
 }
 
 /* Responsive: Tablet ≤ 992px */
@@ -182,7 +245,6 @@
   .search-wrap {
     flex-direction: column;
     border-radius: 8px;
-    
   }
 
   .search-wrap input {

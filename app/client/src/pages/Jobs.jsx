@@ -1,22 +1,108 @@
-import React, { useState } from "react";
-import IntroNavbar from "../components/IntroNavbar"; 
+import React, { useEffect, useMemo, useState } from "react";
+import IntroNavbar from "../components/IntroNavbar";
 import "./Jobs.css";
+import IndustrySelect from "../components/IndustrySelect";
+import LocationSelect from "../components/LocationSelect";
+import ExperienceSelect from "../components/ExperienceSelect";
+import SalarySelect from "../components/SalarySelect";
+
+const API_BASE = "http://localhost:5000";
+
+function toAbsUrl(u) {
+  if (!u) return "";
+  if (/^https?:\/\//i.test(u)) return u; // đã là absolute
+  if (u.startsWith("/")) return `${API_BASE}${u}`; // /uploads/abc.png
+  return `${API_BASE}/uploads/${u}`; // abc.png
+}
+
+function fmtVnd(n) {
+  if (n == null) return "—";
+  const num = Number(n);
+  if (Number.isNaN(num)) return n;
+  return num.toLocaleString("vi-VN") + " ₫";
+}
+function fmtDate(d) {
+  if (!d) return "—";
+  const dt = new Date(d);
+  return Number.isNaN(+dt) ? d : dt.toLocaleDateString("vi-VN");
+}
+function useDebounce(value, ms = 400) {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setV(value), ms);
+    return () => clearTimeout(t);
+  }, [value, ms]);
+  return v;
+}
 
 export default function Jobs({ user, setUser }) {
   // state bộ lọc
   const [filters, setFilters] = useState({
     q: "",
     location: "",
-    salary: "",
-    experience: "",
-    all: "",
-    type: "",
+    salary: "", // Under 10m | 10-15m | 15-20m | 20m+
+    experience: "", // Intern | 0-1 year | 2-3 years | 3+ years
+    categoryId: "", // "000001"...
+    type: "", // (giữ chỗ nếu sau này dùng)
   });
+  const debouncedQ = useDebounce(filters.q);
+
+  // data
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((s) => ({ ...s, [name]: value }));
   };
+
+  // map filter salary -> min/max
+  const salaryRange = useMemo(() => {
+    switch (filters.salary) {
+      case "Under 10m":
+        return { smin: 0, smax: 10_000_000 };
+      case "10-15m":
+        return { smin: 10_000_000, smax: 15_000_000 };
+      case "15-20m":
+        return { smin: 15_000_000, smax: 20_000_000 };
+      case "20m+":
+        return { smin: 20_000_000, smax: null };
+      default:
+        return { smin: null, smax: null };
+    }
+  }, [filters.salary]);
+
+  // gọi API mỗi khi filter đổi
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (debouncedQ) params.set("q", debouncedQ);
+        if (filters.location) params.set("location", filters.location);
+        if (filters.experience) params.set("experience", filters.experience);
+        if (filters.categoryId) params.set("categoryId", filters.categoryId);
+        if (salaryRange.smin != null) params.set("salaryMin", salaryRange.smin);
+        if (salaryRange.smax != null) params.set("salaryMax", salaryRange.smax);
+
+        const res = await fetch(`${API_BASE}/api/jobs?${params.toString()}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.message || "Fetch jobs failed");
+        setJobs(Array.isArray(data.jobs) ? data.jobs : []);
+      } catch (e) {
+        console.error(e);
+        setJobs([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [
+    debouncedQ,
+    filters.location,
+    filters.experience,
+    filters.categoryId,
+    salaryRange,
+  ]);
 
   return (
     <div className="jobs-root">
@@ -47,62 +133,51 @@ export default function Jobs({ user, setUser }) {
         {/* hàng filter */}
         <div className="filter-row">
           <div className="filter">
-            <label>Location</label>
-            <select
-              name="location"
+            <label htmlFor="filterLocation">Location</label>
+            <LocationSelect
+              inputId="filterLocation"
               value={filters.location}
-              onChange={handleChange}
-            >
-              <option value="">All</option>
-              <option>Hà Nội</option>
-              <option>TP.HCM</option>
-              <option>Đà Lạt</option>
-              <option>Đà Nẵng</option>
-            </select>
+              onChange={(v) => setFilters((s) => ({ ...s, location: v }))}
+              placeholder="Địa điểm…"
+              isClearable
+            />
           </div>
 
           <div className="filter">
-            <label>Salary level</label>
-            <select
-              name="salary"
+            <label htmlFor="filterSalary">Salary level</label>
+            <SalarySelect
+              inputId="filterSalary"
               value={filters.salary}
-              onChange={handleChange}
-            >
-              <option value="">All</option>
-              <option>Under 10m</option>
-              <option>10-15m</option>
-              <option>15-20m</option>
-              <option>20m+</option>
-            </select>
+              onChange={(v) => setFilters((s) => ({ ...s, salary: v }))}
+              placeholder="Mức lương…"
+              isClearable
+            />
           </div>
 
           <div className="filter">
-            <label>Experience</label>
-            <select
-              name="experience"
+            <label htmlFor="filterExperience">Experience</label>
+            <ExperienceSelect
+              inputId="filterExperience"
               value={filters.experience}
-              onChange={handleChange}
-            >
-              <option value="">All</option>
-              <option>Intern</option>
-              <option>0-1 year</option>
-              <option>2-3 years</option>
-              <option>3+ years</option>
-            </select>
+              onChange={(v) => setFilters((s) => ({ ...s, experience: v }))}
+              placeholder="Kinh nghiệm..."
+              isClearable
+            />
           </div>
 
           <div className="filter">
-            <label>Categories</label>
-            <select name="all" value={filters.all} onChange={handleChange}>
-              <option value="">All</option>
-              <option>Development</option>
-              <option>Digital</option>
-              <option>Design</option>
-              <option>Logistic</option>
-            </select>
+            <label htmlFor="filterCat">Categories</label>
+            <IndustrySelect
+              inputId="filterCat"
+              value={filters.categoryId}
+              onChange={(id) =>
+                setFilters((s) => ({ ...s, categoryId: id || "" }))
+              }
+              placeholder="Lĩnh vực…"
+              isClearable
+            />
           </div>
-
-          <div className="filter">
+          {/* <div className="filter">
             <label>Type</label>
             <select name="type" value={filters.type} onChange={handleChange}>
               <option value="">All</option>
@@ -111,14 +186,58 @@ export default function Jobs({ user, setUser }) {
               <option>Freelance</option>
               <option>Remote</option>
             </select>
-          </div>
+//bỏ lọc type
+
+          </div> */}
         </div>
 
-        <section className="skeleton-list">
-          <div className="skeleton-card" />
-          <div className="skeleton-card" />
-          <div className="skeleton-card" />
-        </section>
+        {/* list */}
+        {loading ? (
+          <section className="skeleton-list">
+            <div className="skeleton-card" />
+            <div className="skeleton-card" />
+            <div className="skeleton-card" />
+          </section>
+        ) : jobs.length === 0 ? (
+          <p>Không có job nào khớp bộ lọc.</p>
+        ) : (
+          <section className="skeleton-list">
+            {jobs.map((j) => (
+              <article key={j.ID_Job} className="filter">
+                {/* layout bên trong thẻ, không đổi kích thước thẻ */}
+                <div className="job-row">
+                  {/* Logo */}
+                  <div className="job-logo">
+                    <img
+                      src={
+                        j.Company_Logo
+                          ? toAbsUrl(j.Company_Logo)
+                          : "https://via.placeholder.com/84?text=Logo"
+                      }
+                      alt="Company Logo"
+                    />
+                  </div>
+
+                  {/* Nội dung giữa */}
+                  <div className="job-main">
+                    <h3 className="job-company">{j.Company_Name || "—"}</h3>
+                    <div className="job-title">{j.Name_Job}</div>
+                    <div className="job-salary">
+                      Mức lương: {fmtVnd(j.Salary)}
+                    </div>
+                  </div>
+
+                  {/* Góc phải dưới */}
+                  <div className="job-side">
+                    <span className="job-location">
+                      {j.Job_Location || "—"}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </section>
+        )}
       </main>
     </div>
   );
