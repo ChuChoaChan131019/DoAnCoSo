@@ -12,7 +12,7 @@ export default function FAQ({user, setUser}) {
   return (
     <div className="jobs-root">
       <IntroNavbar user={user} setUser={setUser} />
-
+      
       <div className="suggestions-container">
         <h2 className="suggestions-title">Suggestions</h2>
 

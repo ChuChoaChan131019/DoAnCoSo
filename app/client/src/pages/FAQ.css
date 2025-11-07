@@ -1,26 +1,37 @@
 /* Nền tổng */
 .jobs-root {
-  padding-top: 164px;   /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
-  background: #ffffff;
+  background-color: #fff;
+  padding-top: 0px;
   min-height: 100vh;
-  color: #001b30;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cv-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 body {
   background: #fff;
   margin: 0;
   padding: 0;
+  
 }
 .suggestions-container {
-  max-width: 600px;
   margin: 40px auto;
   padding: 20px;
   border-radius: 10px;
+  
   background-color: #ffffff;
 }
 
 .question-box {
+  
+  width: 700px;
   background-color: #E3FDFD;
   border: 2px solid #003763;
   border-radius: 10px;

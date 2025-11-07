@@ -199,13 +199,13 @@ else if (previewUrl) fd.append("Company_Logo", previewUrl);
   if (loading) return <div className="profile-container">Đang tải...</div>;
 
   return (
-    <div className="profile-container">
+    <div className="cv-root">
       <IntroNavbar user={user} setUser={setUser} />
-      <h2 className="section-title">My Profile</h2>
-
-      <form className="company-form" onSubmit={handleSubmit} noValidate>
+      <div className="cv-container">
+        <form className="company-form" onSubmit={handleSubmit} noValidate>
+          <h2 className="section-title">My Profile</h2>
         {/* Upload row */}
-        <div className="form-group upload-row">
+        <div className="form-group ">
           <label htmlFor="logo-upload">Upload Logo/Banner:</label>
 
           <input
@@ -359,7 +359,9 @@ else if (previewUrl) fd.append("Company_Logo", previewUrl);
         <button type="submit" className="save-button" disabled={submitting}>
           {submitting ? "Đang lưu..." : "Lưu"}
         </button>
-      </form>
+        
+        </form>
+      </div>
     </div>
   );
 }

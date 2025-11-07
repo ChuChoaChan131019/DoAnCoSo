@@ -1,29 +1,36 @@
 /* nền tổng */
 .jobs-root {
-    padding-top: 96px;
-  background: #ffffff;
+  background-color: #fff;
+  padding-top: 0px;
   min-height: 100vh;
-  color: #001b30;
-  width: 100%;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 body{background: #fff;}
 /* CONTENT WRAPPER */
 .jobs-container {
-  max-width: 1200px;
-  margin: 20px auto 60px;
-  padding: 0 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 /* SEARCH */
 .search-wrap {
-    margin-top: 50px;
+  width: 1000px;
+  margin-top: 25px;
   position: relative;
   display: flex;
   align-items: center;
   margin-bottom: 14px;
+  flex-direction: column;
+  align-items: center;
 }
 .search-wrap input {
-  width: 100%;
+  width: 1000px;
   padding: 14px 48px 14px 16px;
   border: 1px solid #d9e7ec;
   border-radius: 10px;
@@ -33,6 +40,7 @@ body{background: #fff;}
 }
 .search-wrap .search-icon {
   position: absolute;
+  padding:13px;
   right: 12px;
   background: #fff;
   border: none;
@@ -46,7 +54,8 @@ body{background: #fff;}
 
 /* FILTER ROW (combobox) */
 .filter-row {
-    margin-top: 20px;
+  width: 1000px;
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
@@ -67,9 +76,9 @@ body{background: #fff;}
   margin-bottom: 4px;
 }
 .filter select {
-    margin-left: 10px;
+  margin-left: 10px;
   width: 100%;
-    border: none;
+  border: none;
   outline: none;
   background: transparent;
   font-size: 14px;
@@ -98,6 +107,7 @@ body{background: #fff;}
 .skeleton-list {
   display: grid;
   gap: 18px;
+  width: 1000px;
 }
 .skeleton-card {
   height: 110px;

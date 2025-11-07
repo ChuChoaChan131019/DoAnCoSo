@@ -145,8 +145,8 @@ export default function CV({ user, setUser }) {
                       : ""}
                   </span>
                   <button
-                    type="button"
-                    className="file-remove"
+                    type="reset"
+                    className="btn delete-btn"
                     onClick={(ev) => {
                       ev.stopPropagation();
                       clearFile();

@@ -10,6 +10,9 @@ import Companies from "../pages/Companies.jsx";
 import FAQ from "../pages/FAQ.jsx";
 import MyApply from "../pages/MyApply.jsx";
 import Profile from "../pages/Profile.jsx";
+import MyJobs from "../pages/Myjobs.jsx";
+import ListCandidate from "../pages/ListCandidate.jsx";
+import ChangePassword from "../pages/ChangePassword.jsx";
 
 export default function AppRoutes({ user, setUser }) {
   return (
@@ -32,6 +35,10 @@ export default function AppRoutes({ user, setUser }) {
         <Route path="/faq" element={<FAQ user={user} setUser={setUser} />} />
         <Route path="/myapply" element={<MyApply user={user} setUser={setUser} />} />
         <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
+        <Route path="/myjobs" element={<MyJobs user={user} setUser={setUser} />} />
+        <Route path="/listcandidate" element={<ListCandidate user={user} setUser={setUser} />} />
+        <Route path="/changepassword" element={<ChangePassword user={user} setUser={setUser} />} />
+      
       </Routes>
       <Footer />
     </BrowserRouter>

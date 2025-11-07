@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 100px;
 }
 
 .cv-container {
@@ -93,9 +94,7 @@
   outline: 2px solid #4aa3df;
   outline-offset: 2px;
 }
-.upload-box:hover {
-  background-color: #e6f0ff;
-}
+
 
 .upload-box input[type="file"] {
   display: none;
@@ -118,7 +117,7 @@
 }
 .file-remove {
   border: 0;
-  background: #ffeaee;
+  background: #001b30;
   padding: 0 10px;
   border-radius: 999px;
   font-size: 18px;
@@ -126,7 +125,7 @@
   cursor: pointer;
 }
 .file-remove:hover {
-  background: #ffd5dc;
+  background: #E3FDFD;
 }
 
 .btn-group {
@@ -137,48 +136,45 @@
 }
 
 .btn {
+  box-sizing: border-box;
+  display: inline-flex;
   padding: 12px 32px;
-  border-radius: 8px;
   font-weight: bold;
   font-size: 15px;
   cursor: pointer;
   width: 160px;
+  height: 48px;
   text-align: center;
-  border: 1px solid;
   background-color: transparent;
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
+
+
 .save-btn {
-  background-color: #e6f9ff;
-  color: #1a365d;
-  border-color: #1a365d;
-  height: 48px;
-  width: 200px;
+  background-color: #E3FDFD;
+  color: #001b30;
 }
 
-.save-btn:hover {
-  background-color: #cceeff;
-  color: #0f2747;
-  border-color: #0f2747;
+button.save-btn:hover {
+  background-color: #001b30;
+  color: #E3FDFD;
 }
 
 .delete-btn {
-  background-color: #ffe6e6;
-  color: #e53e3e;
-  border-color: #e53e3e;
+  background-color: #E3FDFD;
+  color: #001b30;
+  height: 48px;
+  width: 160px;
 }
 
 .delete-btn:hover {
-  background-color: #ffcccc;
-  color: #c53030;
-  border-color: #c53030;
+  background-color: #001b30;
+  color: #E3FDFD;
 }
 
 input[type="reset"].btn {
   display: inline-block;
-  height: 48px; /* khớp chiều cao với nút Save */
-  width: 200px; /* khớp chiều rộng với nút Save */
   line-height: normal;
   font-family: inherit;
 }
