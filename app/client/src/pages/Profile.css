@@ -1,22 +1,31 @@
-/* ============ KHUNG TRANG ============ */
-.profile-container {
-  margin-top: 200px;
-  padding: 20px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.cv-root {
+  background-color: #fff;
+  padding-top: 0px;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+.cv-container {
+  width: 1200px;
+  display: flex;
+  padding: 12px;
+  justify-content: center;
+}
+
+/* Tiêu đề */
 .section-title {
-  font-size: 24px;
+  display: block;
+  width: 1200px;
+  text-align: center !important;
+  font-size: 24px!important;
   margin-bottom: 20px;
   color: #003763;
 }
 
-/* ============ HÀNG UPLOAD ============ */
+/* Upload row: label trái – khung phải */
 .upload-row {
   display: grid;
   grid-template-columns: 180px 1fr;
@@ -32,12 +41,14 @@
   color: #003763;
 }
 
+/* Dropzone */
 .dropzone {
+  width: 1178px;
   border: 1px dashed #1b4b72;
   border-radius: 10px;
   background: #f9fcff;
-  height: 48px;
-  padding: 0 18px;
+  height: 46px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,139 +67,78 @@
   font-style: italic;
   text-align: center;
 }
+
 .dropzone-note {
   color: #8593a3;
   margin-left: 6px;
 }
 .dropzone.has-file {
-  border-style: solid;
+  border-style: solid;    
   background: #e7f3ff;
 }
 
-/* ============ PREVIEW LOGO ============ */
+/* Preview logo + nút clear */
 .logo-preview {
   position: relative;
   display: inline-block;
   margin: 12px 0 18px;
   text-align: center;
 }
+
 .logo-preview img {
   width: 200px;
   height: 200px;
-  object-fit: contain;
+  object-fit: contain; /* không méo logo */
   border-radius: 10px;
   border: 1px solid #ccc;
   background: #fff;
 }
-.clear-btn {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #ff4d4d;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.15s ease, background 0.2s ease;
-}
-.clear-btn:hover {
-  background: #e60000;
-  transform: scale(1.1);
-}
 
-/* ============ FORM ============ */
+
+/* Form group */
 .company-form .form-group {
-  display: grid;
-  grid-template-columns: 180px 1fr; /* label trái – input phải */
-  align-items: center;
-  column-gap: 16px;
   margin-bottom: 20px;
+  width: 100%;
+  padding:12px;
 }
 
 .company-form label {
   display: block;
-  margin-bottom: 0; /* vì đang dùng grid */
-  font-weight: 500;
+  margin-bottom: 6px;
+  font-weight: 600;
   color: #003763;
 }
 
-/* 💥 TẤT CẢ input/textarea/select BẰNG NHAU 100% */
 .company-form input,
-.company-form textarea,
-.company-form select {
+.company-form textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #c9d3e0;
+  border: 1px solid #ccc;
   border-radius: 10px;
-  box-sizing: border-box;
-  font-size: 15px;
-  background: #eaf3ff; /* nền xanh nhạt như ảnh */
-  outline: none;
+  margin-bottom: 0px;
 }
 
-/* Date cũng full chiều ngang */
-.company-form input[type="date"] {
-  width: 100%;
-}
-
-/* Focus đẹp */
-.company-form input:focus,
-.company-form textarea:focus,
-.company-form select:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-}
-
-/* Textarea canh trên cho gọn */
 .company-form textarea {
-  min-height: 100px;
+  height: 100px;
   resize: vertical;
-  align-self: start;
 }
 
-/* Lỗi */
-.error-text {
-  color: #d93025;
-  font-size: 13px;
-  grid-column: 2 / 3;
-}
-
-/* ============ NÚT LƯU ============ */
+/* Nút lưu */
 .save-button {
   width: 150px;
-  background-color: #003763;
-  color: #e3fdfd;
+  background-color: #E3FDFD;
+  color: #003763;
   padding: 12px;
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   display: block;
   margin: 20px auto 0;
-  transition: background-color 0.25s ease, color 0.25s ease;
-}
-.save-button:hover {
-  background-color: #e3fdfd;
-  color: #003763;
+  
 }
 
-/* ============ RESPONSIVE ============ */
-@media (max-width: 768px) {
-  .upload-row,
-  .company-form .form-group {
-    grid-template-columns: 1fr; /* label trên – input dưới */
-  }
-  .error-text {
-    grid-column: auto;
-  }
-  .save-button {
-    width: 100%;
-  }
+.save-button:hover {
+  background-color: #003763;
+  color: #E3FDFD;
 }

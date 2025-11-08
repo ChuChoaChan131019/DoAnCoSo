@@ -1,196 +1,342 @@
-/* ===== NỀN TỔNG ===== */
-.company-detail-root {
-  padding-top: 80px; /* Dưới Navbar */
+/* Nền tổng */
+.jobs-root {
+  padding-top: 144px;   /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
+  background: #ffffff;
   min-height: 100vh;
-  background: #f7f9fc;
-}
-
-/* ===== PHẦN HEADER: LOGO, TÊN, SỐ JOB ===== */
-.company-detail-header {
-  position: relative;
-  background-color: #f0f8ff; /* Màu nền nhẹ cho header */
-  padding-bottom: 20px;
-}
-
-.header-background-placeholder {
-    height: 180px; /* Độ cao của phần nền xanh nhạt */
-    background-color: #e3fdfd;
-}
-
-.company-info-bar {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  align-items: flex-end; /* Căn logo, tên và số job ở phía dưới */
-  transform: translateY(-50px); /* Dịch chuyển nội dung lên trên phần nền */
-}
-
-.company-logo-container {
-  background: #ffffff;
-  padding: 8px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-right: 20px;
-  flex-shrink: 0;
-}
-
-.detail-company-logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.company-header-text {
-  flex-grow: 1;
   color: #001b30;
-  margin-top: 70px; /* Đảm bảo tên không bị logo che */
+  width: 1200px;
+  box-sizing: border-box;
 }
 
-.detail-company-name {
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0 0 5px 0;
-}
-
-.detail-company-location {
-  font-size: 16px;
-  color: #555;
+body {
+  background: #fff;
   margin: 0;
+  padding: 0;
 }
 
-.company-job-count {
-  font-size: 16px;
-  font-weight: 600;
-  color: #007a7a;
-  padding-bottom: 5px;
-  flex-shrink: 0;
+/* CONTENT WRAPPER */
+.jobs-container {
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: flex-start;
+ box-sizing: border-box;
+ padding: 0 20px;
 }
 
+/* Banner: khung viền xanh, nền xanh nhạt */
+.company-banner {
+  position: relative;
+  border: 3px solid #71C9CE;
+  border-radius: 4px;
+  margin: 18px 0;
+  overflow: visible;
+  background: transparent;
+  height: 400px;
+  width: 1200px;
+}
 
-/* ===== PHẦN NỘI DUNG CHÍNH (GIỚI THIỆU, TUYỂN DỤNG) ===== */
-.company-detail-content-container {
+/* nền xanh nhạt phía trong banner */
+.company-banner-inner {
+  position: absolute;
+  inset: 0;
+  background-image: url('http://localhost:5000/uploads/job.jpg');
+  height: 400px;
+  border-radius: 2px;
+  height: 100%;
+}
+
+/* thanh trắng nằm ở đáy banner (nổi lên) */
+.company-banner-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  bottom: -40px; /* kéo thanh trắng nổi ra ngoài khung banner */
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.03);
+  gap: 12px;
+}
+
+/* bố cục bên trong thanh trắng */
+.banner-left {
+  width: 96px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* avatar vuông màu trắng */
+.avatar {
+  width: 100px;
+  height: 90px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  border-radius: 4px;
+  margin-left: 6px;
+  position: relative; /* cần để dịch chuyển */
+  top: -30px; /* đẩy lên 10px, bạn chỉnh số này */
+}
+
+/* phần chứa tên + location */
+.banner-center {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12px;
+  gap: 6px;
+  flex: 1;
+}
+
+/* tên công ty */
+.company-name {
+  font-weight: 800;
+  color: #001b30;
+  font-size: 24px;
+  letter-spacing: 0.2px;
+}
+
+/* location nhỏ hơn */
+.company-location {
+  color: #001b30;
+  font-size: 18px;
+}
+
+/* jobs count ở phải */
+.banner-right {
+  min-width: 90px;
+  text-align: right;
+}
+
+.company-jobs {
+  color: #001b30;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* --- Sections --- */
+.section {
+  margin-top: 72px;
+  align-items: stretch; /* cách để bù cho phần banner-bottom nổi ra */
+}
+
+/* tiêu đề section */
+.section-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: #001b30;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+/* Introduce box (khoảng trắng lớn có viền mảnh xanh) */
+.introduce-box {
+  width: 1200px;
+  border: 1px solid #71C9CE;
+  background: #fff;
+  border-radius: 4px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+/* Recruitment list */
+.jobs-list{
+  /* make the job grid responsive and centered */
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px 80px 24px;
+  margin: 0 auto 20px; /* center horizontally */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px; /* reasonable spacing between cards */
+  justify-content: center; /* center small numbers of columns */
+  box-sizing: border-box;
 }
 
-.detail-section {
-  background: #ffffff;
-  padding: 24px;
+/* card nằm giữa trang với max-width; nội dung trong card dàn ngang */
+.job-card {
+  display: flex;
+  width: 100%;
+  margin:0 auto;
+  justify-content: space-between;  /* đẩy trái - phải ra xa nhau */
+  background: #E3FDFD;
+  padding: 16px 20px;
+  border-radius: 10px;
+}
+
+/* bên trái giãn, bên phải không giãn */
+.job-left{
+  flex:1 ;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  text-align:left;
+}
+
+.job-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-meta-type {
+  display: flex;
+  justify-content: space; /* hoặc space-between, center, tùy mục đích */
+  gap: 82px; /* khoảng cách giữa salary và type */
+  align-items: center; /* căn giữa theo chiều dọc */
+}
+
+.job-title, .job-deadline, .job-meta, .job-location, .job-type {
+  text-align:left;
+  font-weight: bold;
+  color:#001b30;
+}
+
+.job-deadline {
+  display: flex;
+  align-items: right;
+  gap: 8px;
+  color: #001b30;
+  font-size: 12px;
+}
+
+/* badge expired */
+.badge {
+  background: #001b30;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* meta text */
+.job-meta {
+  color: #001b30;
+  font-size: 12px;
+}
+
+
+
+/* small meta on right */
+.job-location, .job-type {
+  font-size: 13px;
+  color: #001b30;
+}
+
+/* Apply button (kiểu nhỏ, bo) */
+.apply-btn {
+  background: #71C9CE;
+  color: #001b30;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 6px 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-bottom: 30px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: background 0.15s, transform 0.12s;
+}
+
+.apply-btn:hover {
+  background: #001b30;
+  color: #daf6fb;
+  transform: translateY(-2px);
+}
+
+/* Show more button (giữa) */
+.show-more-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+.show-more:hover{
+  background-color: #001b30;
+  color: #daf6fb;
+  transition: 0.3ms;
+}
+
+.show-more {
+  background: #daf6fb;
+  border: 1px solid #fff;
+  padding: 8px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* ---------- THÔNG TIN CHI TIẾT ---------- */
+.detail-section {
+  margin-top: 72px;
+  width: 1200px;
+  border: 1px solid #71C9CE;
+  border-radius: 4px;
+  background: #fff;
+  padding: 24px 28px;
+  box-sizing: border-box;
 }
 
 .detail-section h2 {
-  font-size: 24px;
-  color: #003b5c;
-  border-bottom: 2px solid #e3fdfd;
-  padding-bottom: 10px;
-  margin-top: 0;
-  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #001b30;
+  margin-bottom: 18px;
+  text-align: left;
+  border-bottom: 2px solid #71C9CE;
+  display: inline-block;
+  padding-bottom: 4px;
 }
 
-/* THÔNG TIN CHI TIẾT DẠNG GRID */
+/* Lưới chia thông tin thành 2 cột */
 .detail-info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-    line-height: 1.6;
+  display: grid;
+  grid-template-columns: 1fr 1fr ;
+  gap: 14px 40px;
+  font-size: 14px;
+  color: #001b30;
 }
 
+/* Mỗi dòng thông tin */
 .info-item {
-    font-size: 16px;
-    color: #333;
+  border-radius: 6px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,0.05);
+  line-height: 1.5;
 }
 
+/* Định dạng phần tiêu đề mạnh */
 .info-item strong {
-    font-weight: 600;
-    color: #001b30;
-    margin-right: 5px;
+  color: #001b30;
+  font-weight: 700;
+  margin-right: 6px;
 }
 
-/* ===== PHẦN TUYỂN DỤNG ===== */
-.recruitment-section h2 {
-    color: #007a7a;
-}
-
-.job-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.job-card-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: #e3fdfd;
-  border-radius: 8px;
-  border-left: 5px solid #007a7a;
-}
-
-.job-main-info {
-    flex-grow: 1;
-}
-
-.job-name {
-  font-size: 18px;
+/* Link Website */
+.info-item a {
+  color: #0077aa;
+  text-decoration: none;
   font-weight: 600;
-  color: #003b5c;
-  margin: 0 0 5px 0;
 }
 
-.job-details-text {
-  font-size: 14px;
-  color: #555;
-  margin: 3px 0;
+.info-item a:hover {
+  text-decoration: underline;
 }
-
-.job-separator {
-    margin: 0 8px;
-    color: #aaa;
-}
-
-.job-action {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.apply-button {
-  padding: 10px 15px;
-  background-color: #007a7a;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.apply-button:hover {
-  background-color: #005a5a;
-}
-
-.job-status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.job-status.opened {
-    background-color: #c0f0f0;
-    color: #007a7a;
-}
-
-.job-status.closed {
-    background-color: #ffcccc;
-    color: #cc0000;
-}
+/* ---------- Responsive ---------- */
+@media (max-width: 820px) {
+  .company-banner {
+    height: 140px;
+  }
+  .company-banner-bottom {
+    bottom: -48px;
+    padding: 12px;
+  }
+  .avatar { width: 64px; height: 64px; }
+  .introduce-box { min-height: 160px; }
+  .job-card .jobs-list{ flex-direction:column; align-items:stretch; gap:12px; }
+  .job-right{ justify-content:flex-start; width:100% }
+} 

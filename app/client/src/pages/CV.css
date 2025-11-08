@@ -16,7 +16,7 @@
 
 .cv-form {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -47,8 +47,8 @@
   background-color: #ffffff;
 }
 .form-group input:not([type="file"]):not(:placeholder-shown) {
-  border-color: #2c5282; /* xanh lá */
-  background-color: #e6f0ff; /* nền xanh nhạt */
+  border-color: #2c5282;
+  background-color: #e6f0ff; 
 }
 
 
@@ -137,6 +137,7 @@
 }
 
 .btn {
+  float: right;
   padding: 12px 32px;
   border-radius: 8px;
   font-weight: bold;

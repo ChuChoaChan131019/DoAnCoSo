@@ -1,55 +1,49 @@
 /* nền tổng */
 .jobs-root {
+  background-color: #fff;
   padding-top: 144px;
-  background: #ffffff;
   min-height: 100vh;
-  color: #001b30;
-  width: 100%;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1200px;
+  margin: 0 auto;
+  
 }
-body {
-  background: #fff;
-}
+body{background: #fff;}
 /* CONTENT WRAPPER */
 .jobs-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px;
+  width: 1200px;
+  display: flex;
+  justify-content: center;
 }
 
 .job-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
-  max-width: 1200px; /* cùng max-width với thanh search */
+  width: 1200px;   /* cùng max-width với thanh search */
   margin: 20px auto 60px; /* căn giữa */
   padding: 0;
+  
 }
 
 .job-card {
-  background: #e3fdfd;
+  background: #E3FDFD; 
   border-radius: 10px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08); /* thêm bóng nhẹ */
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.08); /* thêm bóng nhẹ */
   transition: transform 0.2s ease;
 }
 
 .job-card:hover {
   transform: translateY(-4px); /* hiệu ứng hover nổi lên */
 }
-.job-card--clickable {
-  cursor: pointer;
-  text-align: left;
-  border: 1px solid transparent;
-}
 
-/* Card đang được chọn để chỉnh sửa */
-.job-card.is-selected {
-  outline: 2px solid #0a7c86;
-  border-color: #0a7c86;
-}
 .job-card h3 {
   margin-bottom: 12px;
   font-size: 18px;
@@ -66,68 +60,41 @@ body {
 }
 .job-form .form-group {
   margin-bottom: 20px;
+  width: 1200px;
 }
 
 .job-form label {
   display: block;
   margin-bottom: 6px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: bold;
   color: #003763;
 }
 
-.job-form input {
-  margin-bottom: 20px;
-  width: 90%;
+.job-form input{
+  margin-bottom:20px;
+  width: 1200px;
   font-size: 20px;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
 }
 .form-group input[type="date"] {
-  width: 90%;
+  width: 1200px;
 }
 .job-form input,
 .job-form textarea {
-  width: 90%;
+  width: 100%;              
   font-size: 15px;
   padding: 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
   box-sizing: border-box;
 }
-.job-form select#description {
-  width: 90%;
-}
-/* (MyJobs.css) để select nhìn giống input các ô khác */
-.job-form select#experience {
-  width: 90%;
-  padding: 12px 14px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: #fff;
-  font-size: 14px;
-  outline: none;
-}
-.job-form select#experience:focus {
-  border-color: #001b30;
-}
-.job-form select#status {
-  width: 20%;
-  padding: 12px 14px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background: #fff;
-  font-size: 14px;
-  outline: none;
-}
-.job-form select#status:focus {
-  border-color: #001b30;
-}
-
 .save-btn {
   width: 150px;
-  background-color: #e3fdfd;
-  color: #003763;
+  background-color: #E3FDFD ;
+  color: #003763 ;
   padding: 12px;
   border: none;
   border-radius: 4px;
@@ -139,40 +106,6 @@ body {
 }
 
 .save-btn:hover {
-  background-color: #003763;
-  color: #e3fdfd;
-}
-/* Nút hủy chỉnh sửa (màu xám nhạt) */
-.btn-reset {
-  background: #eef2f6;
-  color: #e53e3e;
-}
-.btn-reset:hover {
-  background: #dde6ee;
-  color: #c53030;
-}
-
-.job-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* tất cả ô nhập đồng kích thước */
-.form-group input,
-.form-group select,
-.form-group textarea {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  line-height: 1.4;
-  box-sizing: border-box;
+  background-color: #003763 ;  
+  color: #E3FDFD;
 }

@@ -1,0 +1,35 @@
+.change-root { 
+  padding-top: 144px;
+  background: #ffffff;
+  min-height: 100vh;
+  color: #001b30;
+  width: 100%;
+  overflow-y: scroll;
+
+}
+.change-container {
+  max-width: 1200px;
+  margin: 20px auto 60px;
+  padding: 0 20px;
+}
+
+.change-text { margin-top: 18px; }
+.change-text p {
+  line-height: 1.7;
+  color: #3c5563;
+  text-align: justify;
+}
+.Description-box {
+  width: 1200px;
+  border: 1px solid #71C9CE;
+  background: #fff;
+  border-radius: 4px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.Description-text{
+  padding: 20px;
+  font-size: 15px;
+  color: #001b30;
+}

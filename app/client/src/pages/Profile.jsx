@@ -15,7 +15,7 @@ const init = {
 function getToken() {
   try {
     // Ưu tiên đọc "auth" (do Login.jsx đang lưu)
-    const rawAuth = localStorage.getItem("user");
+    const rawAuth = localStorage.getItem("auth");
     if (rawAuth) {
       const a = JSON.parse(rawAuth);
       return a?.token || a?.accessToken || null;
@@ -31,18 +31,12 @@ function getToken() {
     return null;
   }
 }
-const API_BASE = "http://localhost:5000";
-function toAbsUrl(u) {
-  if (!u) return "";
-  if (/^https?:\/\//i.test(u)) return u;
-  return `${API_BASE}${u.startsWith("/") ? "" : "/"}${u}`;
-}
+
 
 export default function Profile({ user, setUser }) {
   const [form, setForm] = useState(init);
   const [logoFile, setLogoFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [removeLogo, setRemoveLogo] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -71,10 +65,10 @@ export default function Profile({ user, setUser }) {
           location: data.Company_Address || "",
           foundedDate: data.Founded_Date || "",
           email: data.Company_Email || "",
-          describe: data.Company_Description || "",
+          describe: data.Company_Desciption || "",
           website: data.Company_Website || "",
         });
-        if (data.Company_Logo) setPreviewUrl(toAbsUrl(data.Company_Logo));
+        if (data.Company_Logo) setPreviewUrl(data.Company_Logo);
       } catch (e) {
         console.error(e);
       } finally {
@@ -127,6 +121,29 @@ export default function Profile({ user, setUser }) {
     setErrors(er);
     return Object.keys(er).length === 0;
   };
+function normalizeDate(d) {
+  if (!d) return "";
+  // TH1: đã là "YYYY-MM-DD" rồi -> giữ nguyên
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+  // TH2: là chuỗi kiểu "Tue Sep 02 ..." hoặc Date object -> convert
+  const dt = new Date(d);
+  if (isNaN(dt)) return ""; // không hợp lệ -> gửi rỗng
+  return dt.toISOString().slice(0, 10); // "YYYY-MM-DD"
+}
+
+const dateStr = normalizeDate(form.foundedDate);
+
+const fd = new FormData();
+fd.append("Company_Name", form.name.trim());
+fd.append("Company_Phone", form.phone.trim());
+fd.append("Company_Address", form.location.trim());
+fd.append("Founded_Date", dateStr); // <<< dùng format chuẩn
+fd.append("Company_Email", form.email.trim());
+// Em bảo "để nguyên luôn" (đang dùng cột viết sai chính tả):
+fd.append("Company_Desciption", form.describe.trim());
+fd.append("Company_Website", (form.website || "").trim());
+if (logoFile) fd.append("logo", logoFile);
+else if (previewUrl) fd.append("Company_Logo", previewUrl);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,39 +155,24 @@ export default function Profile({ user, setUser }) {
       return;
     }
 
-    // chuẩn hóa ngày
-    const normalizeDate = (d) => {
-      if (!d) return "";
-      if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
-      const dt = new Date(d);
-      return isNaN(dt) ? "" : dt.toISOString().slice(0, 10);
-    };
-    const dateStr = normalizeDate(form.foundedDate);
-
     setSubmitting(true);
     try {
       const fd = new FormData();
-      fd.append("Company_Name", (form.name || "").trim());
-      fd.append("Company_Phone", (form.phone || "").trim());
-      fd.append("Company_Address", (form.location || "").trim());
-      fd.append("Founded_Date", dateStr);
-      fd.append("Company_Email", (form.email || "").trim());
-      // 🔥 dùng đúng chính tả
-      fd.append("Company_Description", (form.describe || "").trim());
-      fd.append("Company_Website", (form.website || "").trim());
-      // chỉ gửi file nếu có ảnh mới
-      if (logoFile) {
-        fd.append("logo", logoFile);
-        fd.append("Remove_Logo", "0");
-      } else if (removeLogo) {
-        fd.append("Remove_Logo", "1");
-      } else {
-        fd.append("Remove_Logo", "0");
-      }
+      // map đúng key backend đang nhận (employerController.upsertMyEmployer)
+      fd.append("Company_Name", form.name.trim());
+      fd.append("Company_Phone", form.phone.trim());
+      fd.append("Company_Address", form.location.trim());
+      fd.append("Founded_Date", form.foundedDate || "");
+      fd.append("Company_Email", form.email.trim());
+      fd.append("Company_Desciption", form.describe.trim());
+      fd.append("Company_Website", form.website.trim());
+      // nếu chưa chọn file mới mà đang có logo cũ -> truyền lại để backend giữ nguyên
+      if (!logoFile && previewUrl) fd.append("Company_Logo", previewUrl);
+      if (logoFile) fd.append("logo", logoFile); // field name = 'logo' đúng route
 
       const res = await fetch("http://localhost:5000/api/employer/me", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` }, // KHÔNG set Content-Type cho FormData
+        headers: { Authorization: `Bearer ${token}` },
         body: fd,
       });
 
@@ -178,9 +180,8 @@ export default function Profile({ user, setUser }) {
       if (!res.ok) throw new Error(data?.message || "Lưu thất bại");
 
       alert("Lưu hồ sơ công ty thành công!");
-
-      // cập nhật preview bằng URL tuyệt đối
-      if (data.Company_Logo) setPreviewUrl(toAbsUrl(data.Company_Logo));
+      // cập nhật lại preview nếu backend trả về đường dẫn mới
+      if (data.Company_Logo) setPreviewUrl(data.Company_Logo);
     } catch (err) {
       console.error(err);
       alert(err.message || "Có lỗi khi lưu. Vui lòng thử lại.");
@@ -189,24 +190,22 @@ export default function Profile({ user, setUser }) {
     }
   };
 
-
   const clearLogo = () => {
     setLogoFile(null);
     setPreviewUrl("");
-    setRemoveLogo(true); 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   if (loading) return <div className="profile-container">Đang tải...</div>;
 
   return (
-    <div className="profile-container">
+    <div className="cv-root">
       <IntroNavbar user={user} setUser={setUser} />
-      <h2 className="section-title">My Profile</h2>
-
-      <form className="company-form" onSubmit={handleSubmit} noValidate>
+      <div className="cv-container">
+        <form className="company-form" onSubmit={handleSubmit} noValidate>
+          <h2 className="section-title">My Profile</h2>
         {/* Upload row */}
-        <div className="form-group upload-row">
+        <div className="form-group ">
           <label htmlFor="logo-upload">Upload Logo/Banner:</label>
 
           <input
@@ -360,7 +359,9 @@ export default function Profile({ user, setUser }) {
         <button type="submit" className="save-button" disabled={submitting}>
           {submitting ? "Đang lưu..." : "Lưu"}
         </button>
-      </form>
+        
+        </form>
+      </div>
     </div>
   );
 }
