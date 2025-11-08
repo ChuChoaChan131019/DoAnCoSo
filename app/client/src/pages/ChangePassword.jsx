@@ -23,14 +23,13 @@ export default function ChangePassword({ user, setUser }) {
       return;
     }
     alert("✅ Đổi mật khẩu thành công!");
-    
   };
 
   return (
-    <div className="jobs-root">
+    <div className="change-root">
       <IntroNavbar user={user} setUser={setUser} />
 
-      <div className="jobs-container">
+      <div className="change-container">
         <form className="password-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name</label>
@@ -84,3 +83,4 @@ export default function ChangePassword({ user, setUser }) {
     </div>
   );
 }
+

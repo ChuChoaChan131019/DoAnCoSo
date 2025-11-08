@@ -1,28 +1,29 @@
 /* nền tổng */
 .jobs-root {
-  padding-top: 144px;
+    padding-top: 144px;
   background: #ffffff;
   min-height: 100vh;
   color: #001b30;
-  width: 1000px;
+  width: 100%;
 }
 body{background: #fff;}
 /* CONTENT WRAPPER */
 .jobs-container {
+  max-width: 1200px;
   margin: 0 auto;
-  padding-top: 100px;
+  padding: 0 20px;
 }
 /* Thanh tìm kiếm */
 .search-container {
   display: flex;
   align-items: center;
+  max-width: 1200px;     /* độ rộng tối đa của ô tìm kiếm */
   margin: 20px auto;    /* căn giữa + khoảng cách trên dưới */
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
   padding: 6px 12px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-  width: 1000px;
 }
 
 .search-input {

@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes.js";
 import candidateRoutes from "./routes/candidateRoutes.js";
 import employerRoutes from "./routes/employerRoutes.js"; // NEW
+import companyRoutes from "./routes/companyRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
 
 dotenv.config();
 
@@ -39,6 +41,8 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/candidate", candidateRoutes);
 app.use("/api/employer", employerRoutes); // NEW
+app.use("/api/companies", companyRoutes);
+app.use("/api/jobs", jobRoutes);
 
 // start server
 const PORT = process.env.PORT || 5000;

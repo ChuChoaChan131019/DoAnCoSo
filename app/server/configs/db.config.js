@@ -10,4 +10,4 @@ const db = mysql.createPool({
   database: process.env.DB_DATABASE || "CaiBang",
 });
 
-export default db;
+export default db;z

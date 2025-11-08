@@ -42,7 +42,7 @@ export default function Login({ setUser }) {
         };
 
         // Lưu vào localStorage
-        localStorage.setItem("auth", JSON.stringify(authData));
+        localStorage.setItem("user", JSON.stringify(authData));
 
         // Cập nhật state user
         setUser(authData);
@@ -91,7 +91,7 @@ export default function Login({ setUser }) {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <a href="#">Forgot your password?</a>
+            <a href="/forgot-password">Forgot your password?</a>
 
             <button type="submit">Log in</button>
 

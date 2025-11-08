@@ -83,7 +83,9 @@ export const login = async (req, res) => {
     }
 
     // Tìm user theo email
-    const [rows] = await db.query("SELECT * FROM Users WHERE Email = ?", [email]);
+    const [rows] = await db.query("SELECT * FROM Users WHERE Email = ?", [
+      email,
+    ]);
     if (rows.length === 0) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -114,6 +116,40 @@ export const login = async (req, res) => {
     });
   } catch (err) {
     console.error("[LOGIN ERROR]", err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+export const resetPasswordDirect = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    if (!email || !newPassword) {
+      return res
+        .status(400)
+        .json({ error: "Email and new password are required" });
+    }
+
+    // Kiểm tra email tồn tại
+    const [rows] = await db.query("SELECT * FROM Users WHERE Email = ?", [
+      email,
+    ]);
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Email not found" });
+    }
+
+    // Hash mật khẩu mới
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Cập nhật vào DB
+    await db.query("UPDATE Users SET Password = ? WHERE Email = ?", [
+      hashedPassword,
+      email,
+    ]);
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("[RESET PASSWORD ERROR]", err);
     return res.status(500).json({ error: err.message });
   }
 };
