@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+// File: Home.jsx
+import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import "./Home.css";
+// 👈 THÊM DÒNG NÀY ĐỂ SỬ DỤNG CHỨC NĂNG CHUYỂN HƯỚNG
+import { Link, useNavigate } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000";
 const toAbsUrl = (u) => {
@@ -13,6 +16,10 @@ const toAbsUrl = (u) => {
 export default function Home({ user, setUser }) {
   const railRef = useRef(null);
   const [jobs, setJobs] = useState([]);
+  // 👈 THÊM STATE CHO TỪ KHÓA TÌM KIẾM
+  const [keyword, setKeyword] = useState("");
+  // 👈 KHỞI TẠO HOOK CHUYỂN HƯỚNG
+  const navigate = useNavigate();
 
   // hiệu ứng tự cuộn: giữ nguyên
   useEffect(() => {
@@ -51,7 +58,7 @@ export default function Home({ user, setUser }) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/jobs?status=opened&limit=12`);
+        const res = await fetch(`${API_BASE}/api/jobs?status=opened&limit=6`);
         const data = await res.json();
         setJobs(Array.isArray(data?.jobs) ? data.jobs : []);
       } catch (e) {
@@ -60,6 +67,25 @@ export default function Home({ user, setUser }) {
       }
     })();
   }, []);
+
+  // 👈 HÀM XỬ LÝ TÌM KIẾM VÀ CHUYỂN HƯỚNG
+  const handleSearch = () => {
+    const q = keyword.trim();
+    // Chuyển hướng đến /jobs với từ khóa là query param 'q'
+    if (q) {
+      navigate(`/jobs?q=${encodeURIComponent(q)}`);
+    } else {
+      navigate(`/jobs`); 
+    }
+  };
+  
+  // 👈 XỬ LÝ SỰ KIỆN NHẤN ENTER
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
 
   return (
     <div className="page home-root">
@@ -71,8 +97,18 @@ export default function Home({ user, setUser }) {
           <p>find work, build your future.</p>
 
           <div className="search-box">
-            <input type="text" placeholder="Search..." />
-            <button className="apply-btn">APPLY NOW</button>
+            <input
+              type="text"
+              placeholder="Search..."
+              // 👈 CẬP NHẬT GÍA TRỊ VÀ XỬ LÝ THAY ĐỔI
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={handleKeyDown} // 👈 XỬ LÝ NHẤN ENTER
+            />
+            {/* 👈 CẬP NHẬT NÚT THỰC HIỆN CHỨC NĂNG TÌM KIẾM */}
+            <button className="apply-btn" onClick={handleSearch}>
+              SEARCH
+            </button>
           </div>
         </div>
 
@@ -89,10 +125,10 @@ export default function Home({ user, setUser }) {
               </>
             ) : (
               jobs.map((j) => (
-                <a
+                <Link
                   key={j.ID_Job}
                   className="rail-card"
-                  href={`/jobs/${j.ID_Job}`}
+                  to={`/jobs/${j.ID_Job}`}
                 >
                   <div className="home-job-row">
                     <div className="home-job-logo">
@@ -122,7 +158,7 @@ export default function Home({ user, setUser }) {
                       </span>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))
             )}
           </div>

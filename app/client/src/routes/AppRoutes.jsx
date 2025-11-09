@@ -14,6 +14,8 @@ import ForgotPassword from "../pages/ForgotPassword.jsx";
 import CompanyDetail from "../pages/CompanyDetail.jsx";
 import ListCandidate from "../pages/ListCandidate.jsx";
 import MyJobs from "../pages/MyJobs.jsx";
+import ChangePassword from "../pages/ChangePassword.jsx";
+import JobDetail from "../pages/JobDetail.jsx";
 
 export default function AppRoutes({ user, setUser }) {
   return (
@@ -61,6 +63,14 @@ export default function AppRoutes({ user, setUser }) {
         <Route
           path="/myJobs"
           element={<MyJobs user={user} setUser={setUser} />}
+        />
+        <Route
+          path="/changepassword"
+          element={<ChangePassword user={user} setUser={setUser} />}
+        />
+        <Route
+          path="/jobs/:id"
+          element={<JobDetail user={user} setUser={setUser} />}
         />
       </Routes>
       <Footer />

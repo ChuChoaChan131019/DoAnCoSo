@@ -153,3 +153,54 @@ export const resetPasswordDirect = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+export const changePassword = async (req, res) => {
+    const userId = req.user?.id; 
+    
+    if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword || newPassword.length < 6) {
+        return res.status(400).json({ message: "Vui lòng cung cấp đầy đủ mật khẩu." });
+    }
+    
+    // 1. Lấy mật khẩu đã mã hóa (hash) hiện tại từ DB
+    try {
+        const [rows] = await db.query(
+            "SELECT Password FROM Users WHERE ID_User = ?",
+            [userId]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Tài khoản không tồn tại." });
+        }
+
+        const hashedPassword = rows[0].Password;
+
+        // 2. So sánh mật khẩu hiện tại
+        const isPasswordValid = await bcrypt.compare(currentPassword, hashedPassword);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Mật khẩu hiện tại không chính xác." });
+        }
+        
+        // 3. Mã hóa mật khẩu mới
+        const salt = await bcrypt.genSalt(10);
+        const newHashedPassword = await bcrypt.hash(newPassword, salt);
+        
+        // 4. Cập nhật mật khẩu mới vào DB
+        await db.query(
+            "UPDATE Users SET Password = ? WHERE ID_User = ?",
+            [newHashedPassword, userId]
+        );
+
+        return res.status(200).json({ message: "Đổi mật khẩu thành công." });
+
+    } catch (err) {
+        console.error("[CHANGE PASSWORD ERROR]", err);
+        return res.status(500).json({ message: "Lỗi máy chủ trong quá trình đổi mật khẩu." });
+    }
+};

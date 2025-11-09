@@ -1,3 +1,5 @@
+// File: Jobs.jsx (ĐÃ CHỈNH SỬA)
+
 import React, { useEffect, useMemo, useState } from "react";
 import IntroNavbar from "../components/IntroNavbar";
 import "./Jobs.css";
@@ -5,28 +7,34 @@ import IndustrySelect from "../components/IndustrySelect";
 import LocationSelect from "../components/LocationSelect";
 import ExperienceSelect from "../components/ExperienceSelect";
 import SalarySelect from "../components/SalarySelect";
+// ✅ Import Link để tạo liên kết bấm được
+import { Link, useSearchParams } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000";
 
 function toAbsUrl(u) {
+  // ... (hàm giữ nguyên)
   if (!u) return "";
-  if (/^https?:\/\//i.test(u)) return u; // đã là absolute
-  if (u.startsWith("/")) return `${API_BASE}${u}`; // /uploads/abc.png
-  return `${API_BASE}/uploads/${u}`; // abc.png
+  if (/^https?:\/\//i.test(u)) return u;
+  if (u.startsWith("/")) return `${API_BASE}${u}`;
+  return `${API_BASE}/uploads/${u}`;
 }
 
 function fmtVnd(n) {
+  // ... (hàm giữ nguyên)
   if (n == null) return "—";
   const num = Number(n);
   if (Number.isNaN(num)) return n;
   return num.toLocaleString("vi-VN") + " ₫";
 }
 function fmtDate(d) {
+  // ... (hàm giữ nguyên)
   if (!d) return "—";
   const dt = new Date(d);
   return Number.isNaN(+dt) ? d : dt.toLocaleDateString("vi-VN");
 }
 function useDebounce(value, ms = 400) {
+  // ... (hàm giữ nguyên)
   const [v, setV] = useState(value);
   useEffect(() => {
     const t = setTimeout(() => setV(value), ms);
@@ -36,18 +44,19 @@ function useDebounce(value, ms = 400) {
 }
 
 export default function Jobs({ user, setUser }) {
-  // state bộ lọc
+  const [searchParams] = useSearchParams();
+  const initialQ = searchParams.get("q") || "";
+
   const [filters, setFilters] = useState({
-    q: "",
+    q: initialQ,
     location: "",
-    salary: "", // Under 10m | 10-15m | 15-20m | 20m+
-    experience: "", // Intern | 0-1 year | 2-3 years | 3+ years
-    categoryId: "", // "000001"...
-    type: "", // (giữ chỗ nếu sau này dùng)
+    salary: "",
+    experience: "",
+    categoryId: "",
+    type: "",
   });
   const debouncedQ = useDebounce(filters.q);
 
-  // data
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +65,6 @@ export default function Jobs({ user, setUser }) {
     setFilters((s) => ({ ...s, [name]: value }));
   };
 
-  // map filter salary -> min/max
   const salaryRange = useMemo(() => {
     switch (filters.salary) {
       case "Under 10m":
@@ -72,7 +80,6 @@ export default function Jobs({ user, setUser }) {
     }
   }, [filters.salary]);
 
-  // gọi API mỗi khi filter đổi
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -132,6 +139,7 @@ export default function Jobs({ user, setUser }) {
 
         {/* hàng filter */}
         <div className="filter-row">
+          {/* ... (phần filter giữ nguyên) */}
           <div className="filter">
             <label htmlFor="filterLocation">Location</label>
             <LocationSelect
@@ -177,18 +185,6 @@ export default function Jobs({ user, setUser }) {
               isClearable
             />
           </div>
-          {/* <div className="filter">
-            <label>Type</label>
-            <select name="type" value={filters.type} onChange={handleChange}>
-              <option value="">All</option>
-              <option>Full-time</option>
-              <option>Part-time</option>
-              <option>Freelance</option>
-              <option>Remote</option>
-            </select>
-//bỏ lọc type
-
-          </div> */}
         </div>
 
         {/* list */}
@@ -203,38 +199,48 @@ export default function Jobs({ user, setUser }) {
         ) : (
           <section className="skeleton-list">
             {jobs.map((j) => (
-              <article key={j.ID_Job} className="filter">
-                {/* layout bên trong thẻ, không đổi kích thước thẻ */}
-                <div className="job-row">
-                  {/* Logo */}
-                  <div className="job-logo">
-                    <img
-                      src={
-                        j.Company_Logo
-                          ? toAbsUrl(j.Company_Logo)
-                          : "https://via.placeholder.com/84?text=Logo"
-                      }
-                      alt="Company Logo"
-                    />
-                  </div>
+              // ✅ BỌC TOÀN BỘ CÔNG VIỆC TRONG LINK
+              <Link
+                key={j.ID_Job}
+                to={`/jobs/${j.ID_Job}`}
+                className="job-card-link" // Thêm class để dễ style
+                style={{ textDecoration: "none", color: "inherit" }} // Xóa style mặc định của Link
+              >
+                <article className="filter">
+                  {" "}
+                  {/* Giữ lại article để áp dụng style filter cũ */}
+                  {/* layout bên trong thẻ, không đổi kích thước thẻ */}
+                  <div className="job-row">
+                    {/* Logo */}
+                    <div className="job-logo">
+                      <img
+                        src={
+                          j.Company_Logo
+                            ? toAbsUrl(j.Company_Logo)
+                            : "https://via.placeholder.com/84?text=Logo"
+                        }
+                        alt="Company Logo"
+                      />
+                    </div>
 
-                  {/* Nội dung giữa */}
-                  <div className="job-main">
-                    <h3 className="job-company">{j.Company_Name || "—"}</h3>
-                    <div className="job-title">{j.Name_Job}</div>
-                    <div className="job-salary">
-                      Mức lương: {fmtVnd(j.Salary)}
+                    {/* Nội dung giữa */}
+                    <div className="job-main">
+                      <h3 className="job-company">{j.Company_Name || "—"}</h3>
+                      <div className="job-title">{j.Name_Job}</div>
+                      <div className="job-salary">
+                        Mức lương: {fmtVnd(j.Salary)}
+                      </div>
+                    </div>
+
+                    {/* Góc phải dưới */}
+                    <div className="job-side">
+                      <span className="job-location">
+                        {j.Job_Location || "—"}
+                      </span>
                     </div>
                   </div>
-
-                  {/* Góc phải dưới */}
-                  <div className="job-side">
-                    <span className="job-location">
-                      {j.Job_Location || "—"}
-                    </span>
-                  </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             ))}
           </section>
         )}

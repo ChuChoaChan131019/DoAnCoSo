@@ -39,7 +39,7 @@ app.get("/health", (req, res) => {
 
 // routes
 app.use("/api/auth", authRoutes);
-app.use("/api/candidate", candidateRoutes);
+app.use("/api/candidates", candidateRoutes);
 app.use("/api/employer", employerRoutes); // NEW
 app.use("/api/companies", companyRoutes);
 app.use("/api/jobs", jobRoutes);

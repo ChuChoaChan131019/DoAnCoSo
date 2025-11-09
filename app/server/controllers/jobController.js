@@ -379,3 +379,41 @@ export const listAllJobs = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+// LẤY CHI TIẾT 1 JOB THEO ID
+export const getJobById = async (req, res) => {
+  try {
+    const { id } = req.params; // ID_Job (varchar(6))
+    if (!id) return res.status(400).json({ message: "Missing job id" });
+
+    const sql = `
+      SELECT
+        j.ID_Job, j.Name_Job, j.Job_Description, j.Job_Location, j.Experience,
+        j.Salary, j.ID_Category, j.Start_Date, j.End_Date, j.Job_Status,j.ID_Employer,
+        c.Name_Category,
+        e.Company_Name, e.Company_Logo
+      FROM Job j
+      JOIN Category c ON c.ID_Category = j.ID_Category
+      JOIN Employer e  ON e.ID_Employer = j.ID_Employer
+      WHERE j.ID_Job = ?
+      LIMIT 1
+    `;
+    const [rows] = await db.query(sql, [id]);
+    if (!rows.length) return res.status(404).json({ message: "Job not found" });
+
+    // Chuẩn hoá đường dẫn logo
+    const r = rows[0];
+    let logo = r.Company_Logo || null;
+    if (logo) {
+      logo = logo.replace(/\\/g, "/");
+      if (!/^https?:\/\//i.test(logo)) {
+        logo = logo.startsWith("/") ? logo : `/uploads/${logo}`;
+      }
+    }
+    return res.json({ job: { ...r, Company_Logo: logo } });
+  } catch (err) {
+    console.error("getJobById error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

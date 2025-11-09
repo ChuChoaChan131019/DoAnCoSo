@@ -58,3 +58,42 @@ export async function upsertCandidateProfile(req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 }
+
+export async function getAllCandidates(req, res) {
+  try {
+    // Chỉ employer mới được xem
+    if (!req.user?.id || req.user.role !== "employer") {
+      return res.status(403).json({ message: "Employer only" });
+    }
+
+    const sql = `
+      SELECT 
+        C.ID_Candidate,
+        C.FullName,
+        C.Address,
+        C.Phonenumber,
+        C.Resume_URL,
+        U.Email,
+        U.DateCreate
+      FROM Candidate C
+      JOIN Users U ON C.ID_User = U.ID_User
+      ORDER BY U.DateCreate DESC
+    `;
+    const [rows] = await pool.execute(sql);
+
+    // Chuẩn hoá link CV (nếu có)
+    const normalized = rows.map((r) => ({
+      ...r,
+      Resume_URL: r.Resume_URL
+        ? (r.Resume_URL.startsWith("/uploads/")
+            ? r.Resume_URL
+            : `/uploads/${r.Resume_URL}`)
+        : null,
+    }));
+
+    return res.json({ candidates: normalized });
+  } catch (err) {
+    console.error("[GET ALL CANDIDATES]", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
