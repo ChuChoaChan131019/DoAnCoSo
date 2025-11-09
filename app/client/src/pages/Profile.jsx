@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./Profile.css";
+import "./CV.css";
 import IntroNavbar from "../components/IntroNavbar";
 
 const init = {
@@ -197,17 +197,16 @@ export default function Profile({ user, setUser }) {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  if (loading) return <div className="profile-container">Đang tải...</div>;
+  if (loading) return <div className="cv-root">Đang tải...</div>;
 
   return (
-    <div className="profile-container">
+    <div className="cv-root">
+    <div className="cv-container">
       <IntroNavbar user={user} setUser={setUser} />
-      <h2 className="section-title">My Profile</h2>
-
-      <form className="company-form" onSubmit={handleSubmit} noValidate>
+      <form className="form-group" onSubmit={handleSubmit} noValidate>
         {/* Upload row */}
         <div className="form-group upload-row">
-          <label htmlFor="logo-upload">Upload Logo/Banner:</label>
+          <label htmlFor="form-group">Upload Logo/Banner:</label>
 
           <input
             ref={fileInputRef}
@@ -348,6 +347,7 @@ export default function Profile({ user, setUser }) {
         <div className="form-group">
           <label htmlFor="describe">Describe:</label>
           <textarea
+            className="description-textarea"
             id="describe"
             name="describe"
             placeholder="Company Description"
@@ -356,11 +356,13 @@ export default function Profile({ user, setUser }) {
             onChange={handleChange}
           />
         </div>
-
-        <button type="submit" className="save-button" disabled={submitting}>
+        <div className="btn-group">
+        <button type="submit" className="save-btn" disabled={submitting}>
           {submitting ? "Đang lưu..." : "Lưu"}
         </button>
+        </div>
       </form>
+    </div>
     </div>
   );
 }

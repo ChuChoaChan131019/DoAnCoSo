@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./MyJobs.css";
+import "./CV.css";
 import IntroNavbar from "../components/IntroNavbar";
 import IndustrySelect from "../components/IndustrySelect";
 import ExperienceSelect from "../components/ExperienceSelect";
@@ -241,11 +241,11 @@ export default function MyJobs({ user, setUser }) {
       <IntroNavbar user={user} setUser={setUser} />
 
       {/* Danh sách job */}
-      <div className="job-list">
+      <div className="myjob-list">
         {loadingJobs ? (
-          <div className="job-card">Đang tải danh sách job…</div>
+          <div className="myjob-card">Đang tải danh sách job…</div>
         ) : jobs.length === 0 ? (
-          <div className="job-card">
+          <div className="myjob-card">
             Chưa có job nào. Tạo job mới ở bên dưới nhé.
           </div>
         ) : (
@@ -253,7 +253,7 @@ export default function MyJobs({ user, setUser }) {
             <button
               key={j.ID_Job}
               type="button"
-              className={`job-card job-card--clickable ${
+              className={`myjob-card myjob-card--clickable ${
                 selectedJobId === j.ID_Job ? "is-selected" : ""
               }`}
               onClick={() => pickJobToEdit(j)}
@@ -261,24 +261,24 @@ export default function MyJobs({ user, setUser }) {
             >
               <h3>{j.Name_Job || "Tên công việc"}</h3>
 
-              <div className="job-info">
+              <div className="myjob-info">
                 <p>Registration date</p>
                 <p>
                   {fmtDate(j.Start_Date)} → {fmtDate(j.End_Date)}
                 </p>
               </div>
 
-              <div className="job-info">
+              <div className="myjob-info">
                 <p>Location</p>
                 <p>{j.Job_Location || "—"}</p>
               </div>
 
-              <div className="job-info">
+              <div className="myjob-info">
                 <p>Salary level</p>
                 <p>{fmtVnd(j.Salary)} ₫</p>
               </div>
 
-              <div className="job-info">
+              <div className="myjob-info">
                 <p>Type</p>
                 <p>{catLabel(j.ID_Category)}</p>
               </div>
@@ -288,8 +288,8 @@ export default function MyJobs({ user, setUser }) {
       </div>
 
       {/* Form nhập / chỉnh sửa */}
-      <div className="jobs-container" ref={formRef}>
-        <form className="job-form" onSubmit={handleSubmit} noValidate>
+      <div className="myjob-container" ref={formRef}>
+        <form className="cv-form" onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="title">Job Title:</label>
             <input
@@ -307,6 +307,7 @@ export default function MyJobs({ user, setUser }) {
           <div className="form-group">
             <label htmlFor="categoryId">Type:</label>
             <IndustrySelect
+              className="industry-select"
               value={form.categoryId}
               onChange={handleCategoryChange}
               placeholder="Chọn lĩnh vực"
@@ -351,6 +352,7 @@ export default function MyJobs({ user, setUser }) {
           <div className="form-group">
             <label htmlFor="experience">Experience:</label>
             <ExperienceSelect
+              className="industry-select"
               value={form.experience}
               onChange={(v) => setForm((f) => ({ ...f, experience: v }))}
               inputId="experience"
@@ -360,6 +362,7 @@ export default function MyJobs({ user, setUser }) {
           <div className="form-group">
             <label htmlFor="location">Location:</label>
             <LocationSelect
+              className="industry-select"
               value={form.location}
               onChange={(v) => setForm((f) => ({ ...f, location: v }))}
               inputId="location"
@@ -384,6 +387,7 @@ export default function MyJobs({ user, setUser }) {
           <div className="form-group">
             <label htmlFor="description">Job Description:</label>
             <textarea
+              className="description-textarea"
               id="description"
               name="description"
               placeholder="Mô tả công việc"
@@ -407,8 +411,8 @@ export default function MyJobs({ user, setUser }) {
             </select>
           </div>
 
-          <div style={{ display: "flex", gap: 12 }}>
-            <button type="submit" className="save-button" disabled={submitting}>
+          <div className="btn-group">
+            <button type="submit" className=" save-btn" disabled={submitting}>
               {selectedJobId
                 ? submitting
                   ? "Đang lưu sửa..."
@@ -420,7 +424,7 @@ export default function MyJobs({ user, setUser }) {
 
             {selectedJobId && (
               <button
-                type="button"
+                type="submit"
                 className="save-button btn-reset"
                 onClick={() => {
                   setForm(init);

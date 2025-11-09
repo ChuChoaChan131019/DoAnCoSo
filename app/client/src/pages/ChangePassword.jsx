@@ -93,7 +93,6 @@ export default function ChangePassword({ user, setUser }) {
                 type="text"
                 id="name"
                 value={form.name}
-                // Tắt chỉnh sửa nếu đã có user, đảm bảo tính nhất quán của tên/email
                 disabled={!!user}
                 onChange={handleChange}
                 required
