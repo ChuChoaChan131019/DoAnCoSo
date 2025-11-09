@@ -51,7 +51,7 @@ export default function Home({ user, setUser }) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/jobs?status=opened&limit=12`);
+        const res = await fetch(`${API_BASE}/api/jobs?status=opened&limit=6`);
         const data = await res.json();
         setJobs(Array.isArray(data?.jobs) ? data.jobs : []);
       } catch (e) {

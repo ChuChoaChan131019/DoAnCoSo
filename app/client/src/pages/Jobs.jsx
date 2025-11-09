@@ -5,6 +5,7 @@ import IndustrySelect from "../components/IndustrySelect";
 import LocationSelect from "../components/LocationSelect";
 import ExperienceSelect from "../components/ExperienceSelect";
 import SalarySelect from "../components/SalarySelect";
+import { Link } from 'react-router-dom';
 
 const API_BASE = "http://localhost:5000";
 
@@ -203,38 +204,40 @@ export default function Jobs({ user, setUser }) {
         ) : (
           <section className="skeleton-list">
             {jobs.map((j) => (
-              <article key={j.ID_Job} className="filter">
-                {/* layout bên trong thẻ, không đổi kích thước thẻ */}
-                <div className="job-row">
-                  {/* Logo */}
-                  <div className="job-logo">
-                    <img
-                      src={
-                        j.Company_Logo
-                          ? toAbsUrl(j.Company_Logo)
-                          : "https://via.placeholder.com/84?text=Logo"
-                      }
-                      alt="Company Logo"
-                    />
-                  </div>
+              <Link
+                key={j.ID_Job}
+                to={`/jobs/${j.ID_Job}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <article className="filter">
+                  <div className="job-row">
+                    <div className="job-logo">
+                      <img
+                        src={
+                          j.Company_Logo
+                            ? toAbsUrl(j.Company_Logo)
+                            : "https://via.placeholder.com/84?text=Logo"
+                        }
+                        alt="Company Logo"
+                      />
+                    </div>
 
-                  {/* Nội dung giữa */}
-                  <div className="job-main">
-                    <h3 className="job-company">{j.Company_Name || "—"}</h3>
-                    <div className="job-title">{j.Name_Job}</div>
-                    <div className="job-salary">
-                      Mức lương: {fmtVnd(j.Salary)}
+                    <div className="job-main">
+                      <h3 className="job-company">{j.Company_Name || "—"}</h3>
+                      <div className="job-title">{j.Name_Job}</div>
+                      <div className="job-salary">
+                        Mức lương: {fmtVnd(j.Salary)}
+                      </div>
+                    </div>
+
+                    <div className="job-side">
+                      <span className="job-location">
+                        {j.Job_Location || "—"}
+                      </span>
                     </div>
                   </div>
-
-                  {/* Góc phải dưới */}
-                  <div className="job-side">
-                    <span className="job-location">
-                      {j.Job_Location || "—"}
-                    </span>
-                  </div>
-                </div>
-              </article>
+                </article>
+              </Link>
             ))}
           </section>
         )}
