@@ -21,17 +21,13 @@ export default function AppRoutes({ user, setUser }) {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Truyền cả user và setUser để Home có thể đưa xuống Navbar */}
         <Route path="/" element={<Home user={user} setUser={setUser} />} />
         <Route
           path="/home"
           element={<Home user={user} setUser={setUser} />}
         />{" "}
-        {/* alias */}
-        {/* Login chỉ cần setUser */}
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register />} />
-        {/* Các page khác nếu có Navbar/IntroNavbar thì cũng cần user, setUser */}
         <Route
           path="/introduce"
           element={<Introduce user={user} setUser={setUser} />}

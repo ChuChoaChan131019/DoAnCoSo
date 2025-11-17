@@ -57,7 +57,6 @@ export default function Companies({ user, setUser }) {
           </button>
         </div>
 
-        {/* Lưới công ty */}
         <div className="company-grid">
           {companies.length > 0 ? (
             companies.map((c) => (

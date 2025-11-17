@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 function signToken(user) {
-  // payload tối giản: sub = user id
   return jwt.sign(
     { sub: user.ID_User, email: user.Email, role: user.RoleName },
     process.env.JWT_SECRET,
@@ -21,13 +20,11 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Check email trùng
     const [existing] = await db.query("SELECT 1 FROM Users WHERE Email = ?", [email]);
     if (existing.length > 0) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
-    // Thêm user
     const [result] = await db.query(
       "INSERT INTO Users (UserName, Password, Email, RoleName) VALUES (?, ?, ?, ?)",
       [username, hashedPassword, email, role]
@@ -35,7 +32,6 @@ export const register = async (req, res) => {
 
     const userId = result.insertId;
 
-    // Nếu là Candidate → thêm Candidate
     if (role === "candidate") {
       const candidateId = "C" + String(userId).padStart(5, "0");
       await db.query(
@@ -44,7 +40,6 @@ export const register = async (req, res) => {
       );
     }
 
-    // Nếu là Employer → thêm Employer
     if (role === "employer") {
       const employerId = "E" + String(userId).padStart(5, "0");
       await db.query(
@@ -103,7 +98,7 @@ export const login = async (req, res) => {
     }
     const token = signToken(user);
 
-    // Trả về token + user (ẩn password)
+    // Trả về token + user 
     return res.status(200).json({
       message: "Login success",
       token,
@@ -167,7 +162,7 @@ export const changePassword = async (req, res) => {
         return res.status(400).json({ message: "Vui lòng cung cấp đầy đủ mật khẩu." });
     }
     
-    // 1. Lấy mật khẩu đã mã hóa (hash) hiện tại từ DB
+    // Lấy mật khẩu đã mã hóa hiện tại từ DB
     try {
         const [rows] = await db.query(
             "SELECT Password FROM Users WHERE ID_User = ?",
@@ -180,18 +175,18 @@ export const changePassword = async (req, res) => {
 
         const hashedPassword = rows[0].Password;
 
-        // 2. So sánh mật khẩu hiện tại
+        // So sánh mật khẩu hiện tại
         const isPasswordValid = await bcrypt.compare(currentPassword, hashedPassword);
 
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Mật khẩu hiện tại không chính xác." });
         }
         
-        // 3. Mã hóa mật khẩu mới
+        // Mã hóa mật khẩu mới
         const salt = await bcrypt.genSalt(10);
         const newHashedPassword = await bcrypt.hash(newPassword, salt);
         
-        // 4. Cập nhật mật khẩu mới vào DB
+        // Cập nhật mật khẩu mới vào DB
         await db.query(
             "UPDATE Users SET Password = ? WHERE ID_User = ?",
             [newHashedPassword, userId]

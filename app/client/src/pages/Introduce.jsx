@@ -8,13 +8,11 @@ export default function Introduce({ user, setUser}) {
       <IntroNavbar user={user} setUser={setUser} />
 
       <main className="intro-container">
-        {/* Title */}
         <div className="intro-heading">
           <p className="intro-subtitle">TRANG THÔNG TIN TÌM KIẾM VIỆC LÀM</p>
           <h1 className="intro-title">OiJobOii!</h1>
         </div>
 
-        {/* Skeleton grid */}
         <section className="intro-grid">
           <div className="intro-card a" ><img src="1.jpg" alt="Job 1" /> </div>
           <div className="intro-card b" ><img src="2.jpg" alt="Job 2" /> </div>
@@ -24,7 +22,6 @@ export default function Introduce({ user, setUser}) {
           <div className="intro-card f" ><img src="6.jpg" alt="Job 6" /> </div>
         </section>
 
-        {/* Description */}
         <section className="intro-text">
           <p>
             Trong bối cảnh thị trường lao động chuyển biến không ngừng, nhu cầu tìm

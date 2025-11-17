@@ -7,13 +7,11 @@ import IndustrySelect from "../components/IndustrySelect";
 import LocationSelect from "../components/LocationSelect";
 import ExperienceSelect from "../components/ExperienceSelect";
 import SalarySelect from "../components/SalarySelect";
-// ✅ Import Link để tạo liên kết bấm được
 import { Link, useSearchParams } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000";
 
 function toAbsUrl(u) {
-  // ... (hàm giữ nguyên)
   if (!u) return "";
   if (/^https?:\/\//i.test(u)) return u;
   if (u.startsWith("/")) return `${API_BASE}${u}`;
@@ -21,20 +19,17 @@ function toAbsUrl(u) {
 }
 
 function fmtVnd(n) {
-  // ... (hàm giữ nguyên)
   if (n == null) return "—";
   const num = Number(n);
   if (Number.isNaN(num)) return n;
   return num.toLocaleString("vi-VN") + " ₫";
 }
 function fmtDate(d) {
-  // ... (hàm giữ nguyên)
   if (!d) return "—";
   const dt = new Date(d);
   return Number.isNaN(+dt) ? d : dt.toLocaleDateString("vi-VN");
 }
 function useDebounce(value, ms = 400) {
-  // ... (hàm giữ nguyên)
   const [v, setV] = useState(value);
   useEffect(() => {
     const t = setTimeout(() => setV(value), ms);
@@ -116,7 +111,6 @@ export default function Jobs({ user, setUser }) {
       <IntroNavbar user={user} setUser={setUser} />
 
       <main className="jobs-container">
-        {/* ô tìm kiếm */}
         <div className="search-wrap">
           <input
             name="q"
@@ -137,9 +131,7 @@ export default function Jobs({ user, setUser }) {
           </button>
         </div>
 
-        {/* hàng filter */}
         <div className="filter-row">
-          {/* ... (phần filter giữ nguyên) */}
           <div className="filter">
             <label htmlFor="filterLocation">Location</label>
             <LocationSelect
@@ -187,7 +179,6 @@ export default function Jobs({ user, setUser }) {
           </div>
         </div>
 
-        {/* list */}
         {loading ? (
           <section className="skeleton-list">
             <div className="skeleton-card" />
@@ -199,7 +190,6 @@ export default function Jobs({ user, setUser }) {
         ) : (
           <section className="skeleton-list">
             {jobs.map((j) => (
-              // ✅ BỌC TOÀN BỘ CÔNG VIỆC TRONG LINK
               <Link
                 key={j.ID_Job}
                 to={`/jobs/${j.ID_Job}`}
@@ -207,11 +197,7 @@ export default function Jobs({ user, setUser }) {
                 style={{ textDecoration: "none", color: "inherit" }} // Xóa style mặc định của Link
               >
                 <article className="filter">
-                  {" "}
-                  {/* Giữ lại article để áp dụng style filter cũ */}
-                  {/* layout bên trong thẻ, không đổi kích thước thẻ */}
                   <div className="job-row">
-                    {/* Logo */}
                     <div className="job-logo">
                       <img
                         src={
@@ -223,7 +209,6 @@ export default function Jobs({ user, setUser }) {
                       />
                     </div>
 
-                    {/* Nội dung giữa */}
                     <div className="job-main">
                       <h3 className="job-company">{j.Company_Name || "—"}</h3>
                       <div className="job-title">{j.Name_Job}</div>
@@ -232,7 +217,6 @@ export default function Jobs({ user, setUser }) {
                       </div>
                     </div>
 
-                    {/* Góc phải dưới */}
                     <div className="job-side">
                       <span className="job-location">
                         {j.Job_Location || "—"}

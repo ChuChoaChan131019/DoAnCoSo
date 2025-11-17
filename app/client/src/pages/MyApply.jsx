@@ -7,7 +7,6 @@ import IntroNavbar from "../components/IntroNavbar";
 
 const API_BASE = "http://localhost:5000";
 
-// --- Hàm tiện ích (tương tự như JobDetail.jsx) ---
 function toAbsUrl(u) {
   if (!u) return "";
   if (u.startsWith("/")) return `${API_BASE}${u}`;
@@ -24,7 +23,6 @@ function fmtDate(d) {
   const dt = new Date(d);
   return Number.isNaN(+dt) ? d : dt.toLocaleDateString("vi-VN");
 }
-// ----------------------------------------------------
 
 export default function MyApply({ user, setUser }) {
   const [search, setSearch] = useState("");
@@ -33,7 +31,6 @@ export default function MyApply({ user, setUser }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // 1. Fetch danh sách ứng tuyển
   useEffect(() => {
     if (!user) {
       // Nếu chưa đăng nhập, chuyển hướng người dùng
@@ -41,7 +38,7 @@ export default function MyApply({ user, setUser }) {
       return;
     }
 
-    // Chỉ cho ứng viên fetch data
+    // Chỉ cho ứng viên 
     if (user.role !== "candidate") {
       setError("Chức năng này chỉ dành cho Ứng viên.");
       setLoading(false);
@@ -75,7 +72,6 @@ export default function MyApply({ user, setUser }) {
     return () => clearTimeout(timeout);
   }, [user]);
 
-  // Logic filter/search trên Client
   const filteredApplications = applications.filter((app) => {
     const lowerSearch = search.toLowerCase();
     return (
@@ -85,7 +81,6 @@ export default function MyApply({ user, setUser }) {
     );
   });
 
-  // Xử lý trạng thái đăng nhập/vai trò
   if (!user) {
     return (
       <div className="jobs-root">
@@ -117,7 +112,6 @@ export default function MyApply({ user, setUser }) {
     <div className="jobs-root">
       <IntroNavbar user={user} setUser={setUser} />
 
-      {/* Thanh tìm kiếm - GIỮ NGUYÊN CẤU TRÚC */}
       <div className="search-container">
         <input
           type="text"
@@ -139,7 +133,6 @@ export default function MyApply({ user, setUser }) {
         </button>
       </div>
 
-      {/* Danh sách job */}
       <div className="job-list">
         {loading && (
           <p
@@ -174,26 +167,18 @@ export default function MyApply({ user, setUser }) {
             className="job-card-link"
             style={{ textDecoration: "none" }}
           >
-            {/* job-card - GIỮ NGUYÊN CẤU TRÚC */}
             <div className="job-card">
-              {/* Tiêu đề bao gồm Tên công ty - Vị trí */}
               <h3 style={{ margin: 0 }}>
                 {app.Company_Name} - {app.Name_Job}
               </h3>
-
-              {/* Dòng 1: Registration date | Location (Vị trí Job) */}
               <div className="job-info">
                 <p>Ngày ứng tuyển:</p>
                 <p>{fmtDate(app.Date_Applied)}</p>
               </div>
-
-              {/* Dòng 2: Salary level | Type (Trạng thái ứng tuyển) */}
               <div className="job-info">
                 <p>Mức lương:</p>
                 <p>{fmtVnd(app.Salary)}</p>
               </div>
-
-              {/* Dòng 3: Thêm Location và Status/Type để khớp đủ thông tin */}
               <div className="job-info">
                 <p>Địa điểm:</p>
                 <p>{app.Job_Location}</p>

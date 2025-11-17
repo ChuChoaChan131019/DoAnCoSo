@@ -1,10 +1,8 @@
 import db from "../configs/db.config.js";
 
 /**
- * GET /api/companies
- * Trả về danh sách công ty kèm số lượng job
- * @param {object} req - Request object (có thể chứa req.query.search)
- * @param {object} res - Response object
+  @param {object} req - Request object
+  @param {object} res - Response object
  */
 
 export const getAllCompanies = async (req, res) => {
@@ -31,7 +29,6 @@ export const getAllCompanies = async (req, res) => {
 }
 
 /**
- * GET /api/companies/:id
  * Lấy chi tiết 1 công ty và danh sách job đang mở
  */
 export const getCompanyById = async (req, res) => {

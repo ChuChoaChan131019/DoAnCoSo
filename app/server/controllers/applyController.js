@@ -17,7 +17,6 @@ export const applyForJob = async (req, res) => {
     }
 
     try {
-        // 1. Lấy ID_Candidate
         const [candidateRows] = await db.query(
             "SELECT ID_Candidate, Resume_URL FROM Candidate WHERE ID_User = ?",
             [userId]
@@ -27,12 +26,10 @@ export const applyForJob = async (req, res) => {
         }
         const { ID_Candidate, Resume_URL } = candidateRows[0];
     
-        // Yêu cầu có CV/Resume URL mới cho ứng tuyển
         if (!Resume_URL) {
             return res.status(400).json({ message: "Vui lòng upload CV/Hồ sơ trước khi ứng tuyển." });
         }
 
-        // 2. Kiểm tra Job có tồn tại và đang mở không
         const [jobRows] = await db.query(
             "SELECT 1 FROM Job WHERE ID_Job = ? AND Job_Status = 'opened'",
             [jobId]
@@ -41,8 +38,6 @@ export const applyForJob = async (req, res) => {
             return res.status(400).json({ message: "Công việc không tồn tại hoặc đã đóng" });
         }
 
-        // 3. Ghi nhận ứng tuyển vào bảng Application
-        // Dùng INSERT IGNORE để tránh lỗi nếu đã tồn tại
         const [result] = await db.query(
             `INSERT IGNORE INTO Application (ID_Candidate, ID_Job) VALUES (?, ?)`,
             [ID_Candidate, jobId]
@@ -51,7 +46,6 @@ export const applyForJob = async (req, res) => {
             return res.status(400).json({ message: "Bạn đã ứng tuyển công việc này rồi" });
         }
 
-        // 4. Trả về thành công
         return res.status(201).json({
             message: "Ứng tuyển thành công! Thông tin hồ sơ và CV đã được gửi."
         });
@@ -69,7 +63,7 @@ export const listMyApplications = async (req, res) => {
     }
 
     try {
-        // 1. Lấy ID_Candidate
+        // Lấy ID_Candidate
         const [candidateRows] = await db.query(
             "SELECT ID_Candidate FROM Candidate WHERE ID_User = ?",
             [userId]
@@ -79,7 +73,7 @@ export const listMyApplications = async (req, res) => {
         }
         const { ID_Candidate } = candidateRows[0];
 
-        // 2. Lấy danh sách ứng tuyển (JOIN Application, Job và Employer)
+        // Lấy danh sách ứng tuyển 
         const sql = `
             SELECT 
                 A.ID_Job, A.Date_Applied, A.Application_Status,
@@ -93,7 +87,6 @@ export const listMyApplications = async (req, res) => {
         `;
         const [rows] = await db.query(sql, [ID_Candidate]);
         
-        // Chuẩn hóa logo
         const normalized = rows.map(r => ({
             ...r,
             Company_Logo: r.Company_Logo ? `/uploads/${r.Company_Logo.split('/').pop()}` : null,
@@ -112,12 +105,10 @@ export const countNewApplications = async (req, res) => {
     const userId = req.user?.id;
 
     if (!userId || req.user.role !== "employer") {
-        // Trả về 0 nếu không phải employer
         return res.json({ count: 0 });
     }
 
     try {
-        // Lấy ID_Employer của người dùng
         const [empRows] = await db.query(
             "SELECT ID_Employer FROM Employer WHERE ID_User = ?",
             [userId]
@@ -127,7 +118,6 @@ export const countNewApplications = async (req, res) => {
         }
         const { ID_Employer } = empRows[0];
 
-        // Đếm số đơn ứng tuyển có trạng thái 'pending' và thuộc Job của Employer này
         const sql = `
             SELECT COUNT(A.ID_Job) AS NewCount
             FROM Application A

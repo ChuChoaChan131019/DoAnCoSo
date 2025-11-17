@@ -1,4 +1,3 @@
-/* ============ KHUNG TRANG ============ */
 .profile-container {
   margin-top: 200px;
   padding: 20px;
@@ -16,10 +15,9 @@
   color: #003763;
 }
 
-/* ============ HÀNG UPLOAD ============ */
 .upload-row {
   display: grid;
-  grid-template-columns: 100px 1fr; /* label trái, input phải */
+  grid-template-columns: 100px 1fr; 
   align-items: center;
   column-gap: 16px;
   margin-bottom: 20px;
@@ -67,18 +65,17 @@
   background: #e7f3ff;
 }
 
-/* ============ PREVIEW LOGO ============ */
 .logo-preview {
   position: relative;
-  display: block; /* đổi từ inline-block -> block để dùng auto margin */
-  margin: 12px auto 18px; /* auto giúp khối nằm giữa form */
-  width: max-content; /* khối ôm đúng kích thước ảnh */
-  text-align: center; /* dự phòng, không hại gì */
+  display: block; 
+  margin: 12px auto 18px; 
+  width: max-content;
+  text-align: center; 
 }
 
 .logo-preview img {
-  display: block; /* img là block thì text-align không tác dụng */
-  margin: 0 auto; /* nên cho img tự căn giữa */
+  display: block; 
+  margin: 0 auto;
 }
 .clear-btn {
   position: absolute;
@@ -103,10 +100,9 @@
   transform: scale(1.1);
 }
 
-/* ============ FORM ============ */
 .company-form .form-group {
   display: grid;
-  grid-template-columns: 180px 1fr; /* label trái – input phải */
+  grid-template-columns: 180px 1fr; 
   align-items: center;
   column-gap: 16px;
   margin-bottom: 20px;
@@ -114,12 +110,11 @@
 
 .company-form label {
   display: block;
-  margin-bottom: 0; /* vì đang dùng grid */
+  margin-bottom: 0; 
   font-weight: 500;
   color: #003763;
 }
 
-/* 💥 TẤT CẢ input/textarea/select BẰNG NHAU 100% */
 .company-form input,
 .company-form textarea,
 .company-form select {
@@ -129,16 +124,14 @@
   border-radius: 10px;
   box-sizing: border-box;
   font-size: 15px;
-  background: #eaf3ff; /* nền xanh nhạt như ảnh */
+  background: #eaf3ff; 
   outline: none;
 }
 
-/* Date cũng full chiều ngang */
 .company-form input[type="date"] {
   width: 100%;
 }
 
-/* Focus đẹp */
 .company-form input:focus,
 .company-form textarea:focus,
 .company-form select:focus {
@@ -146,21 +139,18 @@
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
 }
 
-/* Textarea canh trên cho gọn */
 .company-form textarea {
   min-height: 100px;
   resize: vertical;
   align-self: start;
 }
 
-/* Lỗi */
 .error-text {
   color: #d93025;
   font-size: 13px;
   grid-column: 2 / 3;
 }
 
-/* ============ NÚT LƯU ============ */
 .save-button {
   width: 150px;
   background-color: #003763;
@@ -179,11 +169,10 @@
   color: #003763;
 }
 
-/* ============ RESPONSIVE ============ */
 @media (max-width: 768px) {
   .upload-row,
   .company-form .form-group {
-    grid-template-columns: 1fr; /* label trên – input dưới */
+    grid-template-columns: 1fr; 
   }
   .error-text {
     grid-column: auto;

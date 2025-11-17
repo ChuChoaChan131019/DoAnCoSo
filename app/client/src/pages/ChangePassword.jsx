@@ -146,7 +146,6 @@ export default function ChangePassword({ user, setUser }) {
               </p>
             )}
 
-            {/* ✅ SỬA type="button" THÀNH type="submit" VÀ THÊM LOADING */}
             <button type="submit" className="save-btn" disabled={loading}>
               {loading ? "Đang xử lý..." : "Save"}
             </button>

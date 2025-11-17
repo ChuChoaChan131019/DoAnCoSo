@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import "./Home.css";
-// 👈 THÊM DÒNG NÀY ĐỂ SỬ DỤNG CHỨC NĂNG CHUYỂN HƯỚNG
 import { Link, useNavigate } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000";
@@ -16,9 +15,7 @@ const toAbsUrl = (u) => {
 export default function Home({ user, setUser }) {
   const railRef = useRef(null);
   const [jobs, setJobs] = useState([]);
-  // 👈 THÊM STATE CHO TỪ KHÓA TÌM KIẾM
   const [keyword, setKeyword] = useState("");
-  // 👈 KHỞI TẠO HOOK CHUYỂN HƯỚNG
   const navigate = useNavigate();
 
   // hiệu ứng tự cuộn: giữ nguyên
@@ -54,7 +51,6 @@ export default function Home({ user, setUser }) {
     };
   }, []);
 
-  // lấy vài job “opened” để show ở rail
   useEffect(() => {
     (async () => {
       try {
@@ -68,10 +64,8 @@ export default function Home({ user, setUser }) {
     })();
   }, []);
 
-  // 👈 HÀM XỬ LÝ TÌM KIẾM VÀ CHUYỂN HƯỚNG
   const handleSearch = () => {
     const q = keyword.trim();
-    // Chuyển hướng đến /jobs với từ khóa là query param 'q'
     if (q) {
       navigate(`/jobs?q=${encodeURIComponent(q)}`);
     } else {
@@ -79,7 +73,6 @@ export default function Home({ user, setUser }) {
     }
   };
   
-  // 👈 XỬ LÝ SỰ KIỆN NHẤN ENTER
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -100,12 +93,10 @@ export default function Home({ user, setUser }) {
             <input
               type="text"
               placeholder="Search..."
-              // 👈 CẬP NHẬT GÍA TRỊ VÀ XỬ LÝ THAY ĐỔI
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              onKeyDown={handleKeyDown} // 👈 XỬ LÝ NHẤN ENTER
+              onKeyDown={handleKeyDown}
             />
-            {/* 👈 CẬP NHẬT NÚT THỰC HIỆN CHỨC NĂNG TÌM KIẾM */}
             <button className="apply-btn" onClick={handleSearch}>
               SEARCH
             </button>

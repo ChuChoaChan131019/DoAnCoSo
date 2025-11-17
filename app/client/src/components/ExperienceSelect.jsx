@@ -10,8 +10,8 @@ const OPTIONS = [
 ];
 
 export default function ExperienceSelect({
-  value, // string | undefined
-  onChange, // (string) => void
+  value, 
+  onChange, 
   placeholder = "Chọn kinh nghiệm…",
   isClearable = true,
   ...props

@@ -14,7 +14,7 @@ const init = {
 
 function getToken() {
   try {
-    // Ưu tiên đọc "auth" (do Login.jsx đang lưu)
+    // Ưu tiên đọc "auth"z (do Login.jsx đang lưu)
     const rawAuth = localStorage.getItem("user");
     if (rawAuth) {
       const a = JSON.parse(rawAuth);

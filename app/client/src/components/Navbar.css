@@ -32,6 +32,10 @@
   font-weight: bold;
   color: #001b30;
 }
+.navbar nav a.active-link {
+  color: #008c9e;  
+}
+
 
 /* Nút login */
 .login-btn {
@@ -61,11 +65,11 @@
   font-size: 20px;
   margin-right: 50px;
 
-  max-width: 250px; /* Thêm giới hạn độ rộng để text-overflow hoạt động */
-  overflow: hidden; /* Ẩn phần nội dung bị tràn */
-  white-space: nowrap; /* Bắt buộc nội dung nằm trên một dòng */
-  text-overflow: ellipsis; /* Hiển thị dấu '...' cho nội dung bị ẩn */
-  display: block; /* Quan trọng: Đảm bảo max-width được áp dụng */
+  max-width: 250px; 
+  overflow: hidden; 
+  white-space: nowrap; 
+  text-overflow: ellipsis; 
+  display: block; 
 }
 .username-btn:hover {
   background: #71c9ce;

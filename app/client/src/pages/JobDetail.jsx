@@ -5,9 +5,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import IntroNavbar from "../components/IntroNavbar";
 import "./JobDetail.css";
 import { FaBriefcase, FaMapMarkerAlt, FaRegClock } from "react-icons/fa"; //lấy icon
-// import { use } from "react"; // <--- Bỏ import không cần thiết này
 
-/** ĐỔI NẾU CẦN: đọc từ .env hay file config chung của em */
 const API_BASE = "http://localhost:5000";
 
 function toAbsUrl(u) {
@@ -52,7 +50,6 @@ export default function JobDetail({ user, setUser }) {
     })();
   }, [id]);
 
-  // Hàm xử lý logic ứng tuyển
   const handleApply = () => {
     if (!user) {
       alert("Bạn cần đăng nhập để ứng tuyển!");
@@ -60,7 +57,6 @@ export default function JobDetail({ user, setUser }) {
     } else if (user.role !== "candidate") {
       alert("Chỉ ứng viên mới có thể ứng tuyển.");
     } else {
-      // Chuyển hướng đến trang CV và truyền ID Job
       navigate(`/cv/${id}`);
     }
   };
@@ -86,15 +82,11 @@ export default function JobDetail({ user, setUser }) {
     );
   }
 
-  // Nếu có cột Job_Type/Employment_Type thì show lên badge; không có thì fallback "Program"
   const jobType = job.Job_Type || "Program";
 
   return (
     <div className="jd-root">
       <IntroNavbar user={user} setUser={setUser} />
-      {/*  */}
-
-      {/* ===== HERO ===== */}
       <header className="jd-hero">
         <div className="jd-hero-inner">
           <div className="jd-logo">
@@ -126,7 +118,6 @@ export default function JobDetail({ user, setUser }) {
               </div>
             </div>
 
-            {/* Giữ lại chỉ badge trạng thái */}
             {job.Job_Status && (
               <div className="jd-badges">
                 <span className="jd-badge jd-badge--soft">
@@ -136,7 +127,6 @@ export default function JobDetail({ user, setUser }) {
             )}
           </div>
 
-          {/* Nút Ứng tuyển */}
           <div className="jd-hero-cta">
             <button className="jd-btn jd-btn--primary" onClick={handleApply}> {/* <-- Cập nhật */}
               Ứng tuyển
@@ -145,9 +135,7 @@ export default function JobDetail({ user, setUser }) {
         </div>
       </header>
 
-      {/* ===== BODY ===== */}
       <main className="jd-container jd-grid">
-        {/* LEFT: Description */}
         <section className="jd-left">
           <h2 className="jd-section-title">Mô tả</h2>
           <div className="jd-card">
@@ -161,7 +149,6 @@ export default function JobDetail({ user, setUser }) {
           </div>
         </section>
 
-        {/* RIGHT: Overview */}
         <aside className="jd-right">
           <div className="jd-right-scroll">
             <div className="jd-card jd-overview">

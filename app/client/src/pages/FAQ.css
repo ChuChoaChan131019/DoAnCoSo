@@ -1,6 +1,6 @@
-/* Nền tổng */
+
 .jobs-root {
-  padding-top: 164px; /* đẩy toàn bộ content xuống dưới header (cao hơn header ~96px để có khoảng trống) */
+  padding-top: 164px; 
   background: #ffffff;
   min-height: 100vh;
   color: #001b30;

@@ -9,7 +9,6 @@ import {
 
 const router = Router();
 
-// Ứng viên cập nhật hồ sơ cá nhân
 router.post(
   "/profile",
   requireAuth,
@@ -19,7 +18,6 @@ router.post(
 
 router.get("/profile/me", requireAuth, getCandidateProfile);
 
-// Employer xem danh sách ứng viên
 router.get("/list", requireAuth, getAppliedCandidates);
 
 export default router;

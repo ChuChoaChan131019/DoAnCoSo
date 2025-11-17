@@ -8,14 +8,13 @@ export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ API URL
   const API = process.env.REACT_APP_API || "http://localhost:5000";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log("🔗 API URL:", `${API}/api/auth/login`);
+      console.log(" API URL:", `${API}/api/auth/login`);
 
       const res = await fetch(`${API}/api/auth/login`, {
         method: "POST",
@@ -23,7 +22,7 @@ export default function Login({ setUser }) {
         body: JSON.stringify({ email, password }),
       });
 
-      console.log("📡 Status:", res.status);
+      console.log(" Status:", res.status);
 
       let data;
       try {
@@ -32,10 +31,10 @@ export default function Login({ setUser }) {
         throw new Error("Server did not return JSON");
       }
 
-      console.log("📥 Response:", data);
+      console.log(" Response:", data);
 
       if (res.ok) {
-        // 🔑 Giả sử backend trả về { token, user }
+        // backend trả về { token, user }
         const authData = {
           ...data.user,
           token: data.token,
@@ -47,7 +46,7 @@ export default function Login({ setUser }) {
         // Cập nhật state user
         setUser(authData);
 
-        navigate("/"); // chuyển sang trang chính
+        navigate("/"); 
       } else {
         alert(data.error || "Login failed");
       }

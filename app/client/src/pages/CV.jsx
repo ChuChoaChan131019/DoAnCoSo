@@ -17,7 +17,7 @@ export default function CV({ user, setUser }) {
     address: "",
     resume: null,
   });
-  // State để lưu tên file CV đã upload (do không thể tái tạo File object)
+  // State để lưu tên file CV đã upload 
   const [existingResumeName, setExistingResumeName] = useState(null);
 
   const [saving, setSaving] = useState(false);
@@ -103,7 +103,7 @@ export default function CV({ user, setUser }) {
       return;
     }
 
-    // ********* PHẦN 1: LƯU PROFILE & UPLOAD CV *********
+    // ========= LƯU PROFILE & UPLOAD CV ==========
     const fd = new FormData();
     fd.append("fullName", form.fullName.trim());
     fd.append("phone", form.phone.trim());
@@ -114,7 +114,7 @@ export default function CV({ user, setUser }) {
     try {
       setSaving(true);
 
-      // 1. GỌI API LƯU PROFILE (Tương tự logic CV.jsx gốc)
+      // GỌI API LƯU PROFILE 
       const profileRes = await fetch(`${API_BASE}/api/candidate/profile`, {
         method: "POST",
         headers: { Authorization: `Bearer ${user.token}` },
@@ -125,7 +125,6 @@ export default function CV({ user, setUser }) {
       if (!profileRes.ok) {
         let errorData = { message: "Upload failed" };
         try {
-          // *** ĐÃ SỬA LỖI LOGIC: Dùng profileText và profileRes ***
           errorData = JSON.parse(profileText);
         } catch (e) {
           console.error(
@@ -155,9 +154,9 @@ export default function CV({ user, setUser }) {
         console.log("Resume URL:", `${API_BASE}${profileData.resumeUrl}`);
       }
 
-      // ********* PHẦN 2: GỬI ỨNG TUYỂN (NẾU CÓ jobId) *********
+      // =========== GỬI ỨNG TUYỂN (NẾU CÓ jobId) ==========
       if (isApplying) {
-        // 2. GỌI API ỨNG TUYỂN MỚI
+        // GỌI API ỨNG TUYỂN MỚI
         const applyRes = await fetch(`${API_BASE}/api/apply/job/${jobId}`, {
           method: "POST",
           headers: {

@@ -1,16 +1,13 @@
-import fs from "fs/promises";// fs là module có sắn trong Node.js đề làm viêcj với hệ thông tệp(dọc, ghi, xóa, sửa)
-import path from "path";//module để xử lí đường dẫn an toàn
+import fs from "fs/promises";
+import path from "path";
 import db from "../configs/db.config.js";
 
-/** Lấy userId từ middleware requireAuth (gán vào req.user) */
 function getUserId(req) {
   return req.user?.id || req.user?.ID_User || null;
 }
 
-/** Chuẩn hoá chuỗi ngày về 'YYYY-MM-DD' (MySQL DATE) */
 function normalizeDate(d) {
   if (!d) return null;
-  // Đã đúng định dạng -> giữ nguyên
   if (typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
   const dt = new Date(d);
   if (isNaN(dt)) return null;
@@ -25,9 +22,7 @@ function safeJoinUploads(relPath) {
   return abs;
 }
 
-/* ===========================================
- * GET /api/employer/me
- * =========================================== */
+/*  GET /api/employer/me*/
 export const getMyEmployer = async (req, res) => {
   try {
     const userId = getUserId(req);
@@ -43,13 +38,12 @@ export const getMyEmployer = async (req, res) => {
       userId,
     ]);
     if (!rows.length) {
-      // Trả skeleton rỗng cho FE prefill
       return res.json({
         ID_Employer: "",
         Company_Name: "",
         Company_Address: "",
         Company_Email: defaultEmail,
-        Company_Description: "", // NOTE: theo tên cột hiện có của em (sai chính tả)
+        Company_Description: "", 
         Company_Website: "",
         Company_Phone: "",
         Founded_Date: "",
@@ -63,7 +57,7 @@ export const getMyEmployer = async (req, res) => {
       Company_Name: r.Company_Name || "",
       Company_Address: r.Company_Address || "",
       Company_Email: r.Company_Email || defaultEmail,
-      Company_Description: r.Company_Description || "", // NOTE
+      Company_Description: r.Company_Description || "", 
       Company_Website: r.Company_Website || "",
       Company_Phone: r.Company_Phone || "",
       Founded_Date: r.Founded_Date ? String(r.Founded_Date).slice(0, 10) : "",
@@ -85,11 +79,9 @@ export const getMyEmployer = async (req, res) => {
   }
 };
 
-/* ===========================================
- * POST /api/employer/me  (multipart/form-data; file field: 'logo')
+/* 
  * - Upsert: nếu chưa có bản ghi thì tạo, có rồi thì cập nhật
- * - Chấp nhận cả tên field FE cũ/lệch để tránh nổ (name/phone/location/describe…)
- * =========================================== */
+  */
 export const upsertMyEmployer = async (req, res) => {
   try {
     const userId = getUserId(req);
@@ -97,14 +89,13 @@ export const upsertMyEmployer = async (req, res) => {
 
     const b = req.body || {};
 
-    // 0) Lấy logo cũ
+    // Lấy logo cũ
     const [oldRows] = await db.query(
       "SELECT Company_Logo FROM Employer WHERE ID_User=?",
       [userId]
     );
     const oldLogo = oldRows?.[0]?.Company_Logo || null;
 
-    // 1) Map field
     const Company_Name = b.Company_Name ?? b.name ?? null;
     const Company_Phone = b.Company_Phone ?? b.phone ?? null;
     const Company_Address = b.Company_Address ?? b.location ?? null;
@@ -122,11 +113,9 @@ export const upsertMyEmployer = async (req, res) => {
       b.Founded_Date ?? b.foundedDate ?? b.founded_date ?? null
     );
 
-    // 2) Logo mới + cờ xoá
     const newLogo = req.file ? `/uploads/${req.file.filename}` : null;
     const removeLogo = b.Remove_Logo === "1" || b.Remove_Logo === "true";
 
-    // 3) Upsert (yêu cầu UNIQUE(ID_User))
     const sql = `
       INSERT INTO Employer (
         ID_User, Company_Name, Company_Address, Company_Email,
@@ -158,11 +147,10 @@ export const upsertMyEmployer = async (req, res) => {
       Company_Website,
       Company_Phone,
       Founded_Date,
-      newLogo, // value chèn ban đầu
-      removeLogo ? 1 : 0, // param cho CASE
+      newLogo,
+      removeLogo ? 1 : 0, 
     ]);
 
-    // 4) Dọn file cũ an toàn
     try {
       if (
         (newLogo && oldLogo && newLogo !== oldLogo) ||

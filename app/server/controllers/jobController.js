@@ -1,7 +1,5 @@
-// server/controllers/jobController.js
 import db from "../configs/db.config.js";
 
-/** Lấy userId từ middleware requireAuth (gán vào req.user) */
 function getUserId(req) {
   return req.user?.id || req.user?.ID_User || null;
 }
@@ -15,7 +13,6 @@ function normalizeDate(d) {
   return dt.toISOString().slice(0, 10);
 }
 
-/** POST /api/jobs  (body: Name_Job, ID_Category, Start_Date, End_Date, Experience, Job_Location, Salary, Job_Description, Job_Status) */
 export const createJob = async (req, res) => {
   const userId = getUserId(req);
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
@@ -33,7 +30,6 @@ export const createJob = async (req, res) => {
       Job_Status = "opened",
     } = req.body || {};
 
-    // Validate cơ bản bám schema
     const start = normalizeDate(Start_Date);
     const end = normalizeDate(End_Date);
     const errors = {};
@@ -56,7 +52,6 @@ export const createJob = async (req, res) => {
     }
 
     const catId = ID_Category.toString().padStart(6, "0");
-    // Lấy ID_Employer từ user (map Users -> Employer)
     const [empRows] = await db.query(
       "SELECT ID_Employer FROM Employer WHERE ID_User = ?",
       [userId]
@@ -66,7 +61,6 @@ export const createJob = async (req, res) => {
     }
     const { ID_Employer } = empRows[0];
 
-    // Kiểm tra Category tồn tại
     const [catRows] = await db.query(
       "SELECT 1 FROM Category WHERE ID_Category = ?",
       [catId]
@@ -101,7 +95,7 @@ export const createJob = async (req, res) => {
 
     await db.query(sql, params);
 
-    // Lấy ID_Job vừa tạo (dựa vào trigger sinh mã — đơn giản cho bài tập)
+    // Lấy ID_Job vừa tạo 
     const [lastRow] = await db.query(
       "SELECT ID_Job FROM Job ORDER BY CAST(ID_Job AS UNSIGNED) DESC LIMIT 1"
     );
@@ -133,7 +127,7 @@ export const updateJob = async (req, res) => {
   const userId = req.user?.id || req.user?.ID_User || null;
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-  const { id } = req.params; // ID_Job (varchar(6))
+  const { id } = req.params; 
   if (!id) return res.status(400).json({ message: "Missing job id" });
 
   try {
@@ -171,7 +165,6 @@ export const updateJob = async (req, res) => {
       Job_Status,
     } = req.body || {};
 
-    // Validate nhanh (có thể nới lỏng, nhưng giữ đúng schema)
     const start = Start_Date ? normalizeDate(Start_Date) : null;
     const end = End_Date ? normalizeDate(End_Date) : null;
     const errors = {};
@@ -195,7 +188,6 @@ export const updateJob = async (req, res) => {
       return res.status(400).json({ message: "Invalid payload", errors });
     }
 
-    // Build SET động
     const sets = [];
     const params = [];
 
@@ -361,7 +353,6 @@ export const listAllJobs = async (req, res) => {
 
     const [rows] = await db.query(sql, [...params, lim, off]);
 
-    // Chuẩn hoá đường dẫn logo: tên file -> /uploads/tên; \ -> /
     const normalized = rows.map((r) => {
       let logo = r.Company_Logo || null;
       if (logo) {
@@ -384,7 +375,7 @@ export const listAllJobs = async (req, res) => {
 // LẤY CHI TIẾT 1 JOB THEO ID
 export const getJobById = async (req, res) => {
   try {
-    const { id } = req.params; // ID_Job (varchar(6))
+    const { id } = req.params; 
     if (!id) return res.status(400).json({ message: "Missing job id" });
 
     const sql = `
@@ -402,7 +393,6 @@ export const getJobById = async (req, res) => {
     const [rows] = await db.query(sql, [id]);
     if (!rows.length) return res.status(404).json({ message: "Job not found" });
 
-    // Chuẩn hoá đường dẫn logo
     const r = rows[0];
     let logo = r.Company_Logo || null;
     if (logo) {

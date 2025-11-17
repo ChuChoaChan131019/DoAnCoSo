@@ -5,7 +5,6 @@ import IndustrySelect from "../components/IndustrySelect";
 import ExperienceSelect from "../components/ExperienceSelect";
 import LocationSelect from "../components/LocationSelect";
 
-/* ===== API base + lấy token (như trước) ===== */
 const API_BASE = "http://localhost:5000";
 
 function getToken() {
@@ -26,7 +25,6 @@ function getToken() {
   }
 }
 
-/* (optional) Map ID_Category -> label để hiển thị đẹp */
 const CATEGORY_LABELS = {
   "000001": "Công nghệ thông tin",
   "000002": "Kế toán",
@@ -35,17 +33,16 @@ const CATEGORY_LABELS = {
   "000005": "Nhân sự",
 };
 
-/* ===== State bám CSDL Job ===== */
 const init = {
-  title: "", // -> Name_Job
-  categoryId: "", // -> ID_Category (varchar(6))
-  startDate: "", // -> Start_Date (YYYY-MM-DD)
-  endDate: "", // -> End_Date   (YYYY-MM-DD)
-  experience: "", // -> Experience (varchar)
-  location: "", // -> Job_Location
-  salary: "", // -> Salary (DECIMAL)
-  description: "", // -> Job_Description
-  status: "opened", // -> Job_Status enum("opened","closed")
+  title: "", 
+  categoryId: "",
+  startDate: "", 
+  endDate: "",
+  experience: "", 
+  location: "", 
+  salary: "", 
+  description: "",
+  status: "opened", 
 };
 
 export default function MyJobs({ user, setUser }) {
@@ -53,11 +50,9 @@ export default function MyJobs({ user, setUser }) {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  /* Danh sách job */
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
 
-  /* NEW: theo dõi job đang “được chọn để chỉnh sửa” */
   const [selectedJobId, setSelectedJobId] = useState(null);
   const formRef = useRef(null);
 
@@ -90,7 +85,6 @@ export default function MyJobs({ user, setUser }) {
     setForm((f) => ({ ...f, [name]: value }));
   };
 
-  /* IndustrySelect trả về ID_Category (vd: “000123”) */
   const handleCategoryChange = (id) => {
     setForm((f) => ({
       ...f,
@@ -106,7 +100,6 @@ export default function MyJobs({ user, setUser }) {
     return isNaN(dt) ? "" : dt.toISOString().slice(0, 10);
   };
 
-  /* Validate */
   const validate = () => {
     const er = {};
     if (!form.title.trim()) er.title = "Vui lòng nhập Job Title.";
@@ -136,7 +129,6 @@ export default function MyJobs({ user, setUser }) {
     return Object.keys(er).length === 0;
   };
 
-  /* ===== Click vào 1 job-card → đổ xuống form để chỉnh ===== */
   const pickJobToEdit = (job) => {
     setSelectedJobId(job.ID_Job || null);
     setForm({
@@ -151,15 +143,11 @@ export default function MyJobs({ user, setUser }) {
       status: job.Job_Status || "opened",
     });
 
-    // kéo xuống form cho tiện
     requestAnimationFrame(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
-
-  /* ===== Submit: hiện tại vẫn là TẠO MỚI (POST) =====
-     Nếu sau này bạn có API PUT /api/jobs/:id thì bật đoạn TODO (3 dòng) ở dưới.
-  */
+//Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -231,7 +219,6 @@ export default function MyJobs({ user, setUser }) {
     }
   };
 
-  /* Helpers format hiển thị */
   const fmtVnd = (n) => (n == null ? "—" : Number(n).toLocaleString("vi-VN"));
   const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("vi-VN") : "—");
   const catLabel = (id) => CATEGORY_LABELS[id] || id || "—";
@@ -240,7 +227,6 @@ export default function MyJobs({ user, setUser }) {
     <div className="jobs-root">
       <IntroNavbar user={user} setUser={setUser} />
 
-      {/* Danh sách job */}
       <div className="myjob-list">
         {loadingJobs ? (
           <div className="myjob-card">Đang tải danh sách job…</div>
@@ -287,7 +273,6 @@ export default function MyJobs({ user, setUser }) {
         )}
       </div>
 
-      {/* Form nhập / chỉnh sửa */}
       <div className="myjob-container" ref={formRef}>
         <form className="cv-form" onSubmit={handleSubmit} noValidate>
           <div className="form-group">

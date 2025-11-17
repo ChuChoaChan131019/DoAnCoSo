@@ -11,13 +11,10 @@ export default function ListCandidate({ user, setUser }) {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Lấy danh sách ứng viên từ backend
   useEffect(() => {
-    // 1. Kiểm tra vai trò và token từ props user
     const currentToken = user?.token; 
 
     if (!currentToken || user.role !== "employer") {
-      // Nếu không phải employer, đặt lỗi/rỗng và ngừng fetch
       console.warn("Access denied: User must be an employer.");
       setCandidates([]);
       setLoading(false);
@@ -30,7 +27,7 @@ export default function ListCandidate({ user, setUser }) {
 
         const res = await fetch(API_URL, {
           headers: {
-            Authorization: `Bearer ${currentToken}`, // SỬ DỤNG TOKEN TỪ user PROP
+            Authorization: `Bearer ${currentToken}`, 
           },
         });
         const data = await res.json();
@@ -38,7 +35,6 @@ export default function ListCandidate({ user, setUser }) {
         if (res.ok) {
           setCandidates(data.candidates || []);
         } else {
-          // Lỗi 401/403: Server từ chối vì token sai hoặc không phải employer
           console.error("Fetch candidates failed (Server Error):", data.message);
           setCandidates([]);
         }
@@ -51,9 +47,8 @@ export default function ListCandidate({ user, setUser }) {
     };
 
     fetchCandidates();
-  }, [user]); // Theo dõi user prop
+  }, [user]); 
 
-  // 🔹 Lọc theo từ khóa tìm kiếm (Giữ nguyên)
   const filteredCandidates = candidates.filter(
     (c) =>
       c.FullName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -61,7 +56,6 @@ export default function ListCandidate({ user, setUser }) {
       c.Email?.toLowerCase().includes(search.toLowerCase())
   );
   
-  // 🔹 Kiểm tra vai trò và hiển thị (Bổ sung cảnh báo nếu không phải Employer)
   if (user && user.role !== "employer") {
     return (
       <div className="jobs-root">
@@ -79,9 +73,7 @@ export default function ListCandidate({ user, setUser }) {
     <div className="jobs-root">
       <IntroNavbar user={user} setUser={setUser} />
 
-      {/* Thanh tìm kiếm */}
       <div className="search-container">
-        {/* ... (Các phần khác giữ nguyên) */}
         <button className="search-icon" aria-label="Search">
           <svg viewBox="0 0 24 24" width="20" height="20">
             <path
@@ -105,7 +97,6 @@ export default function ListCandidate({ user, setUser }) {
         <button className="sort-btn">Sort by</button>
       </div>
 
-      {/* Danh sách ứng viên */}
       <div className="candidate-list">
         {loading ? (
           <p style={{ textAlign: "center", gridColumn: "1 / -1" }}>Đang tải...</p>

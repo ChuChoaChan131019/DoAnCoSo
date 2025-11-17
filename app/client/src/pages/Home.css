@@ -142,10 +142,9 @@
   outline-offset: 2px;
   border-color: transparent;
 }
-/* === BỐ CỤC NỘI DUNG BÊN TRONG rail-card (không đổi kích thước card) === */
 .rail-card .home-job-row {
   display: grid;
-  grid-template-columns: 130px 160px auto; /* logo | nội dung | góc phải */
+  grid-template-columns: 130px 160px auto; 
   gap: 16px;
   align-items: center;
   min-height: 120px;
@@ -168,9 +167,8 @@
   height: auto;
   max-width: 140px;
   max-height: 140px;
-  object-fit: contain; /* ⚡ fit logo theo tỉ lệ gốc */
+  object-fit: contain;
   object-position: center;
-  /* padding: 6px; tránh logo dính viền */
   background: transparent;
   border: none;
   border-radius: 0px;
@@ -180,13 +178,12 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  min-width: 0; /* QUAN TRỌNG: cho phép text bị cắt trong grid/flex */
+  min-width: 0; 
 }
 
-/* Mỗi dòng chỉ 1 hàng, quá dài thì "..." */
 .rail-card .home-job-company,
 .rail-card .home-job-title {
-  width: 100%; /* <--- thêm */
+  width: 100%; 
   min-width: 0;
   display: block;
   white-space: nowrap;
@@ -205,11 +202,10 @@
   font-style: italic;
   color: #475569;
   font-size: 12px;
-  white-space: nowrap; /* k xuống dòng */
+  white-space: nowrap; 
   margin-left: -5px;
 }
 
-/* Responsive: Tablet ≤ 992px */
 @media (max-width: 992px) {
   .home-root .container {
     flex-direction: column;
@@ -248,7 +244,6 @@
   }
 }
 
-/* Responsive: Rất nhỏ ≤ 380px */
 @media (max-width: 380px) {
   .home-root .main-content h1 {
     font-size: 24px;

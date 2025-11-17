@@ -6,7 +6,6 @@ export default function Register() {
   const [isCandidate, setIsCandidate] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ API URL
   const API = process.env.REACT_APP_API || "http://localhost:5000";
 
   const handleSubmit = async (e) => {

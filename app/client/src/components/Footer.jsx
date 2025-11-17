@@ -1,9 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
-{/* <Link to="/">
-        <img src="/logo.png" alt="Logo" width="250" />
-      </Link> */}
+
 export default function Footer() {
   return (
     <footer className="footer">

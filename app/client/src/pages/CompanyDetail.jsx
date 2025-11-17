@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import {
+  FaMapMarkerAlt,
+  FaBriefcase,
+  FaMoneyBillWave,
+  FaRegClock,
+} from "react-icons/fa";
 import IntroNavbar from "../components/IntroNavbar";
 import "./CompanyDetail.css";
 
@@ -9,8 +15,7 @@ export default function CompanyDetail({ user, setUser }) {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Thêm 2 state này cho show more
-  const INITIAL_SHOW = 4; // số job hiển thị ban đầu, bạn chỉnh tùy ý
+  const INITIAL_SHOW = 4;
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
@@ -32,7 +37,6 @@ export default function CompanyDetail({ user, setUser }) {
   if (loading) return <p>Đang tải...</p>;
   if (!company) return <p>Không tìm thấy công ty.</p>;
 
-  // Biến này chứa job list hiển thị tùy trạng thái showAll
   const jobsToShow = showAll ? jobs : jobs.slice(0, INITIAL_SHOW);
 
   return (
@@ -45,7 +49,6 @@ export default function CompanyDetail({ user, setUser }) {
           <div className="company-banner-inner"></div>
 
           <div className="company-banner-bottom">
-            {/* Logo */}
             <div className="banner-left">
               <div className="avatar">
                 {company.Company_Logo && (
@@ -66,7 +69,6 @@ export default function CompanyDetail({ user, setUser }) {
               </div>
             </div>
 
-            {/* Tên công ty và địa chỉ */}
             <div className="banner-center">
               <div className="company-name">{company.Company_Name}</div>
               <div className="company-location">
@@ -74,7 +76,6 @@ export default function CompanyDetail({ user, setUser }) {
               </div>
             </div>
 
-            {/* Số lượng việc */}
             <div className="banner-right">
               <div className="company-jobs">{jobs.length} việc đang tuyển</div>
             </div>
@@ -96,7 +97,6 @@ export default function CompanyDetail({ user, setUser }) {
             <div className="info-item">
               <strong>Email:</strong> {company.Company_Email || "Chưa có"}
             </div>
-
             <div className="info-item">
               <strong>Website:</strong>{" "}
               {company.Company_Website ? (
@@ -111,11 +111,9 @@ export default function CompanyDetail({ user, setUser }) {
                 "Chưa có"
               )}
             </div>
-
             <div className="info-item">
               <strong>Điện thoại:</strong> {company.Company_Phone || "Chưa có"}
             </div>
-
             <div className="info-item">
               <strong>Ngày thành lập:</strong>{" "}
               {company.Founded_Date
@@ -125,54 +123,54 @@ export default function CompanyDetail({ user, setUser }) {
           </div>
         </div>
 
-        {/* ---------- JOB LIST ---------- */}
         <div className="section">
           <div className="section-title">Việc làm đang tuyển</div>
 
           {jobs.length > 0 ? (
             <>
               <div className="jobs-list">
-                {jobsToShow.map((job) => (
-                  <div className="job-card" key={job.ID_Job}>
-                    <div className="job-left">
-                      <div className="job-title">{job.Name_Job}</div>
+                {jobsToShow.map((job) => {
+                  const deadline = job.End_Date ?? job.Expired_Date ?? null;
+                  return (
+                    <div className="job-card" key={job.ID_Job}>
+                      <div className="job-left">
+                        <div className="job-title">{job.Name_Job}</div>
 
-                      <div className="job-meta-type">
-                        <span className="job-location">
-                          📍 {job.Job_Location || "Không xác định"}
-                        </span>
-                        <span className="job-type">
-                          💼 {job.Type_Job || "Toàn thời gian"}
-                        </span>
+                        <div className="job-meta-type">
+                          <span className="job-location">
+                            <FaMapMarkerAlt className="jd-ico bw" />{" "}
+                            {job.Job_Location || "Không xác định"}
+                          </span>
+                        </div>
+
+                        <div className="job-meta">
+                          <FaMoneyBillWave className="jd-ico bw" />{" "}
+                          {job.Salary
+                            ? `${job.Salary.toLocaleString("vi-VN")} VND`
+                            : "Thỏa thuận"}
+                        </div>
+
+                        <div className="job-deadline">
+                          <FaRegClock className="jd-ico bw" /> Ngày kết thúc :{" "}
+                          {deadline
+                            ? new Date(deadline).toLocaleDateString("vi-VN")
+                            : "Chưa có"}
+                        </div>
                       </div>
 
-                      <div className="job-meta">
-                        💰 {job.Salary ? `${job.Salary} VND` : "Thỏa thuận"}
-                      </div>
-
-                      <div className="job-deadline">
-                        ⏰ Hạn nộp:{" "}
-                        {job.Expired_Date
-                          ? new Date(job.Expired_Date).toLocaleDateString(
-                              "vi-VN"
-                            )
-                          : "Chưa có"}
+                      <div className="job-right">
+                        <Link to={`/jobs/${job.ID_Job}`}>
+                          <button className="view-btn">Xem chi tiết</button>
+                        </Link>
+                        <span className="badge">
+                          {job.Job_Status === "opened" ? "Đang mở" : "Đã đóng"}
+                        </span>
                       </div>
                     </div>
-
-                    <div className="job-right">
-                      <Link to={`/jobs/${job.ID_Job}`}>
-                        <button className="apply-btn">Xem chi tiết</button>
-                      </Link>
-                      <span className="badge">
-                        {job.Job_Status === "opened" ? "Đang mở" : "Đã đóng"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
-              {/* Nút Show more / Show less */}
               {jobs.length > INITIAL_SHOW && (
                 <div className="show-more-wrap">
                   <button
