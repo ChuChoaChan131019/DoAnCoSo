@@ -39,6 +39,10 @@ export default function AppRoutes({ user, setUser }) {
         <Route path="/jobs" element={<Jobs user={user} setUser={setUser} />} />
         <Route path="/cv" element={<CV user={user} setUser={setUser} />} />
         <Route
+          path="/cv/:jobId"
+          element={<CV user={user} setUser={setUser} />}
+        />
+        <Route
           path="/companies"
           element={<Companies user={user} setUser={setUser} />}
         />

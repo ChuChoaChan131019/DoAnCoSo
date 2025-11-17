@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./CV.css";
+import "./Profile.css";
 import IntroNavbar from "../components/IntroNavbar";
 
 const init = {

@@ -153,7 +153,9 @@ export default function CompanyDetail({ user, setUser }) {
                       <div className="job-deadline">
                         ⏰ Hạn nộp:{" "}
                         {job.Expired_Date
-                          ? new Date(job.Expired_Date).toLocaleDateString("vi-VN")
+                          ? new Date(job.Expired_Date).toLocaleDateString(
+                              "vi-VN"
+                            )
                           : "Chưa có"}
                       </div>
                     </div>

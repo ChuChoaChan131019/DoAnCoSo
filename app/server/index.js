@@ -10,6 +10,7 @@ import candidateRoutes from "./routes/candidateRoutes.js";
 import employerRoutes from "./routes/employerRoutes.js"; // NEW
 import companyRoutes from "./routes/companyRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
+import applyRoutes from "./routes/applyRoutes.js";
 
 dotenv.config();
 
@@ -39,10 +40,11 @@ app.get("/health", (req, res) => {
 
 // routes
 app.use("/api/auth", authRoutes);
-app.use("/api/candidates", candidateRoutes);
+app.use("/api/candidate", candidateRoutes);
 app.use("/api/employer", employerRoutes); // NEW
 app.use("/api/companies", companyRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/apply", applyRoutes);
 
 // start server
 const PORT = process.env.PORT || 5000;

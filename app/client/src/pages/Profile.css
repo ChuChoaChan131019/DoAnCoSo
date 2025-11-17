@@ -1,0 +1,194 @@
+/* ============ KHUNG TRANG ============ */
+.profile-container {
+  margin-top: 200px;
+  padding: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #003763;
+}
+
+/* ============ HÀNG UPLOAD ============ */
+.upload-row {
+  display: grid;
+  grid-template-columns: 100px 1fr; /* label trái, input phải */
+  align-items: center;
+  column-gap: 16px;
+  margin-bottom: 20px;
+}
+
+.upload-label {
+  margin: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #003763;
+}
+
+.dropzone {
+  width: 100%;
+  border: 1px dashed #1b4b72;
+  border-radius: 10px;
+  background: #f9fcff;
+  height: 48px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.dropzone.dragging {
+  background: #eef6ff;
+  border-color: #0b63c7;
+  box-shadow: 0 0 0 3px rgba(11, 99, 199, 0.12);
+}
+
+.dropzone-text {
+  color: #5e6a7a;
+  font-style: italic;
+  text-align: center;
+}
+.dropzone-note {
+  color: #8593a3;
+  margin-left: 6px;
+}
+.dropzone.has-file {
+  border-style: solid;
+  background: #e7f3ff;
+}
+
+/* ============ PREVIEW LOGO ============ */
+.logo-preview {
+  position: relative;
+  display: block; /* đổi từ inline-block -> block để dùng auto margin */
+  margin: 12px auto 18px; /* auto giúp khối nằm giữa form */
+  width: max-content; /* khối ôm đúng kích thước ảnh */
+  text-align: center; /* dự phòng, không hại gì */
+}
+
+.logo-preview img {
+  display: block; /* img là block thì text-align không tác dụng */
+  margin: 0 auto; /* nên cho img tự căn giữa */
+}
+.clear-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+.clear-btn:hover {
+  background: #e60000;
+  transform: scale(1.1);
+}
+
+/* ============ FORM ============ */
+.company-form .form-group {
+  display: grid;
+  grid-template-columns: 180px 1fr; /* label trái – input phải */
+  align-items: center;
+  column-gap: 16px;
+  margin-bottom: 20px;
+}
+
+.company-form label {
+  display: block;
+  margin-bottom: 0; /* vì đang dùng grid */
+  font-weight: 500;
+  color: #003763;
+}
+
+/* 💥 TẤT CẢ input/textarea/select BẰNG NHAU 100% */
+.company-form input,
+.company-form textarea,
+.company-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #c9d3e0;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 15px;
+  background: #eaf3ff; /* nền xanh nhạt như ảnh */
+  outline: none;
+}
+
+/* Date cũng full chiều ngang */
+.company-form input[type="date"] {
+  width: 100%;
+}
+
+/* Focus đẹp */
+.company-form input:focus,
+.company-form textarea:focus,
+.company-form select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+}
+
+/* Textarea canh trên cho gọn */
+.company-form textarea {
+  min-height: 100px;
+  resize: vertical;
+  align-self: start;
+}
+
+/* Lỗi */
+.error-text {
+  color: #d93025;
+  font-size: 13px;
+  grid-column: 2 / 3;
+}
+
+/* ============ NÚT LƯU ============ */
+.save-button {
+  width: 150px;
+  background-color: #003763;
+  color: #e3fdfd;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  margin: 20px auto 0;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.save-button:hover {
+  background-color: #e3fdfd;
+  color: #003763;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .upload-row,
+  .company-form .form-group {
+    grid-template-columns: 1fr; /* label trên – input dưới */
+  }
+  .error-text {
+    grid-column: auto;
+  }
+  .save-button {
+    width: 100%;
+  }
+}

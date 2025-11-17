@@ -3,7 +3,8 @@ import { requireAuth } from "../middlewares/auth.js";
 import { upload } from "../middlewares/upload.js";
 import {
   upsertCandidateProfile,
-  getAllCandidates,
+  getAppliedCandidates,
+  getCandidateProfile,
 } from "../controllers/candidateController.js";
 
 const router = Router();
@@ -16,7 +17,9 @@ router.post(
   upsertCandidateProfile
 );
 
+router.get("/profile/me", requireAuth, getCandidateProfile);
+
 // Employer xem danh sách ứng viên
-router.get("/list", requireAuth, getAllCandidates);
+router.get("/list", requireAuth, getAppliedCandidates);
 
 export default router;

@@ -1,6 +1,10 @@
+// fileName: ListCandidate.jsx (CHỈ SỬA useEffect)
+
 import React, { useEffect, useState } from "react";
 import "./ListCandidate.css";
 import IntroNavbar from "../components/IntroNavbar";
+
+const API_URL = "http://localhost:5000/api/candidate/list"; // Đảm bảo URL chính xác: /api/candidate/list
 
 export default function ListCandidate({ user, setUser }) {
   const [search, setSearch] = useState("");
@@ -9,34 +13,67 @@ export default function ListCandidate({ user, setUser }) {
 
   // 🔹 Lấy danh sách ứng viên từ backend
   useEffect(() => {
+    // 1. Kiểm tra vai trò và token từ props user
+    const currentToken = user?.token; 
+
+    if (!currentToken || user.role !== "employer") {
+      // Nếu không phải employer, đặt lỗi/rỗng và ngừng fetch
+      console.warn("Access denied: User must be an employer.");
+      setCandidates([]);
+      setLoading(false);
+      return;
+    }
+
     const fetchCandidates = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/candidates/list", {
+        setLoading(true);
+
+        const res = await fetch(API_URL, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${currentToken}`, // SỬ DỤNG TOKEN TỪ user PROP
           },
         });
         const data = await res.json();
-        if (res.ok) setCandidates(data.candidates || []);
-        else console.error(data.message);
+        
+        if (res.ok) {
+          setCandidates(data.candidates || []);
+        } else {
+          // Lỗi 401/403: Server từ chối vì token sai hoặc không phải employer
+          console.error("Fetch candidates failed (Server Error):", data.message);
+          setCandidates([]);
+        }
       } catch (err) {
-        console.error("Error fetching candidates:", err);
+        console.error("Error fetching candidates (Network/CORS):", err);
+        setCandidates([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchCandidates();
-  }, []);
+  }, [user]); // Theo dõi user prop
 
-  // 🔹 Lọc theo từ khóa tìm kiếm
+  // 🔹 Lọc theo từ khóa tìm kiếm (Giữ nguyên)
   const filteredCandidates = candidates.filter(
     (c) =>
       c.FullName?.toLowerCase().includes(search.toLowerCase()) ||
       c.Address?.toLowerCase().includes(search.toLowerCase()) ||
       c.Email?.toLowerCase().includes(search.toLowerCase())
   );
+  
+  // 🔹 Kiểm tra vai trò và hiển thị (Bổ sung cảnh báo nếu không phải Employer)
+  if (user && user.role !== "employer") {
+    return (
+      <div className="jobs-root">
+        <IntroNavbar user={user} setUser={setUser} />
+        <div style={{ padding: '20px', textAlign: 'center', marginTop: '50px' }}>
+          <h2 style={{ color: 'red' }}>Bạn không có quyền truy cập trang này.</h2>
+          <p>Chức năng này chỉ dành cho tài khoản Employer.</p>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="jobs-root">
@@ -44,6 +81,7 @@ export default function ListCandidate({ user, setUser }) {
 
       {/* Thanh tìm kiếm */}
       <div className="search-container">
+        {/* ... (Các phần khác giữ nguyên) */}
         <button className="search-icon" aria-label="Search">
           <svg viewBox="0 0 24 24" width="20" height="20">
             <path

@@ -1,8 +1,15 @@
-import React, { useState, useRef } from "react";
+// fileName: CV.jsx
+
+import React, { useState, useRef, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "./CV.css";
 import IntroNavbar from "../components/IntroNavbar";
 
+const API_BASE = "http://localhost:5000";
+
 export default function CV({ user, setUser }) {
+  const { jobId } = useParams(); // Lấy ID Job từ URL
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -10,14 +17,56 @@ export default function CV({ user, setUser }) {
     address: "",
     resume: null,
   });
+  // State để lưu tên file CV đã upload (do không thể tái tạo File object)
+  const [existingResumeName, setExistingResumeName] = useState(null);
+
   const [saving, setSaving] = useState(false);
 
   const fileInputRef = useRef(null);
+
+  // Load profile ứng viên hiện tại
+  useEffect(() => {
+    if (!user || user.role !== "candidate") {
+      alert("Bạn cần đăng nhập với vai trò Ứng viên!");
+      navigate("/login");
+      return;
+    }
+
+    const loadProfile = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/candidate/profile/me`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        const data = await res.json();
+
+        // Cập nhật form với dữ liệu hiện tại
+        setForm((p) => ({
+          ...p,
+          fullName: data.FullName || "",
+          phone: data.Phonenumber || "",
+          email: data.Email || user.email || "",
+          address: data.Address || "",
+        }));
+
+        if (data.Resume_URL) {
+          // Hiển thị tên file đã upload (xử lý tên file từ URL)
+          const fileName = data.Resume_URL.split("/").pop();
+          setExistingResumeName(fileName);
+        } else {
+          setExistingResumeName(null);
+        }
+      } catch (e) {
+        console.error("Lỗi khi tải profile:", e);
+      }
+    };
+    loadProfile();
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { id, value, files } = e.target;
     if (id === "resume") {
       setForm((p) => ({ ...p, resume: files?.[0] || null }));
+      setExistingResumeName(null); // Khi chọn file mới, xóa tên file cũ
     } else {
       setForm((p) => ({ ...p, [id]: value }));
     }
@@ -28,20 +77,33 @@ export default function CV({ user, setUser }) {
   const handleDrop = (e) => {
     e.preventDefault();
     const f = e.dataTransfer.files?.[0];
-    if (f) setForm((p) => ({ ...p, resume: f }));
+    if (f) {
+      setForm((p) => ({ ...p, resume: f }));
+      setExistingResumeName(null);
+    }
   };
 
   const handleDragOver = (e) => e.preventDefault();
 
-  const clearFile = () =>
+  const clearFile = () => {
     setForm((p) => ({ ...p, resume: null }));
+    setExistingResumeName(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user?.token) {
-      alert("Bạn cần đăng nhập trước!");
+    if (!user?.token || user.role !== "candidate") {
+      alert("Bạn cần đăng nhập với vai trò Ứng viên trước!");
       return;
     }
+
+    const isApplying = !!jobId;
+    if (isApplying && !form.resume && !existingResumeName) {
+      alert("Vui lòng upload CV/Hồ sơ trước khi gửi ứng tuyển!");
+      return;
+    }
+
+    // ********* PHẦN 1: LƯU PROFILE & UPLOAD CV *********
     const fd = new FormData();
     fd.append("fullName", form.fullName.trim());
     fd.append("phone", form.phone.trim());
@@ -51,25 +113,88 @@ export default function CV({ user, setUser }) {
 
     try {
       setSaving(true);
-      const res = await fetch("http://localhost:5000/api/candidate/profile", {
+
+      // 1. GỌI API LƯU PROFILE (Tương tự logic CV.jsx gốc)
+      const profileRes = await fetch(`${API_BASE}/api/candidate/profile`, {
         method: "POST",
         headers: { Authorization: `Bearer ${user.token}` },
         body: fd,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Upload failed");
+      const profileText = await profileRes.text();
 
-      alert("Đã lưu CV thành công!");
-      if (data.resumeUrl) {
-        console.log("Resume URL:", `http://localhost:5000${data.resumeUrl}`);
+      if (!profileRes.ok) {
+        let errorData = { message: "Upload failed" };
+        try {
+          // *** ĐÃ SỬA LỖI LOGIC: Dùng profileText và profileRes ***
+          errorData = JSON.parse(profileText);
+        } catch (e) {
+          console.error(
+            "Lỗi: Phản hồi không phải JSON:",
+            profileText.slice(0, 100) + "..."
+          );
+          throw new Error(
+            "Lỗi Server (Status: " +
+              profileRes.status +
+              "): " +
+              (profileText.includes("<!DOCTYPE")
+                ? "Phản hồi HTML/Lỗi Server"
+                : profileText)
+          );
+        }
+        throw new Error(
+          errorData?.message ||
+            `Lưu hồ sơ thất bại (Status: ${profileRes.status})`
+        );
+      }
+
+      const profileData = JSON.parse(profileText);
+
+      if (profileData.resumeUrl) {
+        const fileName = profileData.resumeUrl.split("/").pop();
+        setExistingResumeName(fileName);
+        console.log("Resume URL:", `${API_BASE}${profileData.resumeUrl}`);
+      }
+
+      // ********* PHẦN 2: GỬI ỨNG TUYỂN (NẾU CÓ jobId) *********
+      if (isApplying) {
+        // 2. GỌI API ỨNG TUYỂN MỚI
+        const applyRes = await fetch(`${API_BASE}/api/apply/job/${jobId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        const applyData = await applyRes.json();
+
+        if (!applyRes.ok) {
+          throw new Error(applyData?.message || "Gửi ứng tuyển thất bại");
+        }
+
+        alert(
+          `🎉 Ứng tuyển thành công cho Job ID: ${jobId}! Vui lòng kiểm tra trang 'MyApply'.`
+        );
+        navigate("/jobs"); // Chuyển hướng về trang danh sách việc làm sau khi ứng tuyển
+      } else {
+        // Chỉ lưu profile
+        alert("Đã lưu CV thành công!");
       }
     } catch (err) {
       console.error(err);
-      alert("Lưu thất bại: " + err.message);
+      alert(
+        (isApplying ? "Gửi ứng tuyển thất bại: " : "Lưu thất bại: ") +
+          err.message
+      );
     } finally {
       setSaving(false);
     }
   };
+
+  const fileToShow = form.resume || existingResumeName;
+  const fileNameToShow = form.resume?.name || existingResumeName;
+  const fileSizeToShow = form.resume?.size;
+
+  const isApplying = !!jobId;
 
   return (
     <div className="cv-root">
@@ -77,6 +202,19 @@ export default function CV({ user, setUser }) {
 
       <div className="cv-container">
         <form className="cv-form" onSubmit={handleSubmit}>
+          {isApplying && (
+            <h2
+              style={{
+                width: "100%",
+                textAlign: "center",
+                color: "#1a365d",
+                marginBottom: "16px",
+              }}
+            >
+              Ứng tuyển cho Job ID: **{jobId}**
+            </h2>
+          )}
+
           <div className="form-group">
             <label htmlFor="fullName">Full Name</label>
             <input
@@ -107,6 +245,8 @@ export default function CV({ user, setUser }) {
               value={form.email}
               onChange={handleChange}
               placeholder="Enter email address"
+              readOnly={!!user?.email} // Email được khóa nếu đã đăng nhập
+              style={{ backgroundColor: user?.email ? "#f0f0f0" : "#ffffff" }}
             />
           </div>
 
@@ -126,7 +266,7 @@ export default function CV({ user, setUser }) {
 
             {/* Ô upload: hiển thị tên file NGAY BÊN TRONG */}
             <div
-              className={`upload-box ${form.resume ? "has-file" : ""}`}
+              className={`upload-box ${fileToShow ? "has-file" : ""}`}
               onClick={handlePickFile}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
@@ -136,13 +276,14 @@ export default function CV({ user, setUser }) {
                 (e.key === "Enter" || e.key === " ") && handlePickFile()
               }
             >
-              {form.resume ? (
+              {fileToShow ? (
                 <div className="file-chip">
                   <span className="file-name">
-                    {form.resume.name}
-                    {form.resume.size
-                      ? ` • ${(form.resume.size / 1024).toFixed(0)} KB`
+                    {fileNameToShow}
+                    {fileSizeToShow
+                      ? ` • ${(fileSizeToShow / 1024).toFixed(0)} KB`
                       : ""}
+                    {!fileSizeToShow && existingResumeName && " (Đã lưu)"}
                   </span>
                   <button
                     type="button"
@@ -157,7 +298,9 @@ export default function CV({ user, setUser }) {
                   </button>
                 </div>
               ) : (
-                <p>Click or drag file to this area to upload(.pdf,.doc,.docx)</p>
+                <p>
+                  Click or drag file to this area to upload(.pdf,.doc,.docx)
+                </p>
               )}
 
               {/* input file ẩn */}
@@ -174,7 +317,7 @@ export default function CV({ user, setUser }) {
 
           <div className="btn-group">
             <button type="submit" className="btn save-btn" disabled={saving}>
-              {saving ? "Saving..." : "Save"}
+              {saving ? "Đang xử lý..." : isApplying ? "Gửi ứng tuyển" : "Save"}
             </button>
             <input
               type="reset"

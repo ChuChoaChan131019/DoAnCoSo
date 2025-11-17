@@ -1,8 +1,11 @@
+// fileName: JobDetail.jsx
+
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import IntroNavbar from "../components/IntroNavbar";
 import "./JobDetail.css";
 import { FaBriefcase, FaMapMarkerAlt, FaRegClock } from "react-icons/fa"; //lấy icon
+// import { use } from "react"; // <--- Bỏ import không cần thiết này
 
 /** ĐỔI NẾU CẦN: đọc từ .env hay file config chung của em */
 const API_BASE = "http://localhost:5000";
@@ -30,6 +33,7 @@ export default function JobDetail({ user, setUser }) {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -47,6 +51,19 @@ export default function JobDetail({ user, setUser }) {
       }
     })();
   }, [id]);
+
+  // Hàm xử lý logic ứng tuyển
+  const handleApply = () => {
+    if (!user) {
+      alert("Bạn cần đăng nhập để ứng tuyển!");
+      navigate("/login");
+    } else if (user.role !== "candidate") {
+      alert("Chỉ ứng viên mới có thể ứng tuyển.");
+    } else {
+      // Chuyển hướng đến trang CV và truyền ID Job
+      navigate(`/cv/${id}`);
+    }
+  };
 
   if (loading) {
     return (
@@ -75,6 +92,7 @@ export default function JobDetail({ user, setUser }) {
   return (
     <div className="jd-root">
       <IntroNavbar user={user} setUser={setUser} />
+      {/*  */}
 
       {/* ===== HERO ===== */}
       <header className="jd-hero">
@@ -118,9 +136,11 @@ export default function JobDetail({ user, setUser }) {
             )}
           </div>
 
-          {/* Chỉ còn nút Ứng tuyển */}
+          {/* Nút Ứng tuyển */}
           <div className="jd-hero-cta">
-            <button className="jd-btn jd-btn--primary">Ứng tuyển</button>
+            <button className="jd-btn jd-btn--primary" onClick={handleApply}> {/* <-- Cập nhật */}
+              Ứng tuyển
+            </button>
           </div>
         </div>
       </header>
@@ -172,7 +192,7 @@ export default function JobDetail({ user, setUser }) {
                   <strong>{job.Job_Status || "—"}</strong>
                 </li>
               </ul>
-              <button className="jd-btn jd-btn--full jd-btn--primary">
+              <button className="jd-btn jd-btn--full jd-btn--primary" onClick={handleApply}> {/* <-- Cập nhật */}
                 Ứng tuyển ngay
               </button>
             </div>
