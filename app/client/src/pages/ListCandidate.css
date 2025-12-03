@@ -94,3 +94,66 @@ body{background: #fff;}
   font-weight: 500;
   color: #003763;
 }
+/* ListCandidate.css - THÊM CÁC STYLE NÀY */
+
+/* Cải thiện CSS cho phần cuộn danh sách đơn ứng tuyển */
+.candidate-applications-scroll {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 10px; /* Để tạo khoảng trống cho scrollbar */
+}
+
+/* Style cho các nút hành động */
+.application-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.application-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s, background 0.2s;
+    font-size: 14px;
+}
+
+.application-actions button:hover {
+    opacity: 0.9;
+}
+
+/* Nút Chấp nhận */
+.btn-hired {
+    background: #28a745; /* Green */
+    color: white;
+}
+
+/* Nút Từ chối */
+.btn-rejected {
+    background: #dc3545; /* Red */
+    color: white;
+}
+
+/* Style chung cho từng đơn ứng tuyển */
+.application-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    transition: background 0.2s;
+}
+
+/* Màu nền dựa trên trạng thái */
+.application-item.status-hired {
+    background: #e6ffe6; /* Light green */
+}
+
+.application-item.status-rejected {
+    background: #ffe6e6; /* Light red */
+}
+
+.application-item.status-pending {
+    background: #f0ffff; /* Light blue/cyan */
+}

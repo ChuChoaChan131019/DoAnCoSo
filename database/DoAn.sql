@@ -275,9 +275,9 @@ SELECT * FROM Notification ORDER BY Created_At DESC;
 CREATE TABLE IF NOT EXISTS `notification` (
   `ID_Notification` INT NOT NULL AUTO_INCREMENT,
   `ID_User` INT NOT NULL,
-  `Type` ENUM('new_job', 'new_application') NOT NULL,
-  `Title` VARCHAR(255) NOT NULL,
-  `Message` TEXT NOT NULL,
+  `Notification_Type` ENUM('new_job', 'new_application','job_update') NOT NULL, -- ĐÃ SỬA
+  `Notification_Title` VARCHAR(255) NOT NULL,                      -- ĐÃ SỬA
+  `Notification_Content` TEXT NOT NULL,                            -- ĐÃ SỬA
   `Related_ID` VARCHAR(10) DEFAULT NULL,
   `Is_Read` BOOLEAN DEFAULT FALSE,
   `Created_At` DATETIME DEFAULT CURRENT_TIMESTAMP,

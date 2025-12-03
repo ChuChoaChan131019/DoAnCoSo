@@ -184,3 +184,94 @@ export const countNewApplications = async (req, res) => {
     return res.status(500).json({ message: "Lỗi máy chủ", count: 0 });
   }
 };
+
+/**
+ * Cập nhật trạng thái đơn ứng tuyển (chấp nhận/từ chối)
+ * Yêu cầu: Employer phải là chủ công việc, trạng thái phải là 'rejected' hoặc 'hired'.
+ */
+export const updateApplicationStatus = async (req, res) => {
+  const userId = getUserId(req);
+  const { jobId, candidateId } = req.params;
+  // status sẽ là 'rejected' hoặc 'hired'
+  const { status } = req.body; 
+
+  if (!userId || req.user.role !== "employer") {
+    return res.status(403).json({ message: "Chỉ Employer mới được thực hiện" });
+  }
+
+  if (!jobId || !candidateId || !["rejected", "hired"].includes(status)) {
+    return res.status(400).json({ message: "Dữ liệu đầu vào không hợp lệ" });
+  }
+
+  try {
+    // 1. Kiểm tra ID Employer và công việc có thuộc về Employer này không
+    const [jobRows] = await db.query(
+      `SELECT J.Name_Job, E.ID_User 
+       FROM Job J 
+       JOIN Employer E ON J.ID_Employer = E.ID_Employer
+       WHERE J.ID_Job = ?`,
+      [jobId]
+    );
+
+    if (jobRows.length === 0 || jobRows[0].ID_User !== userId) {
+      return res.status(404).json({ message: "Công việc không tồn tại hoặc không thuộc quyền quản lý của bạn" });
+    }
+
+    const { Name_Job } = jobRows[0];
+
+    // 2. Cập nhật trạng thái đơn ứng tuyển
+    const [result] = await db.query(
+      `UPDATE Application 
+       SET Application_Status = ?
+       WHERE ID_Job = ? AND ID_Candidate = ? AND Application_Status = 'pending'`,
+      [status, jobId, candidateId]
+    );
+
+    if (result.changedRows === 0) {
+        // Có thể trạng thái đã được cập nhật hoặc đơn ứng tuyển không tồn tại/không ở trạng thái pending
+        const [appRow] = await db.query(
+            `SELECT Application_Status FROM Application WHERE ID_Job = ? AND ID_Candidate = ?`,
+            [jobId, candidateId]
+        );
+        if (appRow.length === 0) {
+             return res.status(404).json({ message: "Không tìm thấy đơn ứng tuyển" });
+        }
+    }
+    
+    // 3. Lấy ID_User của ứng viên để gửi thông báo
+    const [candidateUserRows] = await db.query(
+        "SELECT ID_User FROM Candidate WHERE ID_Candidate = ?",
+        [candidateId]
+    );
+
+    if (candidateUserRows.length > 0) {
+        const candidateUserId = candidateUserRows[0].ID_User;
+        let notificationTitle;
+        let notificationMessage;
+        
+        if (status === "hired") {
+            notificationTitle = `Chúc mừng! Bạn được mời nhận việc`;
+            notificationMessage = `Bạn đã được Chấp nhận cho vị trí ${Name_Job}. Hãy kiểm tra email để biết thông tin chi tiết.`;
+        } else { // status === "rejected"
+            notificationTitle = `Thông báo về đơn ứng tuyển`;
+            notificationMessage = `Đơn ứng tuyển vị trí ${Name_Job} của bạn đã bị Từ chối. Chúc bạn may mắn lần sau!`;
+        }
+
+        // Tạo thông báo
+        await createNotification(
+            candidateUserId,
+            "job_update", // THÊM LOẠI THÔNG BÁO MỚI (chúng ta sẽ update DB sau)
+            notificationTitle,
+            notificationMessage,
+            jobId // relatedId là ID_Job
+        );
+    }
+    
+    // 4. Trả về kết quả thành công
+    res.json({ message: `Đã cập nhật trạng thái đơn ứng tuyển thành ${status}`, newStatus: status });
+
+  } catch (err) {
+    console.error("[UPDATE APPLICATION STATUS ERROR]", err);
+    return res.status(500).json({ message: "Lỗi máy chủ khi cập nhật trạng thái" });
+  }
+};

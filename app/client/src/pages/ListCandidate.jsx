@@ -1,73 +1,152 @@
-// fileName: ListCandidate.jsx (CHỈ SỬA useEffect)
+// fileName: ListCandidate.jsx
 
-import React, { useEffect, useState } from "react";
-import "./ListCandidate.css";
+import React, { useEffect, useState, useCallback } from "react";
+import "./ListCandidate.css"; // Đảm bảo import file CSS
 import IntroNavbar from "../components/IntroNavbar";
 
-const API_URL = "http://localhost:5000/api/candidate/list"; // Đảm bảo URL chính xác: /api/candidate/list
+const API_LIST_URL = "http://localhost:5000/api/candidate/list";
+const API_STATUS_URL = "http://localhost:5000/api/apply/status";
 
 export default function ListCandidate({ user, setUser }) {
   const [search, setSearch] = useState("");
-  const [candidates, setCandidates] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const currentToken = user?.token; 
+  const getToken = () => user?.token || null;
+
+  // Hàm nhóm đơn ứng tuyển theo ứng viên
+  const groupApplicationsByCandidate = (apps) => {
+    const grouped = {};
+    apps.forEach((app) => {
+      const id = app.ID_Candidate;
+      if (!grouped[id]) {
+        grouped[id] = {
+          ...app,
+          applications: [],
+        };
+      }
+      grouped[id].applications.push({
+        ID_Job: app.ID_Job,
+        Name_Job: app.Name_Job,
+        Job_Location: app.Job_Location,
+        Date_Applied: app.Date_Applied,
+        Application_Status: app.Application_Status,
+      });
+    });
+    return Object.values(grouped);
+  };
+
+  // Hàm FETCH danh sách đơn ứng tuyển
+  const fetchApplications = useCallback(async () => {
+    const currentToken = getToken();
 
     if (!currentToken || user.role !== "employer") {
-      console.warn("Access denied: User must be an employer.");
-      setCandidates([]);
+      setApplications([]);
       setLoading(false);
       return;
     }
 
-    const fetchCandidates = async () => {
-      try {
-        setLoading(true);
+    try {
+      setLoading(true);
+      const res = await fetch(API_LIST_URL, {
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      });
+      const data = await res.json();
 
-        const res = await fetch(API_URL, {
-          headers: {
-            Authorization: `Bearer ${currentToken}`, 
-          },
-        });
-        const data = await res.json();
-        
-        if (res.ok) {
-          setCandidates(data.candidates || []);
-        } else {
-          console.error("Fetch candidates failed (Server Error):", data.message);
-          setCandidates([]);
-        }
-      } catch (err) {
-        console.error("Error fetching candidates (Network/CORS):", err);
-        setCandidates([]);
-      } finally {
-        setLoading(false);
+      if (res.ok) {
+        setApplications(data.applications || []);
+      } else {
+        console.error(
+          "Fetch applications failed (Server Error):",
+          data.message
+        );
+        setApplications([]);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching applications:", err);
+      setApplications([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [user.role, user.token]);
 
-    fetchCandidates();
-  }, [user]); 
+  useEffect(() => {
+    fetchApplications();
+  }, [fetchApplications]);
 
-  const filteredCandidates = candidates.filter(
+  // ✅ HÀM XỬ LÝ CHẤP NHẬN/TỪ CHỐI (Giữ nguyên logic)
+  const handleStatusUpdate = async (jobId, candidateId, newStatus) => {
+    if (
+      !window.confirm(
+        `Bạn có chắc chắn muốn ${
+          newStatus === "hired" ? "CHẤP NHẬN" : "TỪ CHỐI"
+        } đơn ứng tuyển này?`
+      )
+    ) {
+      return;
+    }
+
+    const token = getToken();
+    if (!token) return alert("Lỗi xác thực.");
+
+    try {
+      const res = await fetch(`${API_STATUS_URL}/${jobId}/${candidateId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message);
+        // Cập nhật state cục bộ để giao diện mượt hơn:
+        setApplications((prevApps) =>
+          prevApps.map((app) => {
+            if (app.ID_Job === jobId && app.ID_Candidate === candidateId) {
+              return { ...app, Application_Status: newStatus };
+            }
+            return app;
+          })
+        );
+      } else {
+        alert(`Thất bại: ${data.message || "Lỗi không xác định"}`);
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Lỗi kết nối máy chủ khi cập nhật trạng thái.");
+    }
+  };
+
+  const groupedCandidates = groupApplicationsByCandidate(applications);
+
+  const filteredCandidates = groupedCandidates.filter(
     (c) =>
       c.FullName?.toLowerCase().includes(search.toLowerCase()) ||
       c.Address?.toLowerCase().includes(search.toLowerCase()) ||
       c.Email?.toLowerCase().includes(search.toLowerCase())
   );
-  
+
   if (user && user.role !== "employer") {
     return (
       <div className="jobs-root">
         <IntroNavbar user={user} setUser={setUser} />
-        <div style={{ padding: '20px', textAlign: 'center', marginTop: '50px' }}>
-          <h2 style={{ color: 'red' }}>Bạn không có quyền truy cập trang này.</h2>
+        <div
+          style={{ padding: "20px", textAlign: "center", marginTop: "50px" }}
+        >
+          <h2 style={{ color: "red" }}>
+            Bạn không có quyền truy cập trang này.
+          </h2>
           <p>Chức năng này chỉ dành cho tài khoản Employer.</p>
         </div>
       </div>
     );
   }
-
 
   return (
     <div className="jobs-root">
@@ -99,10 +178,12 @@ export default function ListCandidate({ user, setUser }) {
 
       <div className="candidate-list">
         {loading ? (
-          <p style={{ textAlign: "center", gridColumn: "1 / -1" }}>Đang tải...</p>
+          <p style={{ textAlign: "center", gridColumn: "1 / -1" }}>
+            Đang tải...
+          </p>
         ) : filteredCandidates.length === 0 ? (
           <p style={{ textAlign: "center", gridColumn: "1 / -1" }}>
-            Không tìm thấy ứng viên nào.
+            Không tìm thấy ứng viên nào phù hợp.
           </p>
         ) : (
           filteredCandidates.map((c) => (
@@ -125,16 +206,110 @@ export default function ListCandidate({ user, setUser }) {
                   <strong>SĐT:</strong> {c.Phonenumber || "—"}
                 </p>
               </div>
+
+              <h4
+                style={{
+                  margin: "15px 0 5px 0",
+                  borderTop: "1px solid #cce",
+                  paddingTop: "10px",
+                  fontSize: "16px",
+                }}
+              >
+                Đơn ứng tuyển ({c.applications.length})
+              </h4>
+
+              {/* ✅ SỬ DỤNG CLASS CSS TỪ ĐÂY */}
+              <div className="candidate-applications-scroll">
+                {c.applications.map((app, index) => (
+                  <div
+                    key={`${app.ID_Job}-${index}`}
+                    className={`application-item status-${app.Application_Status}`}
+                  >
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {app.Name_Job} ({app.Job_Location})
+                    </p>
+                    <p
+                      style={{
+                        margin: "3px 0",
+                        fontSize: "13px",
+                        color: "#666",
+                      }}
+                    >
+                      Trạng thái:
+                      <strong
+                        style={{
+                          color:
+                            app.Application_Status === "hired"
+                              ? "green"
+                              : app.Application_Status === "rejected"
+                              ? "red"
+                              : "orange",
+                          marginLeft: "5px",
+                        }}
+                      >
+                        {app.Application_Status.toUpperCase()}
+                      </strong>
+                    </p>
+                    <p
+                      style={{
+                        margin: "3px 0 8px 0",
+                        fontSize: "13px",
+                        color: "#666",
+                      }}
+                    >
+                      Ngày nộp:{" "}
+                      {new Date(app.Date_Applied).toLocaleDateString("vi-VN")}
+                    </p>
+
+                    {app.Application_Status === "pending" && (
+                      <div className="application-actions">
+                        <button
+                          onClick={() =>
+                            handleStatusUpdate(
+                              app.ID_Job,
+                              c.ID_Candidate,
+                              "hired"
+                            )
+                          }
+                          className="btn-hired"
+                        >
+                          ✅ Chấp nhận
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleStatusUpdate(
+                              app.ID_Job,
+                              c.ID_Candidate,
+                              "rejected"
+                            )
+                          }
+                          className="btn-rejected"
+                        >
+                          ❌ Từ chối
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
               {c.Resume_URL && (
                 <a
                   href={`http://localhost:5000${c.Resume_URL}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
-                    marginTop: "8px",
+                    marginTop: "12px",
                     color: "#003763",
                     fontWeight: "bold",
                     textDecoration: "underline",
+                    display: "block",
                   }}
                 >
                   📄 Xem CV
