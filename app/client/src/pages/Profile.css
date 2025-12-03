@@ -131,13 +131,13 @@
 .company-form input[type="date"] {
   width: 100%;
 }
-
-.company-form input:focus,
-.company-form textarea:focus,
-.company-form select:focus {
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group :focus {
+  border-color: #001b30;
 }
+
+
 
 .company-form textarea {
   min-height: 100px;

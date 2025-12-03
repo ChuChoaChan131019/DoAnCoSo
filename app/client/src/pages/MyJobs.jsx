@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./CV.css";
+import "./MyJobs.css";
 import IntroNavbar from "../components/IntroNavbar";
 import IndustrySelect from "../components/IndustrySelect";
 import ExperienceSelect from "../components/ExperienceSelect";
@@ -372,7 +372,7 @@ export default function MyJobs({ user, setUser }) {
           <div className="form-group">
             <label htmlFor="description">Job Description:</label>
             <textarea
-              className="description-textarea"
+              className="textarea"
               id="description"
               name="description"
               placeholder="Mô tả công việc"
@@ -396,21 +396,11 @@ export default function MyJobs({ user, setUser }) {
             </select>
           </div>
 
-          <div className="btn-group">
-            <button type="submit" className=" save-btn" disabled={submitting}>
-              {selectedJobId
-                ? submitting
-                  ? "Đang lưu sửa..."
-                  : "Lưu thay đổi"
-                : submitting
-                ? "Đang lưu..."
-                : "Lưu"}
-            </button>
-
+          <div className="form-actions">
             {selectedJobId && (
               <button
-                type="submit"
-                className="save-button btn-reset"
+                type="button" // Quan trọng: Đổi thành type="button" để không submit form
+                className="save-btn btn-reset" // Giữ lại save-btn để có padding, font, thêm btn-reset để ghi đè màu
                 onClick={() => {
                   setForm(init);
                   setSelectedJobId(null);
@@ -419,6 +409,19 @@ export default function MyJobs({ user, setUser }) {
                 Hủy chỉnh sửa
               </button>
             )}
+            <button
+              type="submit"
+              className="save-btn btn-primary"
+              disabled={submitting}
+            >
+              {selectedJobId
+                ? submitting
+                  ? "Đang lưu sửa..."
+                  : "Lưu thay đổi"
+                : submitting
+                ? "Đang tạo..."
+                : "Tạo Job mới"}
+            </button>
           </div>
         </form>
       </div>

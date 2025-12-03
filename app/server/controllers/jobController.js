@@ -13,7 +13,31 @@ function normalizeDate(d) {
   if (isNaN(dt)) return null;
   return dt.toISOString().slice(0, 10);
 }
+/**
+ * Kiểm tra và đóng các công việc đã hết hạn (End_Date < Ngày hiện tại).
+ * @returns {Promise<number>} Số lượng công việc đã được đóng.
+ */
+async function checkAndCloseJobs() {
+    try {
+        const today = normalizeDate(new Date());
 
+        // Cập nhật tất cả các job đang 'opened' mà End_Date < ngày hôm nay
+        const [result] = await db.query(
+            `UPDATE Job
+             SET Job_Status = 'closed'
+             WHERE Job_Status = 'opened' AND End_Date < ?`,
+            [today]
+        );
+        const count = result.affectedRows;
+        if (count > 0) {
+            console.log(` Đã tự động đóng ${count} job hết hạn.`);
+        }
+        return count;
+    } catch (err) {
+        console.error("Lỗi khi tự động đóng job:", err);
+        return 0;
+    }
+}
 export const createJob = async (req, res) => {
   const userId = getUserId(req);
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
@@ -290,6 +314,7 @@ export const listMyJobs = async (req, res) => {
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
   try {
+    await checkAndCloseJobs();
     const [empRows] = await db.query(
       "SELECT ID_Employer FROM Employer WHERE ID_User = ?",
       [userId]
@@ -317,6 +342,7 @@ export const listMyJobs = async (req, res) => {
 
 export const listAllJobs = async (req, res) => {
   try {
+    await checkAndCloseJobs();
     const {
       q = "",
       location = "",
@@ -400,6 +426,7 @@ export const listAllJobs = async (req, res) => {
 
 export const getJobById = async (req, res) => {
   try {
+    await checkAndCloseJobs();
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "Missing job id" });
 

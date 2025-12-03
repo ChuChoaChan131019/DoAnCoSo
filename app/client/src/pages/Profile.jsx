@@ -347,7 +347,7 @@ export default function Profile({ user, setUser }) {
         <div className="form-group">
           <label htmlFor="describe">Describe:</label>
           <textarea
-            className="description-textarea"
+            className="textarea"
             id="describe"
             name="describe"
             placeholder="Company Description"

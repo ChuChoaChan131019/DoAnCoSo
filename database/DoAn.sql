@@ -269,8 +269,6 @@ create table Application
     foreign key (ID_Candidate) references Candidate(ID_Candidate)
 );
 
-select * from Notification;
-SELECT * FROM Notification ORDER BY Created_At DESC;
 
 CREATE TABLE IF NOT EXISTS `notification` (
   `ID_Notification` INT NOT NULL AUTO_INCREMENT,
