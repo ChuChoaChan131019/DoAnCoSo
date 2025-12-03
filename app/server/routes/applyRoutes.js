@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { requireAuth } from "../middlewares/auth.js";
-import { applyForJob, listMyApplications, countNewApplications } from "../controllers/applyController.js";
+import {
+  applyForJob,
+  listMyApplications,
+  countNewApplications,
+} from "../controllers/applyController.js";
 
 const router = Router();
 

@@ -1,4 +1,5 @@
 import db from "../configs/db.config.js";
+import { createNotification } from "./notificationController.js"; // ✅ THÊM DÒNG NÀY
 
 function getUserId(req) {
   return req.user?.id || req.user?.ID_User || null;
@@ -53,13 +54,13 @@ export const createJob = async (req, res) => {
 
     const catId = ID_Category.toString().padStart(6, "0");
     const [empRows] = await db.query(
-      "SELECT ID_Employer FROM Employer WHERE ID_User = ?",
+      "SELECT ID_Employer, Company_Name FROM Employer WHERE ID_User = ?",
       [userId]
     );
     if (!empRows.length) {
       return res.status(403).json({ message: "User chưa có Employer profile" });
     }
-    const { ID_Employer } = empRows[0];
+    const { ID_Employer, Company_Name } = empRows[0];
 
     const [catRows] = await db.query(
       "SELECT 1 FROM Category WHERE ID_Category = ?",
@@ -72,7 +73,6 @@ export const createJob = async (req, res) => {
         normalized: catId,
       });
     }
-
 
     // Insert Job
     const sql = `INSERT INTO Job
@@ -95,14 +95,46 @@ export const createJob = async (req, res) => {
 
     await db.query(sql, params);
 
-    // Lấy ID_Job vừa tạo 
+    // Lấy ID_Job vừa tạo
     const [lastRow] = await db.query(
       "SELECT ID_Job FROM Job ORDER BY CAST(ID_Job AS UNSIGNED) DESC LIMIT 1"
     );
     const insertedId = lastRow?.[0]?.ID_Job || null;
 
+    console.log(`✅ Đã tạo công việc mới: ${Name_Job} (ID: ${insertedId})`);
+
+    // ✅ GỬI THÔNG BÁO CHO TẤT CẢ ỨNG VIÊN
+    try {
+      const [candidates] = await db.query(
+        `SELECT u.ID_User, u.UserName 
+         FROM Users u
+         WHERE u.RoleName = 'candidate'`
+      );
+
+      console.log(`📢 Gửi thông báo cho ${candidates.length} ứng viên...`);
+
+      // Tạo thông báo cho từng ứng viên
+      const notificationPromises = candidates.map((candidate) =>
+        createNotification(
+          candidate.ID_User,
+          "new_job",
+          "🔔 Công việc mới",
+          `${Company_Name} vừa đăng tuyển: ${Name_Job} tại ${Job_Location}. Mức lương: ${
+            Salary ? Number(Salary).toLocaleString() : "Thỏa thuận"
+          } VNĐ`,
+          insertedId
+        )
+      );
+
+      await Promise.all(notificationPromises);
+      console.log(`✅ Đã gửi thông báo thành công!`);
+    } catch (notifErr) {
+      console.error("⚠️ Lỗi khi gửi thông báo:", notifErr);
+      // Không làm gián đoạn quá trình tạo job
+    }
+
     return res.status(201).json({
-      message: "Tạo job thành công",
+      message: "Tạo job thành công và đã gửi thông báo",
       Job: {
         ID_Job: insertedId,
         ID_Employer,
@@ -123,15 +155,15 @@ export const createJob = async (req, res) => {
   }
 };
 
+// GIỮ NGUYÊN CÁC HÀM KHÁC: updateJob, listMyJobs, listAllJobs, getJobById...
 export const updateJob = async (req, res) => {
   const userId = req.user?.id || req.user?.ID_User || null;
   if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
-  const { id } = req.params; 
+  const { id } = req.params;
   if (!id) return res.status(400).json({ message: "Missing job id" });
 
   try {
-    // Tìm employer tương ứng user
     const [empRows] = await db.query(
       "SELECT ID_Employer FROM Employer WHERE ID_User = ?",
       [userId]
@@ -141,7 +173,6 @@ export const updateJob = async (req, res) => {
     }
     const { ID_Employer } = empRows[0];
 
-    // Kiểm tra job có thuộc employer này không
     const [jobRows] = await db.query(
       "SELECT * FROM Job WHERE ID_Job = ? AND ID_Employer = ?",
       [id, ID_Employer]
@@ -152,7 +183,6 @@ export const updateJob = async (req, res) => {
         .json({ message: "Job không tồn tại hoặc không thuộc quyền của bạn" });
     }
 
-    // Lấy dữ liệu cần update
     const {
       Name_Job,
       ID_Category,
@@ -238,7 +268,6 @@ export const updateJob = async (req, res) => {
     params.push(id, ID_Employer);
     await db.query(sql, params);
 
-    // Lấy lại bản ghi đã update để trả về
     const [updatedRows] = await db.query(
       `SELECT ID_Job, ID_Employer, Name_Job, Job_Description, Job_Location,
               Experience, Salary, ID_Category, Start_Date, End_Date, Job_Status
@@ -255,7 +284,6 @@ export const updateJob = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const listMyJobs = async (req, res) => {
   const userId = req.user?.id || req.user?.ID_User || null;
@@ -286,7 +314,6 @@ export const listMyJobs = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const listAllJobs = async (req, res) => {
   try {
@@ -343,7 +370,7 @@ export const listAllJobs = async (req, res) => {
         j.ID_Job, j.Name_Job, j.Job_Description, j.Job_Location, j.Experience,
         j.Salary, j.ID_Category, j.Start_Date, j.End_Date, j.Job_Status,
         c.Name_Category,
-        e.Company_Name, e.Company_Logo        -- 👈 THÊM CỘT NÀY
+        e.Company_Name, e.Company_Logo
       FROM Job j
       JOIN Category c ON c.ID_Category = j.ID_Category
       JOIN Employer e  ON e.ID_Employer = j.ID_Employer
@@ -371,11 +398,9 @@ export const listAllJobs = async (req, res) => {
   }
 };
 
-
-// LẤY CHI TIẾT 1 JOB THEO ID
 export const getJobById = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     if (!id) return res.status(400).json({ message: "Missing job id" });
 
     const sql = `

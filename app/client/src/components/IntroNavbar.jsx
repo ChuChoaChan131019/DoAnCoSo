@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./IntroNavbar.css";
+import NotificationBell from "./NotificationBell";
 
 export default function IntroNavbar({ user, setUser }) {
   const navigate = useNavigate();
@@ -64,6 +65,9 @@ export default function IntroNavbar({ user, setUser }) {
         </ul>
       </nav>
 
+      {/* ✅ THÊM NotificationBell */}
+      <NotificationBell user={user} />
+      
       {user ? (
         <div className="user-box">
           <button onClick={() => setOpen(!open)} className="username-btn">

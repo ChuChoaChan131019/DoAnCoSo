@@ -258,3 +258,31 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-11-06  8:54:09
+create table Application
+(	
+	ID_Job varchar(6),
+    ID_Candidate varchar(6),
+    Date_Applied datetime not null,
+    Application_Status enum("pending", "rejected", "hired") default "pending",
+    primary key(ID_Job, ID_Candidate),
+    foreign key (ID_Job) references Job(ID_Job),
+    foreign key (ID_Candidate) references Candidate(ID_Candidate)
+);
+
+select * from Notification;
+SELECT * FROM Notification ORDER BY Created_At DESC;
+
+CREATE TABLE IF NOT EXISTS `notification` (
+  `ID_Notification` INT NOT NULL AUTO_INCREMENT,
+  `ID_User` INT NOT NULL,
+  `Type` ENUM('new_job', 'new_application') NOT NULL,
+  `Title` VARCHAR(255) NOT NULL,
+  `Message` TEXT NOT NULL,
+  `Related_ID` VARCHAR(10) DEFAULT NULL,
+  `Is_Read` BOOLEAN DEFAULT FALSE,
+  `Created_At` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID_Notification`),
+  KEY `idx_user` (`ID_User`),
+  KEY `idx_read` (`Is_Read`),
+  CONSTRAINT `fk_notification_user` FOREIGN KEY (`ID_User`) REFERENCES `users` (`ID_User`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
