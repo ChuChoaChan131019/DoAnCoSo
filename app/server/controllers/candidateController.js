@@ -54,26 +54,30 @@ export async function upsertCandidateProfile(req, res) {
   }
 }
 
-export async function getAppliedCandidates(req, res) { 
+// candidateController.js - Cập nhật hàm getAppliedCandidates
+
+export async function getAppliedCandidates(req, res) {
   try {
-    // Kiểm tra vai trò
     if (!req.user?.id || req.user.role !== "employer") {
       return res.status(403).json({ message: "Employer only" });
     }
 
     const userId = req.user.id;
-    
+
     // Lấy ID_Employer của người dùng đang đăng nhập
-    const [empRows] = await db.execute("SELECT ID_Employer FROM Employer WHERE ID_User = ?", [userId]);
+    const [empRows] = await db.execute(
+      "SELECT ID_Employer FROM Employer WHERE ID_User = ?",
+      [userId]
+    );
     if (empRows.length === 0) {
-        return res.json({ candidates: [], message: "Employer profile not found." });
+      return res.json({ candidates: [], message: "Employer profile not found." });
     }
     const { ID_Employer } = empRows[0];
 
-
-    // Truy vấn ứng viên đã apply vào Job thuộc Employer này
+    // ✅ SỬA: Truy vấn tất cả các đơn ứng tuyển (Application) thay vì DISTINCT Candidate
     const sql = `
-      SELECT DISTINCT
+      SELECT
+        App.ID_Job, App.Date_Applied, App.Application_Status,
         C.ID_Candidate,
         C.FullName,
         C.Address,
@@ -81,16 +85,17 @@ export async function getAppliedCandidates(req, res) {
         C.Resume_URL,
         U.Email,
         U.DateCreate,
-        (SELECT COUNT(A.ID_Job) FROM Application A JOIN Job J ON A.ID_Job = J.ID_Job WHERE A.ID_Candidate = C.ID_Candidate AND J.ID_Employer = ?) AS ApplicationCount
-      FROM Candidate C
-      JOIN Users U ON C.ID_User = U.ID_User
-      JOIN Application App ON C.ID_Candidate = App.ID_Candidate
+        J.Name_Job, -- THÊM TÊN CÔNG VIỆC
+        J.Job_Location -- THÊM ĐỊA ĐIỂM
+      FROM Application App
       JOIN Job J ON App.ID_Job = J.ID_Job
+      JOIN Candidate C ON App.ID_Candidate = C.ID_Candidate
+      JOIN Users U ON C.ID_User = U.ID_User
       WHERE J.ID_Employer = ?
-      ORDER BY U.DateCreate DESC
+      ORDER BY App.Date_Applied DESC -- Sắp xếp theo ngày ứng tuyển mới nhất
     `;
 
-    const [rows] = await db.execute(sql, [ID_Employer, ID_Employer]); 
+    const [rows] = await db.execute(sql, [ID_Employer]);
 
     const normalized = rows.map((r) => ({
       ...r,
@@ -101,9 +106,10 @@ export async function getAppliedCandidates(req, res) {
         : null,
     }));
 
-    return res.json({ candidates: normalized });
+    // Bây giờ rows sẽ trả về danh sách Application (đơn ứng tuyển)
+    return res.json({ applications: normalized }); 
   } catch (err) {
-    console.error("[GET APPLIED CANDIDATES ERROR]", err);
+    console.error("[GET APPLIED APPLICATIONS ERROR]", err);
     return res.status(500).json({ message: "Server error" });
   }
 }

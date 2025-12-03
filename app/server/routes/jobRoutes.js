@@ -1,7 +1,13 @@
 // server/routes/jobRoutes.js
 import { Router } from "express";
-import {createJob, listMyJobs, listAllJobs, updateJob, getJobById } from "../controllers/jobController.js";
-import { requireAuth } from "../middlewares/auth.js"; 
+import {
+  createJob,
+  listMyJobs,
+  listAllJobs,
+  updateJob,
+  getJobById,
+} from "../controllers/jobController.js";
+import { requireAuth } from "../middlewares/auth.js";
 
 const router = Router();
 
