@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import "./Home.css";
 import { Link, useNavigate } from "react-router-dom";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 const toAbsUrl = (u) => {
   if (!u) return "";
   if (/^https?:\/\//i.test(u)) return u;
@@ -54,6 +54,10 @@ export default function Home({ user, setUser }) {
   useEffect(() => {
     (async () => {
       try {
+        if (!API_BASE) {
+          console.error("API base URL is not configured.");
+          return;
+        }
         const res = await fetch(`${API_BASE}/api/jobs?status=opened&limit=6`);
         const data = await res.json();
         setJobs(Array.isArray(data?.jobs) ? data.jobs : []);
@@ -69,16 +73,15 @@ export default function Home({ user, setUser }) {
     if (q) {
       navigate(`/jobs?q=${encodeURIComponent(q)}`);
     } else {
-      navigate(`/jobs`); 
-    }
-  };
-  
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch();
+      navigate(`/jobs`);
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="page home-root">

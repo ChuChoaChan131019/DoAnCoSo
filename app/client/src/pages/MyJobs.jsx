@@ -5,7 +5,7 @@ import IndustrySelect from "../components/IndustrySelect";
 import ExperienceSelect from "../components/ExperienceSelect";
 import LocationSelect from "../components/LocationSelect";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 
 function getToken() {
   try {
@@ -34,15 +34,15 @@ const CATEGORY_LABELS = {
 };
 
 const init = {
-  title: "", 
+  title: "",
   categoryId: "",
-  startDate: "", 
+  startDate: "",
   endDate: "",
-  experience: "", 
-  location: "", 
-  salary: "", 
+  experience: "",
+  location: "",
+  salary: "",
   description: "",
-  status: "opened", 
+  status: "opened",
 };
 
 export default function MyJobs({ user, setUser }) {
@@ -65,6 +65,13 @@ export default function MyJobs({ user, setUser }) {
           setLoadingJobs(false);
           return;
         }
+
+        if (!API_BASE) {
+          console.error("API base URL is not configured.");
+          setLoadingJobs(false);
+          return;
+        }
+
         const res = await fetch(`${API_BASE}/api/jobs/mine`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -147,7 +154,7 @@ export default function MyJobs({ user, setUser }) {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
-//Submit
+  //Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -155,6 +162,11 @@ export default function MyJobs({ user, setUser }) {
     const token = getToken();
     if (!token) {
       alert("Bạn chưa đăng nhập.");
+      return;
+    }
+
+    if (!API_BASE) {
+      alert("Lỗi cấu hình API. Vui lòng thử lại sau.");
       return;
     }
 

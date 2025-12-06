@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "./MyApply.css";
 import IntroNavbar from "../components/IntroNavbar";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 
 function toAbsUrl(u) {
   if (!u) return "";
@@ -38,7 +38,7 @@ export default function MyApply({ user, setUser }) {
       return;
     }
 
-    // Chỉ cho ứng viên 
+    // Chỉ cho ứng viên
     if (user.role !== "candidate") {
       setError("Chức năng này chỉ dành cho Ứng viên.");
       setLoading(false);
@@ -48,6 +48,10 @@ export default function MyApply({ user, setUser }) {
     const fetchApplications = async () => {
       setLoading(true);
       try {
+        if (!API_BASE) {
+          throw new Error("API base URL is not configured.");
+        }
+
         const res = await fetch(`${API_BASE}/api/apply/mine`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./NotificationBell.css";
 
+const API_BASE = process.env.REACT_APP_API;
+
 export default function NotificationBell({ user }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -23,11 +25,11 @@ export default function NotificationBell({ user }) {
   // Lấy số thông báo chưa đọc
   const fetchUnreadCount = async () => {
     const token = getToken();
-    if (!token) return;
+    if (!token || !API_BASE) return;
 
     try {
       const res = await fetch(
-        "http://localhost:5000/api/notifications/count-unread",
+        `${API_BASE}/api/notifications/count-unread`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,10 +46,10 @@ export default function NotificationBell({ user }) {
   // Lấy danh sách thông báo
   const fetchNotifications = async () => {
     const token = getToken();
-    if (!token) return;
+    if (!token || !API_BASE) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/notifications/mine", {
+      const res = await fetch(`${API_BASE}/api/notifications/mine`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,11 +64,11 @@ export default function NotificationBell({ user }) {
   // Đánh dấu đã đọc
   const markAsRead = async (notificationId) => {
     const token = getToken();
-    if (!token) return;
+    if (!token || !API_BASE) return;
 
     try {
       await fetch(
-        `http://localhost:5000/api/notifications/${notificationId}/read`,
+        `${API_BASE}/api/notifications/${notificationId}/read`,
         {
           method: "PUT",
           headers: {
@@ -84,10 +86,10 @@ export default function NotificationBell({ user }) {
   // Đánh dấu tất cả đã đọc
   const markAllAsRead = async () => {
     const token = getToken();
-    if (!token) return;
+    if (!token || !API_BASE) return;
 
     try {
-      await fetch("http://localhost:5000/api/notifications/read-all", {
+      await fetch(`${API_BASE}/api/notifications/read-all`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -8,7 +8,7 @@ export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const API = process.env.REACT_APP_API || "http://localhost:5000";
+  const API = process.env.REACT_APP_API;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

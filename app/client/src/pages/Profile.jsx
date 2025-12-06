@@ -31,7 +31,7 @@ function getToken() {
     return null;
   }
 }
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 function toAbsUrl(u) {
   if (!u) return "";
   if (/^https?:\/\//i.test(u)) return u;
@@ -59,7 +59,14 @@ export default function Profile({ user, setUser }) {
           setLoading(false);
           return;
         }
-        const res = await fetch("http://localhost:5000/api/employer/me", {
+
+        if (!API_BASE) {
+          console.error("API base URL is not configured.");
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch(`${API_BASE}/api/employer/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -138,6 +145,11 @@ export default function Profile({ user, setUser }) {
       return;
     }
 
+    if (!API_BASE) {
+      alert("Lỗi cấu hình API. Vui lòng thử lại sau.");
+      return;
+    }
+
     // chuẩn hóa ngày
     const normalizeDate = (d) => {
       if (!d) return "";
@@ -168,7 +180,7 @@ export default function Profile({ user, setUser }) {
         fd.append("Remove_Logo", "0");
       }
 
-      const res = await fetch("http://localhost:5000/api/employer/me", {
+      const res = await fetch(`${API_BASE}/api/employer/me`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }, // KHÔNG set Content-Type cho FormData
         body: fd,
@@ -189,11 +201,10 @@ export default function Profile({ user, setUser }) {
     }
   };
 
-
   const clearLogo = () => {
     setLogoFile(null);
     setPreviewUrl("");
-    setRemoveLogo(true); 
+    setRemoveLogo(true);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -201,168 +212,168 @@ export default function Profile({ user, setUser }) {
 
   return (
     <div className="cv-root">
-    <div className="cv-container">
-      <IntroNavbar user={user} setUser={setUser} />
-      <form className="form-group" onSubmit={handleSubmit} noValidate>
-        {/* Upload row */}
-        <div className="form-group upload-row">
-          <label htmlFor="form-group">Upload Logo/Banner:</label>
+      <div className="cv-container">
+        <IntroNavbar user={user} setUser={setUser} />
+        <form className="form-group" onSubmit={handleSubmit} noValidate>
+          {/* Upload row */}
+          <div className="form-group upload-row">
+            <label htmlFor="form-group">Upload Logo/Banner:</label>
 
-          <input
-            ref={fileInputRef}
-            id="logo-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
+            <input
+              ref={fileInputRef}
+              id="logo-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
 
-          <div
-            className={`dropzone ${dragging ? "dragging" : ""} ${
-              logoFile ? "has-file" : ""
-            }`}
-            onClick={() => fileInputRef.current?.click()}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragging(true);
-            }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={onDrop}
-            role="button"
-            tabIndex={0}
-          >
-            <div className="dropzone-text">
-              {logoFile ? (
-                <strong>{logoFile.name}</strong>
-              ) : (
-                <>
-                  Click or drag file to this area to upload
-                  <span className="dropzone-note">
-                    {" "}
-                    (PNG/JPG/SVG · max 2MB)
-                  </span>
-                </>
-              )}
+            <div
+              className={`dropzone ${dragging ? "dragging" : ""} ${
+                logoFile ? "has-file" : ""
+              }`}
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragging(true);
+              }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={onDrop}
+              role="button"
+              tabIndex={0}
+            >
+              <div className="dropzone-text">
+                {logoFile ? (
+                  <strong>{logoFile.name}</strong>
+                ) : (
+                  <>
+                    Click or drag file to this area to upload
+                    <span className="dropzone-note">
+                      {" "}
+                      (PNG/JPG/SVG · max 2MB)
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        {errors.logo && <p className="error-text">{errors.logo}</p>}
+          {errors.logo && <p className="error-text">{errors.logo}</p>}
 
-        {previewUrl && (
-          <div className="logo-preview">
-            <img src={previewUrl} alt="Logo preview" className="fixed-logo" />
-            <button
-              type="button"
-              className="clear-btn"
-              onClick={clearLogo}
-              aria-label="Clear selected logo"
-              title="Bỏ chọn logo"
-            >
-              ✖
+          {previewUrl && (
+            <div className="logo-preview">
+              <img src={previewUrl} alt="Logo preview" className="fixed-logo" />
+              <button
+                type="button"
+                className="clear-btn"
+                onClick={clearLogo}
+                aria-label="Clear selected logo"
+                title="Bỏ chọn logo"
+              >
+                ✖
+              </button>
+            </div>
+          )}
+
+          <div className="form-group">
+            <label htmlFor="name">Name:</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Company Name"
+              value={form.name}
+              onChange={handleChange}
+              aria-invalid={!!errors.name}
+            />
+            {errors.name && <span className="error-text">{errors.name}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="phone">Phone:</label>
+            <input
+              id="phone"
+              name="phone"
+              type="text"
+              placeholder="Phone Number"
+              value={form.phone}
+              onChange={handleChange}
+              aria-invalid={!!errors.phone}
+            />
+            {errors.phone && <span className="error-text">{errors.phone}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="location">Location:</label>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              placeholder="Company Location"
+              value={form.location}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="foundedDate">Founded Date:</label>
+            <input
+              id="foundedDate"
+              name="foundedDate"
+              type="date"
+              value={form.foundedDate}
+              onChange={handleChange}
+              aria-invalid={!!errors.foundedDate}
+            />
+            {errors.foundedDate && (
+              <span className="error-text">{errors.foundedDate}</span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Email:</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Company Email"
+              value={form.email}
+              onChange={handleChange}
+              aria-invalid={!!errors.email}
+            />
+            {errors.email && <span className="error-text">{errors.email}</span>}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="website">Website:</label>
+            <input
+              id="website"
+              name="website"
+              type="text"
+              placeholder="https://..."
+              value={form.website}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="describe">Describe:</label>
+            <textarea
+              className="textarea"
+              id="describe"
+              name="describe"
+              placeholder="Company Description"
+              rows={5}
+              value={form.describe}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="btn-group">
+            <button type="submit" className="save-btn" disabled={submitting}>
+              {submitting ? "Đang lưu..." : "Lưu"}
             </button>
           </div>
-        )}
-
-        <div className="form-group">
-          <label htmlFor="name">Name:</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Company Name"
-            value={form.name}
-            onChange={handleChange}
-            aria-invalid={!!errors.name}
-          />
-          {errors.name && <span className="error-text">{errors.name}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="phone">Phone:</label>
-          <input
-            id="phone"
-            name="phone"
-            type="text"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={handleChange}
-            aria-invalid={!!errors.phone}
-          />
-          {errors.phone && <span className="error-text">{errors.phone}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="location">Location:</label>
-          <input
-            id="location"
-            name="location"
-            type="text"
-            placeholder="Company Location"
-            value={form.location}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="foundedDate">Founded Date:</label>
-          <input
-            id="foundedDate"
-            name="foundedDate"
-            type="date"
-            value={form.foundedDate}
-            onChange={handleChange}
-            aria-invalid={!!errors.foundedDate}
-          />
-          {errors.foundedDate && (
-            <span className="error-text">{errors.foundedDate}</span>
-          )}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Company Email"
-            value={form.email}
-            onChange={handleChange}
-            aria-invalid={!!errors.email}
-          />
-          {errors.email && <span className="error-text">{errors.email}</span>}
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="website">Website:</label>
-          <input
-            id="website"
-            name="website"
-            type="text"
-            placeholder="https://..."
-            value={form.website}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="describe">Describe:</label>
-          <textarea
-            className="textarea"
-            id="describe"
-            name="describe"
-            placeholder="Company Description"
-            rows={5}
-            value={form.describe}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="btn-group">
-        <button type="submit" className="save-btn" disabled={submitting}>
-          {submitting ? "Đang lưu..." : "Lưu"}
-        </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
     </div>
   );
 }

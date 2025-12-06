@@ -6,7 +6,7 @@ import IntroNavbar from "../components/IntroNavbar";
 import "./JobDetail.css";
 import { FaBriefcase, FaMapMarkerAlt, FaRegClock } from "react-icons/fa"; //lấy icon
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 
 function toAbsUrl(u) {
   if (!u) return "";
@@ -38,6 +38,9 @@ export default function JobDetail({ user, setUser }) {
       try {
         setLoading(true);
         setErr("");
+
+        if (!API_BASE) throw new Error("API base URL is not configured.");
+
         const res = await fetch(`${API_BASE}/api/jobs/${id}`);
         const data = await res.json();
         if (!res.ok) throw new Error(data?.message || "Fetch job failed");
@@ -128,7 +131,9 @@ export default function JobDetail({ user, setUser }) {
           </div>
 
           <div className="jd-hero-cta">
-            <button className="jd-btn jd-btn--primary" onClick={handleApply}> {/* <-- Cập nhật */}
+            <button className="jd-btn jd-btn--primary" onClick={handleApply}>
+              {" "}
+              {/* <-- Cập nhật */}
               Ứng tuyển
             </button>
           </div>
@@ -179,7 +184,12 @@ export default function JobDetail({ user, setUser }) {
                   <strong>{job.Job_Status || "—"}</strong>
                 </li>
               </ul>
-              <button className="jd-btn jd-btn--full jd-btn--primary" onClick={handleApply}> {/* <-- Cập nhật */}
+              <button
+                className="jd-btn jd-btn--full jd-btn--primary"
+                onClick={handleApply}
+              >
+                {" "}
+                {/* <-- Cập nhật */}
                 Ứng tuyển ngay
               </button>
             </div>

@@ -9,6 +9,8 @@ import {
 import IntroNavbar from "../components/IntroNavbar";
 import "./CompanyDetail.css";
 
+const API_BASE = process.env.REACT_APP_API;
+
 export default function CompanyDetail({ user, setUser }) {
   const { id } = useParams();
   const [company, setCompany] = useState(null);
@@ -21,7 +23,9 @@ export default function CompanyDetail({ user, setUser }) {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/companies/${id}`);
+        if (!API_BASE) throw new Error("API base URL is not configured.");
+
+        const res = await fetch(`${API_BASE}/api/companies/${id}`);
         const data = await res.json();
         setCompany(data.company);
         setJobs(data.jobs || []);
@@ -53,7 +57,7 @@ export default function CompanyDetail({ user, setUser }) {
               <div className="avatar">
                 {company.Company_Logo && (
                   <img
-                    src={`http://localhost:5000/uploads/${company.Company_Logo.replace(
+                    src={`${API_BASE}/uploads/${company.Company_Logo.replace(
                       /^\/?uploads\//,
                       ""
                     )}`}

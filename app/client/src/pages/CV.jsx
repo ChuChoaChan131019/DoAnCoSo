@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./CV.css";
 import IntroNavbar from "../components/IntroNavbar";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 
 export default function CV({ user, setUser }) {
   const { jobId } = useParams(); // Lấy ID Job từ URL
@@ -34,6 +34,8 @@ export default function CV({ user, setUser }) {
 
     const loadProfile = async () => {
       try {
+        if (!API_BASE) throw new Error("API base URL is not configured.");
+
         const res = await fetch(`${API_BASE}/api/candidate/profile/me`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
@@ -101,6 +103,11 @@ export default function CV({ user, setUser }) {
     if (isApplying && !form.resume && !existingResumeName) {
       alert("Vui lòng upload CV/Hồ sơ trước khi gửi ứng tuyển!");
       return;
+    }
+
+    if (!API_BASE) {
+        alert("API base URL is not configured (REACT_APP_API missing).");
+        return;
     }
 
     // ========= LƯU PROFILE & UPLOAD CV ==========

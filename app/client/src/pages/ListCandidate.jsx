@@ -4,8 +4,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import "./ListCandidate.css"; // Đảm bảo import file CSS
 import IntroNavbar from "../components/IntroNavbar";
 
-const API_LIST_URL = "http://localhost:5000/api/candidate/list";
-const API_STATUS_URL = "http://localhost:5000/api/apply/status";
+const API_BASE = process.env.REACT_APP_API;
+
+const API_LIST_URL = `${API_BASE}/api/candidate/list`;
+const API_STATUS_URL = `${API_BASE}/api/apply/status`;
 
 export default function ListCandidate({ user, setUser }) {
   const [search, setSearch] = useState("");
@@ -39,6 +41,13 @@ export default function ListCandidate({ user, setUser }) {
   // Hàm FETCH danh sách đơn ứng tuyển
   const fetchApplications = useCallback(async () => {
     const currentToken = getToken();
+
+    if (!API_BASE) {
+      console.error("API base URL is not configured.");
+      setApplications([]);
+      setLoading(false);
+      return;
+    }
 
     if (!currentToken || user.role !== "employer") {
       setApplications([]);
@@ -301,7 +310,7 @@ export default function ListCandidate({ user, setUser }) {
 
               {c.Resume_URL && (
                 <a
-                  href={`http://localhost:5000${c.Resume_URL}`}
+                  href={`${API_BASE}${c.Resume_URL}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

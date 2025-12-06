@@ -3,6 +3,8 @@ import "./Companies.css";
 import IntroNavbar from "../components/IntroNavbar";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE = process.env.REACT_APP_API;
+
 export default function Companies({ user, setUser }) {
   const [search, setSearch] = useState("");
   const [companies, setCompanies] = useState([]);
@@ -14,10 +16,10 @@ export default function Companies({ user, setUser }) {
     const timeout = setTimeout(async () => {
       setLoading(true);
       try {
+        if (!API_BASE) throw new Error("API base URL is not configured.");
+
         const res = await fetch(
-          `http://localhost:5000/api/companies?search=${encodeURIComponent(
-            search
-          )}`
+          `${API_BASE}/api/companies?search=${encodeURIComponent(search)}`
         );
         const data = await res.json();
         setCompanies(data);
@@ -60,13 +62,17 @@ export default function Companies({ user, setUser }) {
         <div className="company-grid">
           {companies.length > 0 ? (
             companies.map((c) => (
-              <div key={c.ID_Employer} className="company-card" onClick={() => navigate(`/companies/${c.ID_Employer}`)}>
+              <div
+                key={c.ID_Employer}
+                className="company-card"
+                onClick={() => navigate(`/companies/${c.ID_Employer}`)}
+              >
                 <div className="company-header">
                   {c.Company_Logo ? (
                     <img
                       src={
                         c.Company_Logo
-                          ? `http://localhost:5000/uploads/${c.Company_Logo.replace(
+                          ? `${API_BASE}/uploads/${c.Company_Logo.replace(
                               /^\/?uploads\//,
                               ""
                             )}`

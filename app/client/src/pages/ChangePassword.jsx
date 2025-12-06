@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./ChangePassword.css";
 import IntroNavbar from "../components/IntroNavbar";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 
 export default function ChangePassword({ user, setUser }) {
   const navigate = useNavigate();
@@ -43,6 +43,11 @@ export default function ChangePassword({ user, setUser }) {
 
     if (form.newPassword.length < 6) {
       setError("⚠️ Mật khẩu mới phải có ít nhất 6 ký tự.");
+      return;
+    }
+
+    if (!API_BASE) {
+      setError("⚠️ Lỗi cấu hình API. Vui lòng thử lại sau.");
       return;
     }
 

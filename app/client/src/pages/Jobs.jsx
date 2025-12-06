@@ -9,7 +9,7 @@ import ExperienceSelect from "../components/ExperienceSelect";
 import SalarySelect from "../components/SalarySelect";
 import { Link, useSearchParams } from "react-router-dom";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.REACT_APP_API;
 
 function toAbsUrl(u) {
   if (!u) return "";
@@ -79,6 +79,8 @@ export default function Jobs({ user, setUser }) {
     (async () => {
       setLoading(true);
       try {
+        if (!API_BASE) throw new Error("API base URL is not configured.");
+        
         const params = new URLSearchParams();
         if (debouncedQ) params.set("q", debouncedQ);
         if (filters.location) params.set("location", filters.location);

@@ -20,7 +20,10 @@ const app = express();
 // cấu hình CORS cho frontend React
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "https://99wrf4js-3000.asse.devtunnels.ms",
+      "https://99wrf4js-5000.asse.devtunnels.ms",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -28,6 +31,10 @@ app.use(
 );
 
 app.use(express.json());
+
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to the OiJobOii API." });
+});
 
 // phục vụ file tĩnh (logo, ảnh upload)
 const __filename = fileURLToPath(import.meta.url);

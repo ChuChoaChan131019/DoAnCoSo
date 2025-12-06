@@ -6,10 +6,16 @@ export default function Register() {
   const [isCandidate, setIsCandidate] = useState(true);
   const navigate = useNavigate();
 
-  const API = process.env.REACT_APP_API || "http://localhost:5000";
+  const API = process.env.REACT_APP_API;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!API) {
+      alert("API base URL is not configured (REACT_APP_API missing).");
+      console.error("API base URL is not configured.");
+      return;
+    }
 
     const form = e.target;
     let payload = {};
