@@ -16,7 +16,7 @@ body {
 
 /* ===== KHUNG CHÍNH ===== */
 .companies-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -25,12 +25,13 @@ body {
 .search-container {
   display: flex;
   align-items: center;
-  max-width: 100%;
+  max-width: 1200px;
   margin: 20px auto;
-  border: 1px solid #d9e7ec;
+  border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
   padding: 6px 12px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {

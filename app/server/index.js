@@ -21,8 +21,8 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://99wrf4js-3000.asse.devtunnels.ms",
-      "https://99wrf4js-5000.asse.devtunnels.ms",
+      "https://8mr2vx2h-3000.asse.devtunnels.ms",
+      "https://8mr2vx2h-5000.asse.devtunnels.ms",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
